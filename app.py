@@ -39,11 +39,13 @@ def home():
 @app.route("/login/admin", methods=["GET", "POST"])
 def loginAdmin():
     if request.method == "POST":
-        email = request.form["email"]
-        password = request.form["password"]
-        pw_hash = hashlib.sha256(password.encode("utf-8")).hexdigest()
-        result = db.admins.find_one({"email": email, "password": pw_hash})
-        if result:
+        email = request.form.get("email")
+        password = request.form.get("password")
+        if not email or not password:
+            return render_template("admin/loginadmin.html", error_message="Email and password are required.")
+        
+        result = db.admins.find_one({"email": email})
+        if result and bcrypt.checkpw(password.encode('utf-8'), result['password']):
             payload = {
                 "id": result["email"],
                 "exp": datetime.utcnow() + timedelta(days=1),
@@ -52,12 +54,11 @@ def loginAdmin():
             response = make_response(
                 redirect(url_for("dashboard", email=result["email"]))
             )
-            response.set_cookie(TOKEN_KEY, token)
+            response.set_cookie(TOKEN_KEY, token, httponly=True, secure=True)
             return response
         else:
-            return jsonify({"result": "fail", "msg": "Incorrect email or password"})
+            return render_template("admin/loginadmin.html", error_message="Incorrect email or password.")
     return render_template("admin/loginadmin.html")
-
 
 @app.route("/register/admin", methods=["GET", "POST"])
 def registeradmin():
