@@ -1,9 +1,9 @@
 $(document).ready(function () {
   $("#registerForm").submit(function (e) {
     e.preventDefault();
-    var email = $("#email").val();
-    var username = $("#username").val();
-    var password = $("#password").val();
+    email = $("#email").val();
+    username = $("#username").val();
+    password = $("#password").val();
 
     // Email validation
     if (!email.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/)) {
