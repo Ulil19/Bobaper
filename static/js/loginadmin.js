@@ -26,9 +26,7 @@ function loginadmin() {
     },
     success: function (response) {
       if (response["result"] === "success") {
-        $.cookie("mytoken", response["token"], { path: "/" });
-        window.location.replace("/dashboard/" + email);
-        // location.href = "/dashboard/<email>";
+        window.location.href = "/dashboard/" + email;
       } else {
         alert(response["msg"]);
       }

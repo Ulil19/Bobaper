@@ -28,7 +28,7 @@ DB_NAME = os.environ.get("DB_NAME")
 client = MongoClient(MONGODB_URI)
 db = client[DB_NAME]
 
-TOKEN_KEY = "mytoken"
+TOKEN_KEY = "bobaper"
 
 
 @app.route("/", methods=["GET", "POST"])
@@ -43,14 +43,17 @@ def loginAdmin():
         password = request.form["password"]
         pw_hash = hashlib.sha256(password.encode("utf-8")).hexdigest()
         result = db.admins.find_one({"email": email, "password": pw_hash})
-
         if result:
             payload = {
                 "id": result["email"],
                 "exp": datetime.utcnow() + timedelta(days=1),
             }
             token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
-            return jsonify({"result": "success", "token": token})
+            response = make_response(
+                redirect(url_for("dashboard", email=result["email"]))
+            )
+            response.set_cookie(TOKEN_KEY, token)
+            return response
         else:
             return jsonify({"result": "fail", "msg": "Incorrect email or password"})
     return render_template("admin/loginadmin.html")
