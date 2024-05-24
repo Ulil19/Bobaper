@@ -1,4 +1,3 @@
-
 from pymongo import MongoClient
 import jwt
 from datetime import datetime, timedelta
@@ -41,26 +40,23 @@ def home():
 def loginAdmin():
     error_msg = ""
     if request.method == "POST":
-        email = request.form.get("email")
-        password = request.form.get("password")
-        if not email or not password:
-            return render_template("admin/loginadmin.html", error_message="Email and password are required.")
-        
-        result = db.admins.find_one({"email": email})
-        if result and bcrypt.checkpw(password.encode('utf-8'), result['password']):
+        email = request.form["email"]
+        password = request.form["password"]
+        pw_hash = hashlib.sha256(password.encode("utf-8")).hexdigest()
+        result = db.admins.find_one({"email": email, "password": pw_hash})
+        if result:
             payload = {
                 "id": result["email"],
                 "exp": datetime.utcnow() + timedelta(days=1),
             }
             token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
-            response = make_response(
-                redirect(url_for("dashboard", email=result["email"]))
-            )
+            response = make_response(redirect(url_for("dashboard", token=token)))
             response.set_cookie(TOKEN_KEY, token)
             return response
         else:
-            return jsonify({"result": "fail", "msg": "Incorrect email or password"})
-    return render_template("admin/loginadmin.html")
+            error_msg = "Incorrect email or password"
+    return render_template("admin/loginadmin.html", error_msg=error_msg)
+
 
 @app.route("/register/admin", methods=["GET", "POST"])
 def registeradmin():
@@ -98,12 +94,17 @@ def dashboard():
         return render_template("admin/dashboard.html", user_info=user_info, email=email)
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return redirect(url_for("loginAdmin"))
-    
+
+
 @app.route("/register/user", methods=["GET", "POST"])
 def registeruser():
     return render_template("user/registeruser.html")
+
+
 @app.route("/login/user", methods=["GET", "POST"])
 def loginuser():
     return render_template("user/loginuser.html")
+
+
 if __name__ == "__main__":
     app.run("0.0.0.0", port=5000, debug=True)
