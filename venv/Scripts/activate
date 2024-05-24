@@ -38,7 +38,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="D:\ulil\ppp\boba\Bobaper.id\venv"
+VIRTUAL_ENV="D:\Stupen\Chapter 7\sparta_plus\project01\venv"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"

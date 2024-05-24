@@ -25,10 +25,11 @@ function loginadmin() {
       password: password,
     },
     success: function (response) {
+      console.log(response);
       if (response["result"] === "success") {
-        window.location.href = "/dashboard/" + email;
+        window.location.href = "/dashboard";
       } else {
-        alert(response["msg"]);
+        alert(response["error_msg"]);
       }
     },
   });
