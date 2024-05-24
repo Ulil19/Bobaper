@@ -94,6 +94,37 @@ def dashboard():
         return render_template("admin/dashboard.html", user_info=user_info, email=email)
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return redirect(url_for("loginAdmin"))
+<<<<<<< HEAD
+=======
+    
+@app.route("/tambahproduk", methods=["GET", "POST"])
+def tambahproduk():
+    return render_template("admin/tambahproduk.html")
+
+# # Server untuk menambahkan produk
+# @app.route("/tambahproduk/save", methods=["POST"])
+# def tambahproduksave():
+#     nama = request.form["nama"]
+#     harga = request.form["harga"]
+#     deskripsi = request.form["deskripsi"]
+#     foto = request.files["foto"]
+#     foto.save(f"static/images/{foto.filename}")
+#     doc = {"nama": nama, "harga": harga, "deskripsi": deskripsi, "foto": foto.filename}
+#     db.produk.insert_one(doc)
+#     return jsonify({"result": "success"})
+
+
+@app.route("/editproduk")
+def editproduk():
+    return render_template("admin/editproduk.html")
+
+@app.route("/logoutadmin")
+def logoutadmin():
+    response = make_response(redirect(url_for("loginAdmin")))
+    response.set_cookie(TOKEN_KEY, "", expires=0)
+    return response
+
+>>>>>>> f6841adbbc940bf91368826994e8b66c5d56d748
 
 
 @app.route("/register/user", methods=["GET", "POST"])
@@ -104,9 +135,12 @@ def registeruser():
 @app.route("/login/user", methods=["GET", "POST"])
 def loginuser():
     return render_template("user/loginuser.html")
+<<<<<<< HEAD
 @app.route("/profile", methods=["GET", "POST"])
 def profile():
     return render_template("user/profile.html")
+=======
+>>>>>>> f6841adbbc940bf91368826994e8b66c5d56d748
 
 
 if __name__ == "__main__":

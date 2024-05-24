@@ -10,8 +10,12 @@
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet"
         crossorigin="anonymous">
+<<<<<<< HEAD
 
     
+=======
+    <link rel="stylesheet" href="/static/css/dashboardadmin.css">
+>>>>>>> f6841adbbc940bf91368826994e8b66c5d56d748
 
 </head>
 
@@ -24,15 +28,24 @@
             <a href="/" class="navbar-brand mt-3">
                 <img src="/static/img/logo.png" width="250" height="50" class="mb-2">
             </a>
+<<<<<<< HEAD
             <hr>
             <ul class="mynav nav nav-pills flex-column mb-auto">
                 <li class="nav-item mb-1">
                     <a href="#">
+=======
+            <hr class="border-dark border-2" style="border-color: #000000;">
+            <ul class="mynav nav nav-pills flex-column mb-auto">
+                <p class="sidebar-heading d-flex justify-content-between align-items-center px-2 mt-3 mb-1">Home</p>
+                <li class="nav-item mb-1 px-2" id="dashboard-link">
+                    <a href="/dashboard">
+>>>>>>> f6841adbbc940bf91368826994e8b66c5d56d748
                         <i class="fa-brands fa-shopware"></i>
                         Dashboard
                     </a>
                 </li>
 
+<<<<<<< HEAD
                 <li class="nav-item mb-1">
                     <a href="#">
                         <i class="fa-regular fa-bookmark"></i>
@@ -55,6 +68,44 @@
                     <a href="#">
                         <i class="fa-solid fa-graduation-cap"></i>
                         Organizations
+=======
+                <p class="sidebar-heading d-flex justify-content-between align-items-center px-2 mt-3 mb-1">Produk</p>
+                <li class="nav-item mb-1 px-2" id="tambah-link">
+                    <a href="/tambahproduk">
+                        <i class="fa-regular fa-bookmark"></i>
+                        Tambah Produk
+                    </a>
+                </li>
+                <li class="nav-item mb-1 px-2" id="edit-link">
+                    <a href="/editproduk">
+                        <i class="fa-regular fa-pen-to-square"></i>
+                        Edit Produk
+                    </a>
+                </li>
+                <p class="sidebar-heading d-flex justify-content-between align-items-center px-2 mt-3 mb-1">Pesan</p>
+                <li class="nav-item mb-1 px-2" id="pesan-link">
+                    <a href="/konfirmasipesan">
+                        <i class="fa-solid fa-clipboard-check"></i>
+                        Konfirmasi Pesan
+                    </a>
+                </li>
+                <li class="nav-item mb-1 px-2" id="status-link">
+                    <a href="/statuspesan">
+                        <i class="fa-solid fa-chart-line"></i>
+                        Status Pesan
+                    </a>
+                </li>
+                <li class="nav-item mb-1 px-2" id="review-link">
+                    <a href="/reviewadmin">
+                        <i class="fa-regular fa-comments"></i>
+                        Review
+                    </a>
+                </li>
+                <li class="nav-item mb-1 px-2" id="kelola-link">
+                    <a href="/kelolauser">
+                        <i class="fa-solid fa-users"></i>
+                        Kelola User
+>>>>>>> f6841adbbc940bf91368826994e8b66c5d56d748
                     </a>
                 </li>
 
@@ -66,6 +117,7 @@
                     </a>
                     <ul id="settings" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
                         <li class="sidebar-item">
+<<<<<<< HEAD
                             <a href="#" class="sidebar-link">
                                 <i class="fas fa-sign-in-alt pe-2"></i>
                                 <span class="topic"> Login</span>
@@ -73,20 +125,30 @@
                         </li>
                         <li class="sidebar-item">
                             <a href="#" class="sidebar-link">
+=======
+                            <a href="/register/admin" class="sidebar-link">
+>>>>>>> f6841adbbc940bf91368826994e8b66c5d56d748
                                 <i class="fas fa-user-plus pe-2"></i>
                                 <span class="topic">Register</span>
                             </a>
                         </li>
                         <li class="sidebar-item">
+<<<<<<< HEAD
                             <a href="#" class="sidebar-link">
                                 <i class="fas fa-sign-out-alt pe-2"></i>
                                  <a href="/login/admin" class="topic">Log Out</a>
                                
+=======
+                            <a href="/logoutadmin" class="sidebar-link">
+                                <i class="fas fa-sign-out-alt pe-2"></i>
+                                <span class="topic">Log Out</span>
+>>>>>>> f6841adbbc940bf91368826994e8b66c5d56d748
                             </a>
                         </li>
                     </ul>
                 </li>
             </ul>
+<<<<<<< HEAD
             <hr>
             <div class="d-flex justify-content-center">
                 <a href="/login/admin" class="btn btn-sm btn-outline-light">LogOut</a>
@@ -136,6 +198,101 @@
              $(this).addClass("active").siblings().removeClass("active")
           })
       </script>
+=======
+            <hr class="border-dark border-2" style="border-color: #000000;">
+        </div>
+
+        <div class="bg-light flex-fill">
+            <div class="p-2 d-md-none d-flex text-white bg-info">
+                <a href="#" class="text-white" data-bs-toggle="offcanvas" data-bs-target="#bdSidebar">
+                    <i class="fa-solid fa-bars"></i>
+                </a>
+                <span class="ms-3">Bobaper.id</span>
+            </div>
+            <div class="p-4 mt-5">
+                <hr>
+                <div class="row">
+                    <div class="col mb-3">
+                        <h2>Data Produk</h2>
+                        <hr>
+                    </div>
+                </div>
+                <div class="container">
+                    <div class="table-responsive mt-3 ">
+                        <table class="table table-borderless">
+                            <thead>
+                                <tr>
+                                    <th scope="col">No</th>
+                                    <th scope="col">Foto Produk</th>
+                                    <th scope="col">Nama Produk</th>
+                                    <th scope="col">Harga</th>
+                                    <th scope="col">Stok</th>
+                                    <th scope="col">Opsi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th scope="row">1</th>
+                                    <td><img src="/static/img/1.png" alt=""></td>
+                                    <td>Produk A</td>
+                                    <td>$100</td>
+                                    <td>50</td>
+                                    <td>
+                                        <a href="#" class="btn btn-primary btn-sm">Edit</a>
+                                        <a href="#" class="btn btn-danger btn-sm">Hapus</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">2</th>
+                                    <td><img src="/static/img/1.png" alt=""></td>
+                                    <td>Produk B</td>
+                                    <td>$80</td>
+                                    <td>30</td>
+                                    <td>
+                                        <a href="#" class="btn btn-primary btn-sm">Edit</a>
+                                        <a href="#" class="btn btn-danger btn-sm">Hapus</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">3</th>
+                                    <td><img src="/static/img/1.png" alt=""></td>
+                                    <td>Produk C</td>
+                                    <td>$120</td>
+                                    <td>20</td>
+                                    <td>
+                                        <a href="#" class="btn btn-primary btn-sm">Edit</a>
+                                        <a href="#" class="btn btn-danger btn-sm">Hapus</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+            crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+            integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+            crossorigin="anonymous"></script>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const currentPath = window.location.pathname;
+                const sidebarLinks = document.querySelectorAll(".nav-item");
+
+                sidebarLinks.forEach(function (link) {
+                    const href = link.querySelector("a").getAttribute("href");
+                    if (currentPath === href) {
+                        link.classList.add("active");
+                    }
+                });
+            });
+        </script>
+
+>>>>>>> f6841adbbc940bf91368826994e8b66c5d56d748
 </body>
 
 </html>
