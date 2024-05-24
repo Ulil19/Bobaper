@@ -134,6 +134,10 @@ def loginuser():
 @app.route("/profile", methods=["GET", "POST"])
 def profile():
     return render_template("user/profile.html")
+@app.route("/review/admin", methods=["GET", "POST"])
+def reviewadmin():
+    return render_template("admin/reviewadmin.html")
+
 
 
 if __name__ == "__main__":
