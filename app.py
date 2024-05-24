@@ -38,6 +38,7 @@ def home():
 
 @app.route("/login/admin", methods=["GET", "POST"])
 def loginAdmin():
+    error_msg = ""
     if request.method == "POST":
         email = request.form["email"]
         password = request.form["password"]
@@ -49,14 +50,12 @@ def loginAdmin():
                 "exp": datetime.utcnow() + timedelta(days=1),
             }
             token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
-            response = make_response(
-                redirect(url_for("dashboard", email=result["email"]))
-            )
+            response = make_response(redirect(url_for("dashboard", token=token)))
             response.set_cookie(TOKEN_KEY, token)
             return response
         else:
-            return jsonify({"result": "fail", "msg": "Incorrect email or password"})
-    return render_template("admin/loginadmin.html")
+            error_msg = "Incorrect email or password"
+    return render_template("admin/loginadmin.html", error_msg=error_msg)
 
 
 @app.route("/register/admin", methods=["GET", "POST"])
@@ -83,18 +82,18 @@ def check_dup():
     return jsonify({"result": "success", "exists": exists})
 
 
-@app.route("/dashboard/<email>")
-def dashboard(email):
-    token_receive = request.cookies.get(TOKEN_KEY)
+@app.route("/dashboard")
+def dashboard():
+    token_receive = request.args.get("token")
+    if not token_receive:
+        return redirect(url_for("loginAdmin"))
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
-        status = email == payload.get("id")
+        email = payload.get("id")
         user_info = db.admins.find_one({"email": email}, {"_id": False})
-        return render_template(
-            "admin/dashboard.html", user_info=user_info, status=status
-        )
+        return render_template("admin/dashboard.html", user_info=user_info, email=email)
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
-        return redirect(url_for("loginadmin"))
+        return redirect(url_for("loginAdmin"))
 
 
 if __name__ == "__main__":
