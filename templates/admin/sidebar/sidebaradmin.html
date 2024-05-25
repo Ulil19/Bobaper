@@ -1,0 +1,78 @@
+<div id="bdSidebar" class="d-flex flex-column 
+             flex-shrink-0 
+             p-3 bg-info
+             text-white offcanvas-md offcanvas-start">
+    <a href="/" class="navbar-brand mt-3">
+        <img src="{{ url_for('static', filename='img/logo.png') }}" width="250" height="50" class="mb-2">
+    </a>
+    <hr class="border-dark border-2" style="border-color: #000000;">
+    <ul class="mynav nav nav-pills flex-column mb-auto">
+        <p class="sidebar-heading d-flex justify-content-between align-items-center px-2 mt-3 mb-1">Home</p>
+        <li class="nav-item mb-1 px-2" id="dashboard-link">
+            <a href="/dashboard">
+                <i class="fa-brands fa-shopware"></i>
+                Dashboard
+            </a>
+        </li>
+        <p class="sidebar-heading d-flex justify-content-between align-items-center px-2 mt-3 mb-1">Produk</p>
+        <li class="nav-item mb-1 px-2" id="tambah-link">
+            <a href="/tambahproduk">
+                <i class="fa-regular fa-bookmark"></i>
+                Tambah Produk
+            </a>
+        </li>
+        <li class="nav-item mb-1 px-2" id="edit-link">
+            <a href="/editproduk">
+                <i class="fa-regular fa-pen-to-square"></i>
+                Edit Produk
+            </a>
+        </li>
+        <p class="sidebar-heading d-flex justify-content-between align-items-center px-2 mt-3 mb-1">Pesan</p>
+        <li class="nav-item mb-1 px-2" id="pesan-link">
+            <a href="/konfirmasipesan">
+                <i class="fa-solid fa-clipboard-check"></i>
+                Konfirmasi Pesan
+            </a>
+        </li>
+        <li class="nav-item mb-1 px-2" id="status-link">
+            <a href="/statuspesan">
+                <i class="fa-solid fa-chart-line"></i>
+                Status Pesan
+            </a>
+        </li>
+        <li class="nav-item mb-1 px-2" id="review-link">
+            <a href="/review/admin">
+                <i class="fa-regular fa-comments"></i>
+                Review
+            </a>
+        </li>
+        <li class="nav-item mb-1 px-2" id="kelola-link">
+            <a href="/kelolauser/admin">
+                <i class="fa-solid fa-users"></i>
+                Kelola User
+            </a>
+        </li>
+        <li class="sidebar-item nav-item mb-1">
+            <a href="#" class="sidebar-link collapsed" data-bs-toggle="collapse" data-bs-target="#settings"
+                aria-expanded="false" aria-controls="settings">
+                <i class="fas fa-cog pe-2"></i>
+                <span class="topic">Settings</span>
+            </a>
+            <ul id="settings" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                <li class="sidebar-item">
+                    <a href="/register/admin" class="sidebar-link">
+                        <i class="fas fa-user-plus pe-2"></i>
+                        <span class="topic">Register</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="/logoutadmin" class="sidebar-link">
+                        <i class="fas fa-sign-out-alt pe-2"></i>
+                        <span class="topic">Log Out</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
+    </ul>
+    <hr class="border-dark border-2" style="border-color: #000000;">
+</div>
