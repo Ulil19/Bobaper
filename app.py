@@ -137,6 +137,10 @@ def profile():
 @app.route("/review/admin", methods=["GET", "POST"])
 def reviewadmin():
     return render_template("admin/reviewadmin.html")
+@app.route("/kelolauser/admin", methods=["GET", "POST"])
+def kelolauser():
+    return render_template("admin/kelolauser.html")
+
 @app.route("/shoppingcart", methods=["GET", "POST"])
 def shoppingcart():
     return render_template("user/shoppingcart.html")
