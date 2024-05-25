@@ -97,14 +97,23 @@ def dashboard():
     
 @app.route("/tambahproduk", methods=["GET", "POST"])
 def tambahproduk():
-    return render_template("admin/tambahproduk.html")
+    token_receive = request.cookies.get(TOKEN_KEY)
+    if not token_receive:
+        return redirect(url_for("loginAdmin"))
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
+        email = payload.get("id")
+        user_info = db.admins.find_one({"email": email}, {"_id": False})
+        return render_template("admin/tambahproduk.html", user_info=user_info, email=email)
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return redirect(url_for("loginAdmin"))
 
 # # Server untuk menambahkan produk
 # @app.route("/tambahproduk/save", methods=["POST"])
 # def tambahproduksave():
 #     nama = request.form["nama"]
 #     harga = request.form["harga"]
-#     deskripsi = request.form["deskripsi"]
+#     stock = request.form["srock"]
 #     foto = request.files["foto"]
 #     foto.save(f"static/images/{foto.filename}")
 #     doc = {"nama": nama, "harga": harga, "deskripsi": deskripsi, "foto": foto.filename}
