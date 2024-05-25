@@ -1,105 +1,99 @@
-<!DOCTYPE html>
 {% extends "admin/layout/layoutadmin.html" %}
 
 {% block title %}Dashboard{% endblock %}
 
 {% block content %}
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" />
-    <link rel="stylesheet" href="/static/css/statuspesanadmin.css">
-    <title>Document</title>
-   
-</head>
-<body>
-    <div class="container">
-        <div class="panel panel-order">
-            <div class="panel-heading d-flex justify-content-between align-items-center">
-                <strong>Pesanan</strong>
-                <div class="btn-group">
-                    <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> History <i class="fa fa-filter"></i></button>
-                    <div class="dropdown-menu dropdown-menu-right">
-                        <a class="dropdown-item" href="#">Approved Orders</a>
-                        <a class="dropdown-item" href="#">Pending Orders</a>
-                    </div>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/statuspesanan.css') }}">
+<div class="container">
+    <div class="panel panel-order">
+        <div class="panel-heading d-flex justify-content-between align-items-center">
+            <strong>Pesanan</strong>
+            <div class="btn-group">
+                <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> History
+                    <i class="fa fa-filter"></i></button>
+                <div class="dropdown-menu dropdown-menu-right">
+                    <a class="dropdown-item" href="#">Approved Orders</a>
+                    <a class="dropdown-item" href="#">Pending Orders</a>
                 </div>
             </div>
-            <div class="panel-body">
-                <div class="order-row row align-items-center">
-                    <div class="col-md-1 text-center"><img src="https://bootdey.com/img/Content/user_3.jpg" alt="User" class="img-thumbnail"></div>
-                    <div class="col-md-7 order-details">
-                        <strong>Order name</strong> <span class="badge badge-info">group name</span><br>
-                        Quantity: 2, cost: $323.13<br>
-                        Order made on: 05/31/2014 by <a href="#">Jane Doe</a>
-                    </div>
-                    <div class="col-md-4 order-actions">
-                        <span class="badge badge-danger">Rejected</span>
-                        <a class="btn btn-success btn-xs fa fa-check" href="#" title="View"></a>
-                        <a class="btn btn-danger btn-xs fa fa-trash" href="#" title="Delete"></a>
-                        <a class="btn btn-info btn-xs fa fa-usd" href="#" title="Pay"></a>
-                    </div>
+        </div>
+        <div class="panel-body">
+            <div class="order-row row align-items-center">
+                <div class="col-md-1 text-center"><img src="https://bootdey.com/img/Content/user_3.jpg" alt="User"
+                        class="img-thumbnail"></div>
+                <div class="col-md-7 order-details">
+                    <strong>Order name</strong> <span class="badge badge-info">group name</span><br>
+                    Quantity: 2, cost: $323.13<br>
+                    Order made on: 05/31/2014 by <a href="#">Jane Doe</a>
                 </div>
-                <div class="order-row row align-items-center">
-                    <div class="col-md-1 text-center"><img src="https://bootdey.com/img/Content/user_3.jpg" alt="User" class="img-thumbnail"></div>
-                    <div class="col-md-7 order-details">
-                        <strong>Order name</strong> <span class="badge badge-info">group name</span><br>
-                        Quantity: 2, cost: $323.13<br>
-                        Order made on: 05/31/2014 by <a href="#">Jane Doe</a>
-                    </div>
-                    <div class="col-md-4 order-actions">
-                        <span class="badge badge-danger">Rejected</span>
-                        <a class="btn btn-success btn-xs fa fa-check" href="#" title="View"></a>
-                        <a class="btn btn-danger btn-xs fa fa-trash" href="#" title="Delete"></a>
-                        <a class="btn btn-info btn-xs fa fa-usd" href="#" title="Pay"></a>
-                    </div>
-                </div>
-                <div class="order-row row align-items-center">
-                    <div class="col-md-1 text-center"><img src="https://bootdey.com/img/Content/user_1.jpg" alt="User" class="img-thumbnail"></div>
-                    <div class="col-md-7 order-details">
-                        <strong>Order name</strong> <span class="badge badge-info">group name</span><br>
-                        Quantity: 12, cost: $12623.13<br>
-                        Order made on: 06/12/2014 by <a href="#">Jane Doe</a>
-                    </div>
-                    <div class="col-md-4 order-actions">
-                        <span class="badge badge-info">Pending</span>
-                        <a class="btn btn-success btn-xs fa fa-check" href="#" title="View"></a>
-                        <a class="btn btn-danger btn-xs fa fa-trash" href="#" title="Delete"></a>
-                        <a class="btn btn-info btn-xs fa fa-usd" href="#" title="Pay"></a>
-                    </div>
-                </div>
-                <div class="order-row row align-items-center">
-                    <div class="col-md-1 text-center"><img src="https://bootdey.com/img/Content/user_3.jpg" alt="User" class="img-thumbnail"></div>
-                    <div class="col-md-7 order-details">
-                        <strong>Order name</strong> <span class="badge badge-info">group name</span><br>
-                        Quantity: 4, cost: $523.13<br>
-                        Order made on: 06/20/2014 by <a href="#">Jane Doe</a>
-                    </div>
-                    <div class="col-md-4 order-actions">
-                        <span class="badge badge-success">Approved</span>
-                        <a class="btn btn-success btn-xs fa fa-check" href="#" title="View"></a>
-                        <a class="btn btn-danger btn-xs fa fa-trash" href="#" title="Delete"></a>
-                        <a class="btn btn-info btn-xs fa fa-usd" href="#" title="Pay"></a>
-                    </div>
-                </div>
-                <div class="order-row row align-items-center">
-                    <div class="col-md-1 text-center"><img src="https://bootdey.com/img/Content/user_2.jpg" alt="User" class="img-thumbnail"></div>
-                    <div class="col-md-7 order-details">
-                        <strong>Order name</strong> <span class="badge badge-info">group name</span><br>
-                        Quantity: 4, cost: $523.13<br>
-                        Order made on: 06/20/2014 by <a href="#">Jane Doe</a>
-                    </div>
-                    <div class="col-md-4 order-actions">
-                        <span class="badge badge-info">Pending</span>
-                        <a class="btn btn-success btn-xs fa fa-check" href="#" title="View"></a>
-                        <a class="btn btn-danger btn-xs fa fa-trash" href="#" title="Delete"></a>
-                        <a class="btn btn-info btn-xs fa fa-usd" href="#" title="Pay"></a>
-                    </div>
+                <div class="col-md-4 order-actions">
+                    <span class="badge badge-danger">Rejected</span>
+                    <a class="btn btn-success btn-xs fa fa-check" href="#" title="View"></a>
+                    <a class="btn btn-danger btn-xs fa fa-trash" href="#" title="Delete"></a>
+                    <a class="btn btn-info btn-xs fa fa-usd" href="#" title="Pay"></a>
                 </div>
             </div>
-      
-</body>
-
-</html>
+            <div class="order-row row align-items-center">
+                <div class="col-md-1 text-center"><img src="https://bootdey.com/img/Content/user_3.jpg" alt="User"
+                        class="img-thumbnail"></div>
+                <div class="col-md-7 order-details">
+                    <strong>Order name</strong> <span class="badge badge-info">group name</span><br>
+                    Quantity: 2, cost: $323.13<br>
+                    Order made on: 05/31/2014 by <a href="#">Jane Doe</a>
+                </div>
+                <div class="col-md-4 order-actions">
+                    <span class="badge badge-danger">Rejected</span>
+                    <a class="btn btn-success btn-xs fa fa-check" href="#" title="View"></a>
+                    <a class="btn btn-danger btn-xs fa fa-trash" href="#" title="Delete"></a>
+                    <a class="btn btn-info btn-xs fa fa-usd" href="#" title="Pay"></a>
+                </div>
+            </div>
+            <div class="order-row row align-items-center">
+                <div class="col-md-1 text-center"><img src="https://bootdey.com/img/Content/user_1.jpg" alt="User"
+                        class="img-thumbnail"></div>
+                <div class="col-md-7 order-details">
+                    <strong>Order name</strong> <span class="badge badge-info">group name</span><br>
+                    Quantity: 12, cost: $12623.13<br>
+                    Order made on: 06/12/2014 by <a href="#">Jane Doe</a>
+                </div>
+                <div class="col-md-4 order-actions">
+                    <span class="badge badge-info">Pending</span>
+                    <a class="btn btn-success btn-xs fa fa-check" href="#" title="View"></a>
+                    <a class="btn btn-danger btn-xs fa fa-trash" href="#" title="Delete"></a>
+                    <a class="btn btn-info btn-xs fa fa-usd" href="#" title="Pay"></a>
+                </div>
+            </div>
+            <div class="order-row row align-items-center">
+                <div class="col-md-1 text-center"><img src="https://bootdey.com/img/Content/user_3.jpg" alt="User"
+                        class="img-thumbnail"></div>
+                <div class="col-md-7 order-details">
+                    <strong>Order name</strong> <span class="badge badge-info">group name</span><br>
+                    Quantity: 4, cost: $523.13<br>
+                    Order made on: 06/20/2014 by <a href="#">Jane Doe</a>
+                </div>
+                <div class="col-md-4 order-actions">
+                    <span class="badge badge-success">Approved</span>
+                    <a class="btn btn-success btn-xs fa fa-check" href="#" title="View"></a>
+                    <a class="btn btn-danger btn-xs fa fa-trash" href="#" title="Delete"></a>
+                    <a class="btn btn-info btn-xs fa fa-usd" href="#" title="Pay"></a>
+                </div>
+            </div>
+            <div class="order-row row align-items-center">
+                <div class="col-md-1 text-center"><img src="https://bootdey.com/img/Content/user_2.jpg" alt="User"
+                        class="img-thumbnail"></div>
+                <div class="col-md-7 order-details">
+                    <strong>Order name</strong> <span class="badge badge-info">group name</span><br>
+                    Quantity: 4, cost: $523.13<br>
+                    Order made on: 06/20/2014 by <a href="#">Jane Doe</a>
+                </div>
+                <div class="col-md-4 order-actions">
+                    <span class="badge badge-info">Pending</span>
+                    <a class="btn btn-success btn-xs fa fa-check" href="#" title="View"></a>
+                    <a class="btn btn-danger btn-xs fa fa-trash" href="#" title="Delete"></a>
+                    <a class="btn btn-info btn-xs fa fa-usd" href="#" title="Pay"></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
