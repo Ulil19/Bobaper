@@ -1,105 +1,127 @@
-<!DOCTYPE html>
 {% extends "admin/layout/layoutadmin.html" %}
 
 {% block title %}Dashboard{% endblock %}
 
 {% block content %}
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" />
-    <link rel="stylesheet" href="/static/css/statuspesanadmin.css">
-    <title>Document</title>
-   
-</head>
-<body>
-    <div class="container">
-        <div class="panel panel-order">
-            <div class="panel-heading d-flex justify-content-between align-items-center">
-                <strong>Pesanan</strong>
-                <div class="btn-group">
-                    <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown"> History <i class="fa fa-filter"></i></button>
-                    <div class="dropdown-menu dropdown-menu-right">
-                        <a class="dropdown-item" href="#">Approved Orders</a>
-                        <a class="dropdown-item" href="#">Pending Orders</a>
-                    </div>
-                </div>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/kelolauser.css') }}">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<div class="container-fluid">
+    <!-- Title Section -->
+    <div class="table-title">
+        <div class="row">
+            <div class="col-md-6 col-sm-12">
+                <h2>Kelola <b>User</b></h2>
             </div>
-            <div class="panel-body">
-                <div class="order-row row align-items-center">
-                    <div class="col-md-1 text-center"><img src="https://bootdey.com/img/Content/user_3.jpg" alt="User" class="img-thumbnail"></div>
-                    <div class="col-md-7 order-details">
-                        <strong>Order name</strong> <span class="badge badge-info">group name</span><br>
-                        Quantity: 2, cost: $323.13<br>
-                        Order made on: 05/31/2014 by <a href="#">Jane Doe</a>
-                    </div>
-                    <div class="col-md-4 order-actions">
-                        <span class="badge badge-danger">Rejected</span>
-                        <a class="btn btn-success btn-xs fa fa-check" href="#" title="View"></a>
-                        <a class="btn btn-danger btn-xs fa fa-trash" href="#" title="Delete"></a>
-                        <a class="btn btn-info btn-xs fa fa-usd" href="#" title="Pay"></a>
-                    </div>
-                </div>
-                <div class="order-row row align-items-center">
-                    <div class="col-md-1 text-center"><img src="https://bootdey.com/img/Content/user_3.jpg" alt="User" class="img-thumbnail"></div>
-                    <div class="col-md-7 order-details">
-                        <strong>Order name</strong> <span class="badge badge-info">group name</span><br>
-                        Quantity: 2, cost: $323.13<br>
-                        Order made on: 05/31/2014 by <a href="#">Jane Doe</a>
-                    </div>
-                    <div class="col-md-4 order-actions">
-                        <span class="badge badge-danger">Rejected</span>
-                        <a class="btn btn-success btn-xs fa fa-check" href="#" title="View"></a>
-                        <a class="btn btn-danger btn-xs fa fa-trash" href="#" title="Delete"></a>
-                        <a class="btn btn-info btn-xs fa fa-usd" href="#" title="Pay"></a>
-                    </div>
-                </div>
-                <div class="order-row row align-items-center">
-                    <div class="col-md-1 text-center"><img src="https://bootdey.com/img/Content/user_1.jpg" alt="User" class="img-thumbnail"></div>
-                    <div class="col-md-7 order-details">
-                        <strong>Order name</strong> <span class="badge badge-info">group name</span><br>
-                        Quantity: 12, cost: $12623.13<br>
-                        Order made on: 06/12/2014 by <a href="#">Jane Doe</a>
-                    </div>
-                    <div class="col-md-4 order-actions">
-                        <span class="badge badge-info">Pending</span>
-                        <a class="btn btn-success btn-xs fa fa-check" href="#" title="View"></a>
-                        <a class="btn btn-danger btn-xs fa fa-trash" href="#" title="Delete"></a>
-                        <a class="btn btn-info btn-xs fa fa-usd" href="#" title="Pay"></a>
-                    </div>
-                </div>
-                <div class="order-row row align-items-center">
-                    <div class="col-md-1 text-center"><img src="https://bootdey.com/img/Content/user_3.jpg" alt="User" class="img-thumbnail"></div>
-                    <div class="col-md-7 order-details">
-                        <strong>Order name</strong> <span class="badge badge-info">group name</span><br>
-                        Quantity: 4, cost: $523.13<br>
-                        Order made on: 06/20/2014 by <a href="#">Jane Doe</a>
-                    </div>
-                    <div class="col-md-4 order-actions">
-                        <span class="badge badge-success">Approved</span>
-                        <a class="btn btn-success btn-xs fa fa-check" href="#" title="View"></a>
-                        <a class="btn btn-danger btn-xs fa fa-trash" href="#" title="Delete"></a>
-                        <a class="btn btn-info btn-xs fa fa-usd" href="#" title="Pay"></a>
-                    </div>
-                </div>
-                <div class="order-row row align-items-center">
-                    <div class="col-md-1 text-center"><img src="https://bootdey.com/img/Content/user_2.jpg" alt="User" class="img-thumbnail"></div>
-                    <div class="col-md-7 order-details">
-                        <strong>Order name</strong> <span class="badge badge-info">group name</span><br>
-                        Quantity: 4, cost: $523.13<br>
-                        Order made on: 06/20/2014 by <a href="#">Jane Doe</a>
-                    </div>
-                    <div class="col-md-4 order-actions">
-                        <span class="badge badge-info">Pending</span>
-                        <a class="btn btn-success btn-xs fa fa-check" href="#" title="View"></a>
-                        <a class="btn btn-danger btn-xs fa fa-trash" href="#" title="Delete"></a>
-                        <a class="btn btn-info btn-xs fa fa-usd" href="#" title="Pay"></a>
-                    </div>
-                </div>
+            <div class="col-md-6 col-sm-12 text-md-end text-start">
+                <a href="#" class="btn btn-secondary"><i class="material-icons"></i> <span>Add New User</span></a>
             </div>
-      
-</body>
+        </div>
+    </div>
 
-</html>
+    <!-- Table Section -->
+    <div class="table-responsive">
+        <div class="table-wrapper">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Jumlah</th>
+                        <th>Harga</th>
+                        <th>Status Pembayaran</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td><a href="#"><img src="/static/img/images.jpeg" class="rounded-circle" width="50"> Michael
+                                Holz</a></td>
+                        <td>04</td>
+                        <td>Rp 60.000,00</td>
+                        <td><span class="status text-success"></span> COD</td>
+                        <td>
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <a class="btn btn-success btn-xs fa fa-check" href="#" title="Accept"></a>
+                                <a class="btn btn-danger btn-xs fa fa-trash" href="#" title="Delete"></a>
+
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td><a href="#"><img src="/static/img/boba.jpg" class="square" width="40"> Paula Wilson</a></td>
+                        <td>04</td>
+                        <td>Rp 60.000,00</td>
+                        <td><span class="status text-success"></span> Transfer</td>
+                        <td>
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <a class="btn btn-success btn-xs fa fa-check" href="#" title="Accept"></a>
+                                <a class="btn btn-danger btn-xs fa fa-trash" href="#" title="Delete"></a>
+
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td><a href="#"><img src="/static/img/images.jpeg" class="rounded-circle" width="50"> Antonio
+                                Moreno</a></td>
+                        <td>04</td>
+                        <td>Rp 60.000,00</td>
+                        <td><span class="status text-danger"></span>COD</td>
+                        <td>
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <a class="btn btn-success btn-xs fa fa-check" href="#" title="Accept"></a>
+                                <a class="btn btn-danger btn-xs fa fa-trash" href="#" title="Delete"></a>
+
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td><a href="#"><img src="/static/img/images.jpeg" class="rounded-circle" width="50"> Mary
+                                Saveley</a></td>
+                        <td>04</td>
+                        <td>Rp 60.000,00</td>
+                        <td><span class="status text-success"></span>COD</td>
+                        <td>
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <a class="btn btn-success btn-xs fa fa-check" href="#" title="Accept"></a>
+                                <a class="btn btn-danger btn-xs fa fa-trash" href="#" title="Delete"></a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td><a href="#"><img src="/static/img/images.jpeg" class="rounded-circle" width="50"> Martin
+                                Sommer</a></td>
+                        <td>04</td>
+                        <td>Rp 60.000,00</td>
+                        <td><span class="status text-warning"></span> COD</td>
+                        <td>
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <a class="btn btn-success btn-xs fa fa-check" href="#" title="Accept"></a>
+                                <a class="btn btn-danger btn-xs fa fa-trash" href="#" title="Delete"></a>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Pagination Section -->
+    <div class="clearfix text-end">
+        <div class="hint-text">Showing <b>5</b> out of <b>25</b> entries</div>
+        <ul class="pagination">
+            <li class="page-item"><a href="#" class="page-link">Previous</a></li>
+            <li class="page-item"><a href="#" class="page-link">1</a></li>
+            <li class="page-item"><a href="#" class="page-link">2</a></li>
+            <li class="page-item active"><a href="#" class="page-link">3</a></li>
+            <li class="page-item"><a href="#" class="page-link">4</a></li>
+            <li class="page-item"><a href="#" class="page-link">5</a></li>
+            <li class="page-item"><a href="#" class="page-link">Next</a></li>
+        </ul>
+    </div>
+</div>
 {% endblock %}
