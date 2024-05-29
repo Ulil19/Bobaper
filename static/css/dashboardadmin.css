@@ -9,6 +9,8 @@ body {
   background-color: #eee;
   height: 100%;
   font-family: "Poppins", sans-serif;
+  margin: 0;
+  overflow: hidden;
 }
 
 .mynav {
@@ -39,4 +41,42 @@ body {
 .mynav li a i {
   width: 30px;
   text-align: center;
+}
+
+.container-fluid {
+  height: 100vh;
+  display: flex;
+  flex-direction: row;
+}
+
+.nav-bg {
+  height: auto;
+  overflow-y: auto;
+}
+
+.bg-light.flex-fill {
+  overflow-y: auto;
+  height: 100%;
+}
+
+.table-responsive {
+  max-height: 100vh;
+  overflow-y: auto;
+}
+
+#bdSidebar.offcanvas-md {
+  width: 45vh;
+}
+
+.nav-sm {
+  height: 60px;
+}
+
+.nav-sm .navbar-brand {
+  font-size: 1.5rem;
+}
+
+.nav-sm .navbar-toggler {
+  margin-left: 0.5rem;
+  padding: 0.5rem 0.5rem !important;
 }
