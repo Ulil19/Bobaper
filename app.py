@@ -39,6 +39,8 @@ def home():
     return render_template("index.html")
 
 
+#-------------------------------------------  START ADMIN ROUTES ------------------------------------------------------#
+
 @app.route("/login/admin", methods=["GET", "POST"])
 def loginAdmin():
     error_msg = ""
@@ -88,7 +90,7 @@ def registeradmin():
 
 
 @app.route("/register/admin/save", methods=["POST"])
-def register():
+def registeradminsave():
     email = request.form["email"]
     username = request.form["username"]
     password = request.form["password"]
@@ -98,10 +100,12 @@ def register():
         "email": email,
         "username": username,
         "password": pass_hash,
-        "date_created": datetime.now()  # Set the current UTC time as the creation date
+        "date_created": datetime.now(),
     }
     db.admins.insert_one(doc)
     return jsonify({"result": "success"})
+
+
 @app.route("/check-dup", methods=["POST"])
 def check_dup():
     email = request.form["email"]
@@ -203,21 +207,89 @@ def kelolauser():
     admins = list(db.admins.find())
     return render_template("admin/kelolauser.html", admins=admins)
 
+
 @app.route("/logoutadmin")
 def logoutadmin():
     response = make_response(redirect(url_for("loginAdmin")))
     response.set_cookie(TOKEN_KEY, "", expires=0)
     return response
 
+#--------------------------------------END ADMIN ROUTES--------------------------------------------------#
+
+#--------------------------------------Bagian User ROUTES--------------------------------------------------#
 
 @app.route("/register/user", methods=["GET", "POST"])
 def registeruser():
     return render_template("user/registeruser.html")
 
 
+@app.route("/register/user/save", methods=["POST"])
+def registerusersave():
+    email = request.form["email"]
+    username = request.form["username"]
+    password = request.form["password"]
+    password2 = request.form["password2"]
+
+    # Check if passwords match
+    if password != password2:
+        return jsonify({"result": "error", "message": "Passwords do not match"})
+
+    # Check if email already exists
+    if db.users.find_one({"email": email}):
+        return jsonify({"result": "error", "message": "Email already registered"})
+
+    pass_hash = hashlib.sha256((password + password2).encode("utf-8")).hexdigest()
+
+    now = datetime.now()
+
+    doc = {
+        "email": email,
+        "username": username,
+        "password": pass_hash,
+        "date_created": now,
+    }
+
+    db.users.insert_one(doc)
+
+    return jsonify({"result": "success"})
+
+
 @app.route("/login/user", methods=["GET", "POST"])
 def loginuser():
     return render_template("user/loginuser.html")
+
+
+@app.route("/login/user/validate", methods=["POST"])
+def validate_user_login():
+    email = request.form["email"]
+    password = request.form["password"]
+    pw_hash = hashlib.sha256(password.encode("utf-8")).hexdigest()
+    result = db.users.find_one({"email": email, "password": pw_hash})
+
+    if result:
+        # Generate JWT token
+        payload = {
+            "id": result["email"],
+            "exp": datetime.utcnow() + timedelta(days=1),  # Token expires in 1 day
+        }
+        token = jwt.encode(payload, SECRET_KEY, algorithm="HS256").decode("utf-8")
+        return jsonify({"result": "success", "token": token})
+    else:
+        return jsonify({"result": "error", "message": "Incorrect email or password"})
+
+# Route for user profile ketika berhasil login
+@app.route("/product")
+def product():
+    token = request.args.get("token")
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+        email = payload.get("email")
+        # Fetch user data or perform any necessary actions
+        return render_template("product.html", email=email)
+    except jwt.ExpiredSignatureError:
+        return "Token expired. Please login again."
+    except jwt.InvalidTokenError:
+        return "Invalid token. Please login again."
 
 
 @app.route("/profile", methods=["GET", "POST"])
@@ -228,6 +300,8 @@ def profile():
 @app.route("/shoppingcart", methods=["GET", "POST"])
 def shoppingcart():
     return render_template("user/shoppingcart.html")
+
+#--------------------------------------END USER ROUTES----------------------------------------------------#
 
 
 if __name__ == "__main__":
