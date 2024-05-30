@@ -6,62 +6,41 @@
 <hr>
 <div class="row">
     <div class="col mb-3">
-        <h2>Data Produk</h2>
+        <h2>Dashboard</h2>
         <hr>
     </div>
 </div>
 <div class="container">
-    <div class="table-responsive mt-3 ">
-        <table class="table table-borderless">
-            <thead>
-                <tr>
-                    <th scope="col">No</th>
-                    <th scope="col">Foto Produk</th>
-                    <th scope="col">Nama Produk</th>
-                    <th scope="col">Harga</th>
-                    <th scope="col">Stok</th>
-                    <th scope="col">Opsi</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <th scope="row">1</th>
-                    <td><img src="{{ url_for('static', filename='img/1.png') }}" alt=""></td>
-                    <td>Produk A</td>
-                    <td>$100</td>
-                    <td>50</td>
-                    <td>
-                        <a href="#" class="btn btn-primary btn-sm text-white me-2">Edit</a>
-                        <a href="#" class="btn btn-danger btn-sm text-white me-2">Hapus</a>
-                    </td>
-                </tr>
-                <tr>
-                    <th scope="row">2</th>
-                    <td><img src="{{ url_for('static', filename='img/1.png') }}" alt=""></td>
-                    <td>Produk B</td>
-                    <td>$80</td>
-                    <td>30</td>
-                    <td>
-                        <a href="#" class="btn btn-primary btn-sm text-white me-2">Edit</a>
-                        <a href="#" class="btn btn-danger btn-sm text-white me-2">Hapus</a>
-                    </td>
-                </tr>
-                <tr>
-                    <th scope="row">3</th>
-                    <td><img src="{{ url_for('static', filename='img/1.png') }}" alt=""></td>
-                    <td>Produk C</td>
-                    <td>$120</td>
-                    <td>20</td>
-                    <td>
-                        <a href="#" class="btn btn-primary btn-sm text-white me-2">Edit</a>
-                        <a href="#" class="btn btn-danger btn-sm text-white me-2">Hapus</a>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-</div>
-<div class="d-flex justify-content-end mt-3 px-5">
-    <a href="/tambahproduk" class="btn btn-primary">Tambah</a>
+    <h3 class="text-center text-dark mb-3">Daftar Produk</h3>
+    <table class="table table-striped table-bordered table-hover table-responsive d-none d-md-table d-lg-table">
+        <thead class="table-dark text-center text-white bg-dark">
+            <tr>
+                <th scope="col">No</th>
+                <th scope="col">Nama</th>
+                <th scope="col">Harga</th>
+                <th scope="col">Stock</th>
+                <th scope="col">Foto</th>
+                <th scope="col">Opsi</th>
+            </tr>
+        </thead>
+        <tbody class="text-center bg-light text-dark">
+            {% for product in products %}
+            <tr>
+                <th scope="row">{{ loop.index }}</th>
+                <td>{{ product.nama }}</td>
+                <td>{{ product.harga }}</td>
+                <td>{{ product.stock }}</td>
+                <td><img src="{{ url_for('static', filename='imgproduct/' ~ product.foto) }}" alt="{{ product.nama }}"
+                        width="100"></td>
+                <td>
+                    <a href="{{ url_for('editproduk', _id=product._id) }}" class="btn btn-primary btn-sm py-2"><i
+                            class="fa-regular fa-pen-to-square px-1"></i>Edit</a>
+                    <a href="{{ url_for('delete_produk', _id=product._id) }}" class="btn btn-danger btn-sm py-2"> <i
+                            class="fa-regular fa-trash-can px-1"></i>Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 {% endblock %}

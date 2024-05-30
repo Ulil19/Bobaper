@@ -1,6 +1,6 @@
 {% extends "admin/layout/layoutadmin.html" %}
 
-{% block title %}Dashboard{% endblock %}
+{% block title %}Edit Produk{% endblock %}
 
 {% block content %}
 <hr>
@@ -11,34 +11,39 @@
     </div>
 </div>
 <div class="container">
-    <form action="#">
+    <form action="{{ url_for('editproduk', _id=data._id) }}" method="POST" enctype="multipart/form-data">
+        <input type="hidden" name="_id" value="{{ data._id }}">
         <div class="mb-3">
             <div class="form-group">
                 <label for="gambar" class="form-label">Gambar Produk</label>
-                <input type="file" class="form-control" id="gambar" name="gambar" placeholder="Masukan Gambar">
+                <input type="file" class="form-control mb-2" id="gambar" name="foto" placeholder="Masukan Gambar">
+                <img src="{{ url_for('static', filename='imgproduct/' ~ data.foto) }}" alt="{{ data.nama }}" width="100">
             </div>
         </div>
         <div class="mb-3">
             <div class="form-group">
                 <label for="nama" class="form-label">Nama Produk</label>
-                <input type="text" class="form-control" id="nama" name="nama" placeholder="Masukan Nama">
+                <input type="text" class="form-control" id="nama" name="nama" value="{{ data.nama }}"
+                    placeholder="Masukan Nama">
             </div>
         </div>
         <div class="mb-3">
             <div class="form-group">
                 <label for="stock" class="form-label">Stock</label>
-                <input type="number" class="form-control" id="deskripsi" name="stock" placeholder="Masukan Stock">
+                <input type="number" class="form-control" id="stock" name="stock" value="{{ data.stock }}"
+                    placeholder="Masukan Stock">
             </div>
         </div>
         <div class="mb-3">
             <div class="form-group">
                 <label for="harga" class="form-label">Harga</label>
-                <input type="number" class="form-control" id="harga" name="harga" placeholder="Masukan Harga">
+                <input type="number" class="form-control" id="harga" name="harga" value="{{ data.harga }}"
+                    placeholder="Masukan Harga">
             </div>
         </div>
         <div class="d-flex justify-content-end mb-3 py-3">
-            <a type="button" class="btn btn-warning me-2">Batal</a>
-            <a type="button" class="btn btn-primary me-2">Simpan</a>
+            <a type="button" class="btn btn-warning me-2" href="{{ url_for('dashboard') }}">Batal</a>
+            <button type="submit" class="btn btn-primary me-2">Simpan</button>
         </div>
     </form>
 </div>

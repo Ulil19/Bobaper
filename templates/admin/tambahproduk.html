@@ -1,6 +1,6 @@
 {% extends "admin/layout/layoutadmin.html" %}
 
-{% block title %}Dashboard{% endblock %}
+{% block title %}Tambah Produk{% endblock %}
 
 {% block content %}
 <hr>
@@ -11,11 +11,11 @@
     </div>
 </div>
 <div class="container">
-    <form action="#">
+    <form action="#" method="POST" enctype="multipart/form-data">
         <div class="mb-3">
             <div class="form-group">
                 <label for="gambar" class="form-label">Gambar Produk</label>
-                <input type="file" class="form-control" id="gambar" name="gambar" placeholder="Masukan Gambar">
+                <input type="file" class="form-control" id="gambar" name="foto" placeholder="Masukan Gambar">
             </div>
         </div>
         <div class="mb-3">
@@ -27,7 +27,7 @@
         <div class="mb-3">
             <div class="form-group">
                 <label for="stock" class="form-label">Stock</label>
-                <input type="number" class="form-control" id="stock" name="stock" placeholder="Masukan Stock">
+                <input type="number" class="form-control" id="deskripsi" name="stock" placeholder="Masukan Stock">
             </div>
         </div>
         <div class="mb-3">
@@ -37,8 +37,8 @@
             </div>
         </div>
         <div class="d-flex justify-content-end mb-3 py-3">
-            <a type="button" class="btn btn-warning me-2">Batal</a>
-            <a href="/tambahproduk/save" type="button" class="btn btn-primary me-2">Simpan</a>
+            <a type="button" class="btn btn-warning me-2" href="{{ url_for('dashboard') }}">Batal</a>
+            <button type="submit" class="btn btn-primary me-2">Simpan</button>
         </div>
     </form>
 </div>

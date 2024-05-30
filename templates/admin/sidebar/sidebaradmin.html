@@ -9,22 +9,16 @@
     <ul class="mynav nav nav-pills flex-column mb-auto">
         <p class="sidebar-heading d-flex justify-content-between align-items-center px-2 mt-3 mb-1">Home</p>
         <li class="nav-item mb-1 px-2" id="dashboard-link">
-            <a href="/dashboard">
+            <a href="{{ url_for('dashboard') }}">
                 <i class="fa-brands fa-shopware"></i>
                 Dashboard
             </a>
         </li>
         <p class="sidebar-heading d-flex justify-content-between align-items-center px-2 mt-3 mb-1">Produk</p>
         <li class="nav-item mb-1 px-2" id="tambah-link">
-            <a href="/tambahproduk">
+            <a href="{{ url_for('tambahproduk') }}">
                 <i class="fa-regular fa-bookmark"></i>
                 Tambah Produk
-            </a>
-        </li>
-        <li class="nav-item mb-1 px-2" id="edit-link">
-            <a href="/editproduk">
-                <i class="fa-regular fa-pen-to-square"></i>
-                Edit Produk
             </a>
         </li>
         <p class="sidebar-heading d-flex justify-content-between align-items-center px-2 mt-3 mb-1">Pesan</p>

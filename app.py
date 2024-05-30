@@ -1,23 +1,26 @@
-from pymongo import MongoClient
-import jwt
-from datetime import datetime, timedelta
-import hashlib
 from flask import (
     Flask,
     render_template,
-    jsonify,
-    request,
     redirect,
     url_for,
+    request,
+    jsonify,
     make_response,
+    g,
 )
+from functools import wraps
 import os
 from os.path import join, dirname
 from dotenv import load_dotenv
+from pymongo import MongoClient
+import jwt
+from bson import ObjectId
+from datetime import datetime, timedelta
+import hashlib
 
 app = Flask(__name__)
 
-SECRET_KEY = "thisismysecretkey"
+SECRET_KEY = "ini_kunci_rahasia_admin"
 
 dotenv_path = join(dirname(__file__), ".env")
 load_dotenv(dotenv_path)
@@ -50,12 +53,33 @@ def loginAdmin():
                 "exp": datetime.utcnow() + timedelta(days=1),
             }
             token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
-            response = make_response(redirect(url_for("dashboard", token=token)))
+            response = make_response(redirect(url_for("dashboard")))
             response.set_cookie(TOKEN_KEY, token)
             return response
         else:
             error_msg = "Incorrect email or password"
     return render_template("admin/loginadmin.html", error_msg=error_msg)
+
+
+# Fungsi untuk validasi akun admin
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        token = request.cookies.get(TOKEN_KEY)
+        if not token:
+            return redirect(url_for("loginAdmin"))
+        try:
+            payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+            g.user_email = payload.get("id")
+            # Check if the user is the registered admin
+            admin_account = db.admins.find_one({"email": g.user_email})
+            if not admin_account:
+                return redirect(url_for("loginAdmin"))
+        except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+            return redirect(url_for("loginAdmin"))
+        return f(*args, **kwargs)
+
+    return decorated_function
 
 
 @app.route("/register/admin", methods=["GET", "POST"])
@@ -83,43 +107,104 @@ def check_dup():
 
 
 @app.route("/dashboard")
+@login_required
 def dashboard():
-    token_receive = request.args.get("token")
-    if not token_receive:
-        return redirect(url_for("loginAdmin"))
-    try:
-        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
-        email = payload.get("id")
-        user_info = db.admins.find_one({"email": email}, {"_id": False})
-        return render_template("admin/dashboard.html", user_info=user_info, email=email)
-    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
-        return redirect(url_for("loginAdmin"))
-    
+    user_info = db.admins.find_one({"email": g.user_email}, {"_id": False})
+    products = db.produk.find()
+    return render_template(
+        "admin/dashboard.html",
+        user_info=user_info,
+        email=g.user_email,
+        products=products,
+    )
+
+
 @app.route("/tambahproduk", methods=["GET", "POST"])
+@login_required
 def tambahproduk():
-   return render_template("admin/tambahproduk.html")
-# # Server untuk menambahkan produk
-# @app.route("/tambahproduk/save", methods=["POST"])
-# def tambahproduksave():
-#     nama = request.form["nama"]
-#     harga = request.form["harga"]
-#     stock = request.form["srock"]
-#     foto = request.files["foto"]
-#     foto.save(f"static/images/{foto.filename}")
-#     doc = {"nama": nama, "harga": harga, "deskripsi": deskripsi, "foto": foto.filename}
-#     db.produk.insert_one(doc)
-#     return jsonify({"result": "success"})
+    if request.method == "POST":
+        nama = request.form["nama"]
+        harga = request.form["harga"]
+        stock = request.form["stock"]
+        nama_foto = request.files["foto"]
+
+        today = datetime.now()
+        mytime = today.strftime("%Y-%m-%d-%H-%M-%S")
+
+        if nama_foto:
+            nama_file_asli = nama_foto.filename
+            nama_file_foto = nama_file_asli.split("/")[-1]
+            nama_file = f"{mytime}-{nama_file_foto}"
+            file_path = f"static/imgproduct/{nama_file}"
+            nama_foto.save(file_path)
+        else:
+            nama_file_foto = None
+
+        doc = {"nama": nama, "harga": harga, "stock": stock, "foto": nama_file}
+        db.produk.insert_one(doc)
+        return redirect(url_for("dashboard"))
+
+    return render_template("admin/tambahproduk.html")
 
 
-@app.route("/editproduk")
-def editproduk():
-    return render_template("admin/editproduk.html")
+@app.route("/editproduk/<_id>", methods=["GET", "POST"])
+@login_required
+def editproduk(_id):
+    if request.method == "POST":
+        id = request.form["_id"]
+        nama = request.form["nama"]
+        harga = request.form["harga"]
+        stock = request.form["stock"]
+        nama_foto = request.files["foto"]
+        doc = {"nama": nama, "harga": harga, "stock": stock}
+
+        today = datetime.now()
+        mytime = today.strftime("%Y-%m-%d-%H-%M-%S")
+
+        if nama_foto:
+            nama_file_asli = nama_foto.filename
+            nama_file_foto = nama_file_asli.split("/")[-1]
+            nama_file = f"{mytime}-{nama_file_foto}"
+            file_path = f"static/imgproduct/{nama_file}"
+            nama_foto.save(file_path)
+            doc["foto"] = nama_file
+
+        db.produk.update_one({"_id": ObjectId(id)}, {"$set": doc})
+        return redirect(url_for("dashboard"))
+
+    id = ObjectId(_id)
+    data = db.produk.find_one({"_id": id})
+    return render_template("admin/editproduk.html", data=data)
+
+
+@app.route("/deleteproduk/<_id>")
+@login_required
+def delete_produk(_id):
+    db.produk.delete_one({"_id": ObjectId(_id)})
+    return redirect(url_for("dashboard"))
+
+
+@app.route("/konfirmasipesananadmin", methods=["GET", "POST"])
+def statuspesananadmin():
+    return render_template("admin/konfirmasipesananadmin.html")
+
+
+@app.route("/review/admin", methods=["GET", "POST"])
+def reviewadmin():
+    return render_template("admin/reviewadmin.html")
+
+
+@app.route("/kelolauser/admin", methods=["GET", "POST"])
+def kelolauser():
+    return render_template("admin/kelolauser.html")
+
 
 @app.route("/logoutadmin")
 def logoutadmin():
     response = make_response(redirect(url_for("loginAdmin")))
     response.set_cookie(TOKEN_KEY, "", expires=0)
     return response
+
 
 @app.route("/register/user", methods=["GET", "POST"])
 def registeruser():
@@ -130,23 +215,15 @@ def registeruser():
 def loginuser():
     return render_template("user/loginuser.html")
 
+
 @app.route("/profile", methods=["GET", "POST"])
 def profile():
     return render_template("user/profile.html")
-@app.route("/review/admin", methods=["GET", "POST"])
-def reviewadmin():
-    return render_template("admin/reviewadmin.html")
-@app.route("/kelolauser/admin", methods=["GET", "POST"])
-def kelolauser():
-    return render_template("admin/kelolauser.html")
+
 
 @app.route("/shoppingcart", methods=["GET", "POST"])
 def shoppingcart():
     return render_template("user/shoppingcart.html")
-@app.route("/konfirmasipesananadmin", methods=["GET", "POST"])
-def statuspesananadmin():
-    return render_template("admin/konfirmasipesananadmin.html")
-
 
 
 if __name__ == "__main__":
