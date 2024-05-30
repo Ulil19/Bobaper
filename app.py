@@ -205,7 +205,8 @@ def reviewadmin():
 @login_required
 def kelolauser():
     admins = list(db.admins.find())
-    return render_template("admin/kelolauser.html", admins=admins)
+    users = list(db.users.find())
+    return render_template("admin/kelolauser.html", admins=admins, users=users)
 
 
 @app.route("/logoutadmin")
@@ -270,9 +271,9 @@ def validate_user_login():
         # Generate JWT token
         payload = {
             "id": result["email"],
-            "exp": datetime.utcnow() + timedelta(days=1),  # Token expires in 1 day
+            "exp": datetime.now() + timedelta(days=1),  # Token expires in 1 day
         }
-        token = jwt.encode(payload, SECRET_KEY, algorithm="HS256").decode("utf-8")
+        token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
         return jsonify({"result": "success", "token": token})
     else:
         return jsonify({"result": "error", "message": "Incorrect email or password"})
@@ -283,14 +284,13 @@ def product():
     token = request.args.get("token")
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
-        email = payload.get("email")
+        email = payload.get("id")
         # Fetch user data or perform any necessary actions
         return render_template("user/product.html", email=email)
     except jwt.ExpiredSignatureError:
         return "Token expired. Please login again."
     except jwt.InvalidTokenError:
         return "Invalid token. Please login again."
-
 
 @app.route("/profile", methods=["GET", "POST"])
 def profile():

@@ -8,10 +8,10 @@
     <div class="table-title">
         <div class="row">
             <div class="col-md-6 col-sm-12">
-                <h2>Kelola <b>User</b></h2>
+                <h2>Kelola <b>Admin</b></h2>
             </div>
             <div class="col-md-6 col-sm-12 text-md-end text-start">
-                <a href="#" class="btn btn-secondary"><i class="material-icons"></i> <span>Add New User</span></a>
+                <a href="#" class="btn btn-secondary"><i class="material-icons"></i> <span>Add New Admin</span></a>
             </div>
         </div>
     </div>
@@ -50,6 +50,62 @@
     <!-- Pagination Section -->
     <div class="clearfix text-end">
         <div class="hint-text">Showing <b>{{ admins|length }}</b> out of <b>{{ admins|length }}</b> entries</div>
+        <ul class="pagination">
+            <li class="page-item"><a href="#" class="page-link">Previous</a></li>
+            <li class="page-item"><a href="#" class="page-link">1</a></li>
+            <li class="page-item"><a href="#" class="page-link">2</a></li>
+            <li class="page-item active"><a href="#" class="page-link">3</a></li>
+            <li class="page-item"><a href="#" class="page-link">4</a></li>
+            <li class="page-item"><a href="#" class="page-link">5</a></li>
+            <li class="page-item"><a href="#" class="page-link">Next</a></li>
+        </ul>
+    </div>
+    <br>
+    <div class="table-title">
+        <div class="row">
+            <div class="col-md-6 col-sm-12">
+                <h2>Kelola <b>User</b></h2>
+            </div>
+            <div class="col-md-6 col-sm-12 text-md-end text-start">
+                <a href="#" class="btn btn-secondary"><i class="material-icons"></i> <span>Add New User</span></a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Table Section -->
+    <div class="table-responsive">
+        <div class="table-wrapper">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Date Created</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ user.username }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>{{ user.date_created.strftime('%d/%m/%Y') if user.date_created else 'N/A' }}</td>
+                        <td>
+                            <button class="btn btn-primary btn-sm me-1" type="button">Edit</button>
+                            <button class="btn btn-danger btn-sm" type="button">Delete</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Pagination Section -->
+    <div class="clearfix text-end">
+        <div class="hint-text">Showing <b>{{ users|length }}</b> out of <b>{{ users|length }}</b> entries</div>
         <ul class="pagination">
             <li class="page-item"><a href="#" class="page-link">Previous</a></li>
             <li class="page-item"><a href="#" class="page-link">1</a></li>
