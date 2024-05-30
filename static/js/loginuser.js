@@ -38,8 +38,11 @@ $(document).ready(function () {
         success: function (response) {
           if (response.result === "success") {
             alert("Login successful!");
-            // Redirect to product page with token ketika berhasil login
-            window.location.href = "/product?token=" + response.token;
+            // Store token and user ID in session or client-side storage
+            sessionStorage.setItem("token", response.token);
+            sessionStorage.setItem("userId", response.user_id);
+            // Redirect to product page
+            window.location.href = "/product";
           } else {
             $("#passwordHelp").text(response.message);
           }

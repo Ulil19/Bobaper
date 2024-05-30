@@ -39,7 +39,8 @@ def home():
     return render_template("index.html")
 
 
-#-------------------------------------------  START ADMIN ROUTES ------------------------------------------------------#
+# -------------------------------------------  START ADMIN ROUTES ------------------------------------------------------#
+
 
 @app.route("/login/admin", methods=["GET", "POST"])
 def loginAdmin():
@@ -215,9 +216,11 @@ def logoutadmin():
     response.set_cookie(TOKEN_KEY, "", expires=0)
     return response
 
-#--------------------------------------END ADMIN ROUTES--------------------------------------------------#
 
-#--------------------------------------Bagian User ROUTES--------------------------------------------------#
+# --------------------------------------END ADMIN ROUTES--------------------------------------------------#
+
+# --------------------------------------Bagian User ROUTES--------------------------------------------------#
+
 
 @app.route("/register/user", methods=["GET", "POST"])
 def registeruser():
@@ -260,23 +263,27 @@ def loginuser():
     return render_template("user/loginuser.html")
 
 
+import jwt
+
+
 @app.route("/login/user/validate", methods=["POST"])
 def validate_user_login():
     email = request.form["email"]
     password = request.form["password"]
     pw_hash = hashlib.sha256(password.encode("utf-8")).hexdigest()
-    result = db.users.find_one({"email": email, "password": pw_hash})
+    user = db.users.find_one({"email": email, "password": pw_hash})
 
-    if result:
-        # Generate JWT token
+    if user:
+        # Generate JWT token with user ID
         payload = {
-            "id": result["email"],
-            "exp": datetime.now() + timedelta(days=1),  # Token expires in 1 day
+            "user_id": str(user["_id"]),
+            "exp": datetime.utcnow() + timedelta(days=1),  # Token expires in 1 day
         }
-        token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
+        token = jwt.encode(payload, SECRET_KEY, algorithm="HS256").decode("utf-8")
         return jsonify({"result": "success", "token": token})
     else:
         return jsonify({"result": "error", "message": "Incorrect email or password"})
+
 
 # Route for user profile ketika berhasil login
 @app.route("/product")
@@ -292,6 +299,7 @@ def product():
     except jwt.InvalidTokenError:
         return "Invalid token. Please login again."
 
+
 @app.route("/profile", methods=["GET", "POST"])
 def profile():
     return render_template("user/profile.html")
@@ -301,7 +309,8 @@ def profile():
 def shoppingcart():
     return render_template("user/shoppingcart.html")
 
-#--------------------------------------END USER ROUTES----------------------------------------------------#
+
+# --------------------------------------END USER ROUTES----------------------------------------------------#
 
 
 if __name__ == "__main__":
