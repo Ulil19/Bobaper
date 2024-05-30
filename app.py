@@ -285,7 +285,7 @@ def product():
         payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
         email = payload.get("email")
         # Fetch user data or perform any necessary actions
-        return render_template("product.html", email=email)
+        return render_template("user/product.html", email=email)
     except jwt.ExpiredSignatureError:
         return "Token expired. Please login again."
     except jwt.InvalidTokenError:
