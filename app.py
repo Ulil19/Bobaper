@@ -50,7 +50,7 @@ def loginAdmin():
         if result:
             payload = {
                 "id": result["email"],
-                "exp": datetime.utcnow() + timedelta(days=1),
+                "exp": datetime.now() + timedelta(days=1),
             }
             token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
             response = make_response(redirect(url_for("dashboard")))
@@ -94,11 +94,14 @@ def register():
     password = request.form["password"]
     pass_hash = hashlib.sha256(password.encode("utf-8")).hexdigest()
 
-    doc = {"email": email, "username": username, "password": pass_hash}
+    doc = {
+        "email": email,
+        "username": username,
+        "password": pass_hash,
+        "date_created": datetime.now()  # Set the current UTC time as the creation date
+    }
     db.admins.insert_one(doc)
     return jsonify({"result": "success"})
-
-
 @app.route("/check-dup", methods=["POST"])
 def check_dup():
     email = request.form["email"]
@@ -195,9 +198,10 @@ def reviewadmin():
 
 
 @app.route("/kelolauser/admin", methods=["GET", "POST"])
+@login_required
 def kelolauser():
-    return render_template("admin/kelolauser.html")
-
+    admins = list(db.admins.find())
+    return render_template("admin/kelolauser.html", admins=admins)
 
 @app.route("/logoutadmin")
 def logoutadmin():

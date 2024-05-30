@@ -1,7 +1,5 @@
 {% extends "admin/layout/layoutadmin.html" %}
 
-{% block title %}Dashboard{% endblock %}
-
 {% block content %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/kelolauser.css') }}">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -24,75 +22,26 @@
             <table class="table table-striped table-hover">
                 <thead>
                     <tr>
-                        <th>#</th>
+                        <th>No</th>
                         <th>Name</th>
+                        <th>Email</th>
                         <th>Date Created</th>
-                        <th>Role</th>
-                        <th>Status</th>
                         <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
+                    {% for admin in admins %}
                     <tr>
-                        <td>1</td>
-                        <td><a href="#"><img src="/static/img/images.jpeg" class="rounded-circle" width="50"> Michael
-                                Holz</a></td>
-                        <td>04/10/2013</td>
-                        <td>Admin</td>
-                        <td><span class="status text-success">&bull;</span> Active</td>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ admin.username }}</td>
+                        <td>{{ admin.email }}</td>
+                        <td>{{ admin.date_created.strftime('%d/%m/%Y') if admin.date_created else 'N/A' }}</td>
                         <td>
                             <button class="btn btn-primary btn-sm me-1" type="button">Edit</button>
                             <button class="btn btn-danger btn-sm" type="button">Delete</button>
                         </td>
                     </tr>
-                    <tr>
-                        <td>2</td>
-                        <td><a href="#"><img src="/static/img/images.jpeg" class="rounded-circle" width="50"> Paula
-                                Wilson</a></td>
-                        <td>05/08/2014</td>
-                        <td>Publisher</td>
-                        <td><span class="status text-success">&bull;</span> Active</td>
-                        <td>
-                            <button class="btn btn-primary btn-sm me-1" type="button">Edit</button>
-                            <button class="btn btn-danger btn-sm" type="button">Delete</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td><a href="#"><img src="/static/img/images.jpeg" class="rounded-circle" width="50"> Antonio
-                                Moreno</a></td>
-                        <td>11/05/2015</td>
-                        <td>Publisher</td>
-                        <td><span class="status text-danger">&bull;</span> Suspended</td>
-                        <td>
-                            <button class="btn btn-primary btn-sm me-1" type="button">Edit</button>
-                            <button class="btn btn-danger btn-sm" type="button">Delete</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>4</td>
-                        <td><a href="#"><img src="/static/img/images.jpeg" class="rounded-circle" width="50"> Mary
-                                Saveley</a></td>
-                        <td>06/09/2016</td>
-                        <td>Reviewer</td>
-                        <td><span class="status text-success">&bull;</span> Active</td>
-                        <td>
-                            <button class="btn btn-primary btn-sm me-1" type="button">Edit</button>
-                            <button class="btn btn-danger btn-sm" type="button">Delete</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>5</td>
-                        <td><a href="#"><img src="/static/img/images.jpeg" class="rounded-circle" width="50"> Martin
-                                Sommer</a></td>
-                        <td>12/08/2017</td>
-                        <td>Moderator</td>
-                        <td><span class="status text-warning">&bull;</span> Inactive</td>
-                        <td>
-                            <button class="btn btn-primary btn-sm me-1" type="button">Edit</button>
-                            <button class="btn btn-danger btn-sm" type="button">Delete</button>
-                        </td>
-                    </tr>
+                    {% endfor %}
                 </tbody>
             </table>
         </div>
@@ -100,7 +49,7 @@
 
     <!-- Pagination Section -->
     <div class="clearfix text-end">
-        <div class="hint-text">Showing <b>5</b> out of <b>25</b> entries</div>
+        <div class="hint-text">Showing <b>{{ admins|length }}</b> out of <b>{{ admins|length }}</b> entries</div>
         <ul class="pagination">
             <li class="page-item"><a href="#" class="page-link">Previous</a></li>
             <li class="page-item"><a href="#" class="page-link">1</a></li>
