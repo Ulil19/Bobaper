@@ -39,6 +39,10 @@ def home():
     produk = list(db.produk.find())
     return render_template("index.html",produk=produk)
 
+@app.route("/about", methods=["GET", "POST"])
+def about():
+    produk = list(db.produk.find())
+    return render_template("about.html",produk=produk)
 
 #-------------------------------------------  START ADMIN ROUTES ------------------------------------------------------#
 
