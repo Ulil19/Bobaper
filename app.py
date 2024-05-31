@@ -263,9 +263,6 @@ def loginuser():
     return render_template("user/loginuser.html")
 
 
-import jwt
-
-
 @app.route("/login/user/validate", methods=["POST"])
 def validate_user_login():
     email = request.form["email"]

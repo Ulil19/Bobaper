@@ -42,7 +42,7 @@ $(document).ready(function () {
             sessionStorage.setItem("token", response.token);
             sessionStorage.setItem("userId", response.user_id);
             // Redirect to product page
-            window.location.href = "/product";
+            window.location.href = "/product" ;
           } else {
             $("#passwordHelp").text(response.message);
           }
