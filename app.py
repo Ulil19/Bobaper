@@ -36,7 +36,8 @@ TOKEN_KEY = "bobaper"
 
 @app.route("/", methods=["GET", "POST"])
 def home():
-    return render_template("index.html")
+    produk = list(db.produk.find())
+    return render_template("index.html",produk=produk)
 
 
 # -------------------------------------------  START ADMIN ROUTES ------------------------------------------------------#
@@ -125,8 +126,6 @@ def dashboard():
         email=g.user_email,
         products=products,
     )
-
-
 @app.route("/tambahproduk", methods=["GET", "POST"])
 @login_required
 def tambahproduk():
@@ -150,11 +149,11 @@ def tambahproduk():
 
         doc = {"nama": nama, "harga": harga, "stock": stock, "foto": nama_file}
         db.produk.insert_one(doc)
+        
         return redirect(url_for("dashboard"))
+        
 
-    return render_template("admin/tambahproduk.html")
-
-
+    return render_template("admin/tambahproduk.html", produk=produk)
 @app.route("/editproduk/<_id>", methods=["GET", "POST"])
 @login_required
 def editproduk(_id):
@@ -183,8 +182,6 @@ def editproduk(_id):
     id = ObjectId(_id)
     data = db.produk.find_one({"_id": id})
     return render_template("admin/editproduk.html", data=data)
-
-
 @app.route("/deleteproduk/<_id>")
 @login_required
 def delete_produk(_id):
