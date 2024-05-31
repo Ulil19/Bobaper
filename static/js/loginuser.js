@@ -1,4 +1,15 @@
 $(document).ready(function () {
+  // Include token in all AJAX requests if available
+  $.ajaxSetup({
+    beforeSend: function (xhr, settings) {
+      let token = sessionStorage.getItem("token");
+      if (token) {
+        xhr.setRequestHeader("Authorization", "Bearer " + token);
+      }
+    },
+  });
+
+  // Existing loginForm submit handler
   $("#loginForm").submit(function (event) {
     event.preventDefault(); // Prevent the form from submitting the traditional way
 
@@ -38,15 +49,14 @@ $(document).ready(function () {
         success: function (response) {
           if (response.result === "success") {
             alert("Login successful!");
-            // Store token and user ID in session or client-side storage
+            // Store token in session storage
             sessionStorage.setItem("token", response.token);
-            sessionStorage.setItem("userId", response.user_id);
-            // Redirect to product page
-            window.location.href = "/product" ;
+            // Redirect to product page with token
+            window.location.href = "/product?token=" + response.token;
           } else {
             $("#passwordHelp").text(response.message);
           }
-        },
+        },        
         error: function (xhr, status, error) {
           alert("An error occurred: " + error);
         },

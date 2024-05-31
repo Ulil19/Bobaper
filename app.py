@@ -37,13 +37,16 @@ TOKEN_KEY = "bobaper"
 @app.route("/", methods=["GET", "POST"])
 def home():
     produk = list(db.produk.find())
-    return render_template("index.html",produk=produk)
+    return render_template("index.html", produk=produk)
+
 
 @app.route("/about", methods=["GET", "POST"])
 def about():
     return render_template("about.html")
 
-#-------------------------------------------  START ADMIN ROUTES ------------------------------------------------------#
+
+# -------------------------------------------  START ADMIN ROUTES ------------------------------------------------------#
+
 
 @app.route("/login/admin", methods=["GET", "POST"])
 def loginAdmin():
@@ -128,6 +131,8 @@ def dashboard():
         email=g.user_email,
         products=products,
     )
+
+
 @app.route("/tambahproduk", methods=["GET", "POST"])
 @login_required
 def tambahproduk():
@@ -151,11 +156,11 @@ def tambahproduk():
 
         doc = {"nama": nama, "harga": harga, "stock": stock, "foto": nama_file}
         db.produk.insert_one(doc)
-        
         return redirect(url_for("dashboard"))
-        
 
-    return render_template("admin/tambahproduk.html",)
+    return render_template("admin/tambahproduk.html")
+
+
 @app.route("/editproduk/<_id>", methods=["GET", "POST"])
 @login_required
 def editproduk(_id):
@@ -184,6 +189,8 @@ def editproduk(_id):
     id = ObjectId(_id)
     data = db.produk.find_one({"_id": id})
     return render_template("admin/editproduk.html", data=data)
+
+
 @app.route("/deleteproduk/<_id>")
 @login_required
 def delete_produk(_id):
@@ -215,9 +222,11 @@ def logoutadmin():
     response.set_cookie(TOKEN_KEY, "", expires=0)
     return response
 
-#--------------------------------------END ADMIN ROUTES--------------------------------------------------#
 
-#--------------------------------------Bagian User ROUTES--------------------------------------------------#
+# --------------------------------------END ADMIN ROUTES--------------------------------------------------#
+
+# --------------------------------------Bagian User ROUTES--------------------------------------------------#
+
 
 @app.route("/register/user", methods=["GET", "POST"])
 def registeruser():
@@ -239,7 +248,7 @@ def registerusersave():
     if db.users.find_one({"email": email}):
         return jsonify({"result": "error", "message": "Email already registered"})
 
-    pass_hash = hashlib.sha256((password + password2).encode("utf-8")).hexdigest()
+    pass_hash = hashlib.sha256((password).encode("utf-8")).hexdigest()
 
     now = datetime.now()
 
@@ -265,32 +274,39 @@ def validate_user_login():
     email = request.form["email"]
     password = request.form["password"]
     pw_hash = hashlib.sha256(password.encode("utf-8")).hexdigest()
-    result = db.users.find_one({"email": email, "password": pw_hash})
 
-    if result:
-        # Generate JWT token
+    user = db.users.find_one({"email": email, "password": pw_hash})
+
+    if user:
+        # Generate JWT token with user ID
         payload = {
-            "id": result["email"],
-            "exp": datetime.now() + timedelta(days=1),  # Token expires in 1 day
+            "user_id": str(user["_id"]),
+            "exp": datetime.utcnow() + timedelta(days=1),
         }
         token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
         return jsonify({"result": "success", "token": token})
+
     else:
+        # Provide more informative error message
         return jsonify({"result": "error", "message": "Incorrect email or password"})
+
 
 # Route for user profile ketika berhasil login
 @app.route("/product")
 def product():
     token = request.args.get("token")
+    if not token:
+        return "Token missing. Please login again."
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
-        email = payload.get("id")
+        user_id = payload.get("user_id")
         # Fetch user data or perform any necessary actions
-        return render_template("user/product.html", email=email)
+        return render_template("user/produkuser.html", user_id=user_id)
     except jwt.ExpiredSignatureError:
         return "Token expired. Please login again."
     except jwt.InvalidTokenError:
         return "Invalid token. Please login again."
+
 
 @app.route("/profile", methods=["GET", "POST"])
 def profile():
@@ -301,7 +317,8 @@ def profile():
 def shoppingcart():
     return render_template("user/shoppingcart.html")
 
-#--------------------------------------END USER ROUTES----------------------------------------------------#
+
+# --------------------------------------END USER ROUTES----------------------------------------------------#
 
 
 if __name__ == "__main__":
