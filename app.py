@@ -151,9 +151,8 @@ def tambahproduk():
         db.produk.insert_one(doc)
         
         return redirect(url_for("dashboard"))
-        
+    return render_template("admin/tambahproduk.html")
 
-    return render_template("admin/tambahproduk.html", produk=produk)
 @app.route("/editproduk/<_id>", methods=["GET", "POST"])
 @login_required
 def editproduk(_id):
