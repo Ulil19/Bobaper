@@ -44,10 +44,13 @@ def home():
 def about():
     return render_template("about.html")
 
+<<<<<<< HEAD
 @app.route('/contact')
 def contact():
     return render_template('contact.html')
 
+=======
+>>>>>>> 7b23c1a85627da65d3e6d6a148df3f55a26760ed
 # -------------------------------------------  START ADMIN ROUTES ------------------------------------------------------#
 
 
