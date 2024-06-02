@@ -366,8 +366,8 @@ def shoppingcart(user):
         item["product_name"] = product.get("nama")
         item["product_price"] = product.get("harga")
         item["product_photo"] = f"imgproduct/{product['nama']}.jpg"
-        username = user.get("username")
-        pesan = db.cartuser.count_documents({"user_id": str(user["_id"])})
+    pesan = db.cartuser.count_documents({"user_id": str(user["_id"])})
+    username = user.get("username")
     # print(cart_items)
     return render_template(
         "user/shoppingcart.html", username=username, cart_items=cart_items, pesan=pesan
