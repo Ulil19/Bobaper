@@ -44,13 +44,12 @@ def home():
 def about():
     return render_template("about.html")
 
-@app.route('/produkuser')
-def produkuser():
-    return render_template('user/produkuser.html')
 
 @app.route("/contact", methods=["GET", "POST"])
 def contact():
     return render_template("contact.html")
+
+
 # -------------------------------------------  START ADMIN ROUTES ------------------------------------------------------#
 
 
@@ -144,22 +143,20 @@ def dashboard():
 def tambahproduk():
     if request.method == "POST":
         nama = request.form["nama"]
-        harga = request.form["harga"]
-        stock = request.form["stock"]
+        harga = int(request.form["harga"])
+        stock = int(request.form["stock"])
         nama_foto = request.files["foto"]
 
-        today = datetime.now()
-        mytime = today.strftime("%Y-%m-%d-%H-%M-%S")
-
         if nama_foto:
-            nama_file_asli = nama_foto.filename
-            nama_file_foto = nama_file_asli.split("/")[-1]
-            nama_file = f"{mytime}-{nama_file_foto}"
+            # Mengambil ekstensi file asli
+            ekstensi_file = nama_foto.filename.split(".")[-1]
+            nama_file = f"{nama}.{ekstensi_file}"
             file_path = f"static/imgproduct/{nama_file}"
             nama_foto.save(file_path)
         else:
-            nama_file_foto = None
+            nama_file = None
 
+        print(nama_file)
         doc = {"nama": nama, "harga": harga, "stock": stock, "foto": nama_file}
         db.produk.insert_one(doc)
         return redirect(url_for("dashboard"))
@@ -173,18 +170,15 @@ def editproduk(_id):
     if request.method == "POST":
         id = request.form["_id"]
         nama = request.form["nama"]
-        harga = request.form["harga"]
-        stock = request.form["stock"]
+        harga = float(request.form["harga"])
+        stock = int(request.form["stock"])
         nama_foto = request.files["foto"]
         doc = {"nama": nama, "harga": harga, "stock": stock}
 
-        today = datetime.now()
-        mytime = today.strftime("%Y-%m-%d-%H-%M-%S")
-
         if nama_foto:
-            nama_file_asli = nama_foto.filename
-            nama_file_foto = nama_file_asli.split("/")[-1]
-            nama_file = f"{mytime}-{nama_file_foto}"
+            # Mengambil ekstensi file asli
+            ekstensi_file = nama_foto.filename.split(".")[-1]
+            nama_file = f"{nama}.{ekstensi_file}"
             file_path = f"static/imgproduct/{nama_file}"
             nama_foto.save(file_path)
             doc["foto"] = nama_file
@@ -197,11 +191,18 @@ def editproduk(_id):
     return render_template("admin/editproduk.html", data=data)
 
 
+from bson import ObjectId
+
+
 @app.route("/deleteproduk/<_id>")
 @login_required
 def delete_produk(_id):
-    db.produk.delete_one({"_id": ObjectId(_id)})
-    return redirect(url_for("dashboard"))
+    deleted_product = db.produk.find_one_and_delete({"_id": ObjectId(_id)})
+    if deleted_product:
+        db.cartuser.delete_many({"product_id": str(deleted_product["_id"])})
+        return redirect(url_for("dashboard"))
+    else:
+        return redirect(url_for("dashboard"))
 
 
 @app.route("/konfirmasipesananadmin", methods=["GET", "POST"])
@@ -263,11 +264,39 @@ def registerusersave():
         "username": username,
         "password": pass_hash,
         "date_created": now,
+        "shopping_cart": 0,
     }
 
     db.users.insert_one(doc)
 
     return jsonify({"result": "success"})
+
+
+def token_required(f):
+    def decorator(*args, **kwargs):
+        token = request.cookies.get("token")
+        if not token:
+            return redirect(
+                url_for("loginuser", error_msg="Token missing. Please login again.")
+            )
+        try:
+            payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+            user_id = payload.get("user_id")
+            user = db.users.find_one({"_id": ObjectId(user_id)})
+            if not user:
+                raise jwt.InvalidTokenError()
+            return f(user, *args, **kwargs)
+        except jwt.ExpiredSignatureError:
+            return redirect(
+                url_for("loginuser", error_msg="Token expired. Please login again.")
+            )
+        except jwt.InvalidTokenError:
+            return redirect(
+                url_for("loginuser", error_msg="Invalid token. Please login again.")
+            )
+
+    decorator.__name__ = f.__name__
+    return decorator
 
 
 @app.route("/login/user", methods=["GET", "POST"])
@@ -284,34 +313,133 @@ def validate_user_login():
     user = db.users.find_one({"email": email, "password": pw_hash})
 
     if user:
-        # Generate JWT token with user ID
         payload = {
             "user_id": str(user["_id"]),
             "exp": datetime.utcnow() + timedelta(days=1),
         }
         token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
-        return jsonify({"result": "success", "token": token})
 
+        response = jsonify({"result": "success", "token": token})
+        response.set_cookie("token", token, httponly=True)
+        return response
     else:
-        # Provide more informative error message
         return jsonify({"result": "error", "message": "Incorrect email or password"})
 
 
-# Route for user profile ketika berhasil login
 @app.route("/product")
 def product():
-    token = request.args.get("token")
+    token = request.cookies.get("token")
     if not token:
-        return "Token missing. Please login again."
+        return redirect(
+            url_for("loginuser", error_msg="Token missing. Please login again.")
+        )
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
         user_id = payload.get("user_id")
-        # Fetch user data or perform any necessary actions
-        return render_template("user/produkuser.html", user_id=user_id)
+        user = db.users.find_one({"_id": ObjectId(user_id)})
+        produk = list(db.produk.find())
+        username = user.get("username")
+        pesan = db.cartuser.count_documents({"user_id": str(user["_id"])})
+        return render_template(
+            "user/produkuser.html",
+            user_id=user_id,
+            produk=produk,
+            username=username,
+            pesan=pesan,
+        )
     except jwt.ExpiredSignatureError:
-        return "Token expired. Please login again."
+        return redirect(
+            url_for("loginuser", error_msg="Token expired. Please login again.")
+        )
     except jwt.InvalidTokenError:
-        return "Invalid token. Please login again."
+        return redirect(
+            url_for("loginuser", error_msg="Invalid token. Please login again.")
+        )
+
+
+@app.route("/shoppingcart", methods=["GET"])
+@token_required
+def shoppingcart(user):
+    cart_items = list(db.cartuser.find({"user_id": str(user["_id"])}))
+    for item in cart_items:
+        product = db.produk.find_one({"_id": ObjectId(item["product_id"])})
+        item["product_name"] = product.get("nama")
+        item["product_price"] = product.get("harga")
+        item["product_photo"] = f"imgproduct/{product['nama']}.jpg"
+        username = user.get("username")
+        pesan = db.cartuser.count_documents({"user_id": str(user["_id"])})
+    # print(cart_items)
+    return render_template(
+        "user/shoppingcart.html", username=username, cart_items=cart_items, pesan=pesan
+    )
+
+
+@app.route("/addshoppingcart", methods=["POST"])
+@token_required
+def add_shopping_cart(user):
+    try:
+        product_id = request.form.get("product_id")
+        product = db.produk.find_one({"_id": ObjectId(product_id)})
+        if not product or product["stock"] <= 0:
+            return jsonify({"result": "error", "message": "Product not available."})
+
+        db.users.update_one({"_id": user["_id"]}, {"$inc": {"shopping_cart": 1}})
+
+        cart_item = {
+            "user_id": str(user["_id"]),
+            "product_id": product_id,
+            "product_name": product.get("nama"),
+            "product_price": product.get("harga"),
+            "product_photo": product.get("foto"),
+            "quantity": 1,
+        }
+        db.cartuser.insert_one(cart_item)
+
+        return jsonify({"result": "success", "message": "Product added to cart."})
+    except Exception as e:
+        return jsonify({"result": "error", "message": str(e)})
+
+
+@app.route("/updatecart", methods=["POST"])
+def update_cart():
+    try:
+        token = request.cookies.get("token")
+        if not token:
+            return (
+                jsonify(
+                    {"result": "error", "message": "Token missing. Please login again."}
+                ),
+            )
+
+        payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+        user_id = payload.get("user_id")
+        product_id = request.json.get("product_id")
+        # print(product_id)
+        action = request.json.get("action")
+
+        # Update cart based on action
+        if action == "increment":
+            db.cartuser.update_one(
+                {"product_id": str(product_id)}, {"$inc": {"quantity": +1}}
+            )
+        elif action == "decrement":
+            db.cartuser.update_one(
+                {"product_id": str(product_id)}, {"$inc": {"quantity": -1}}
+            )
+            db.cartuser.delete_one({"product_id": product_id, "quantity": {"$lte": 0}})
+        return jsonify({"result": "success"}), 200
+    except Exception as e:
+        return jsonify({"result": "error", "message": str(e)}), 500
+
+
+@app.route("/checkout", methods=["GET", "POST"])
+def checkout():
+    return render_template("user/checkout.html")
+
+
+@app.route("/review", methods=["GET", "POST"])
+def review():
+    return render_template("user/review.html")
 
 
 @app.route("/profile", methods=["GET", "POST"])
@@ -319,9 +447,11 @@ def profile():
     return render_template("user/profile.html")
 
 
-@app.route("/shoppingcart", methods=["GET", "POST"])
-def shoppingcart():
-    return render_template("user/shoppingcart.html")
+@app.route("/logoutuser", methods=["GET", "POST"])
+def logoutuser():
+    response = make_response(redirect(url_for("loginuser")))
+    response.set_cookie(TOKEN_KEY, "", expires=0)
+    return response
 
 
 # --------------------------------------END USER ROUTES----------------------------------------------------#
