@@ -32,7 +32,7 @@
                             <a href="#" class="btn btn-outline-secondary btn-sm btn-quantity" data-action="increment"
                                 data-id="{{ item.product_id }}">+</a>
                         </div>
-                        <div class="col text-right">Rp {{ item.product_price * item.quantity }}</div>
+                        <div class="col text-right">Rp {{ '{:,.2f}'.format(item.product_price * item.quantity) }}</div>
                     </div>
                 </div>
                 {% endfor %}
@@ -50,24 +50,27 @@
         <hr>
         <div class="row">
             <div class="col">ITEMS {{ cart_items|length }}</div>
-            <div class="col text-right">Rp {{ cart_items|sum(attribute='product_price') }}</div>
+            <div class="col text-right mb-1">Rp {{ '{:,.2f}'.format(total_harga) }}</div>
         </div>
         <form>
-            <p>SHIPPING</p>
+            <p>Pengiriman</p>
             <select class="form-control">
-                <option class="text-muted">Cash On Delivery (COD)</option>
+                <option class="text-muted">------ Pilih Pengiriman ------</option>
+                <option class="text-muted" value="ambilditempat">Ambil di Tempat</option>
+                <option class="text-muted" value="grab/gojek">Grab / Gojek (Biaya ditanggung pembeli)</option>
             </select>
         </form>
         <div class="row mt-3" style="border-top: 1px solid rgba(0,0,0,.1); padding-top: 2vh;">
-            <div class="col">TOTAL PRICE</div>
-            <div class="col text-right">Rp {{ cart_items|sum(attribute='product_price') }}</div>
+            <div class="col">TOTAL HARGA</div>
+            <div class="col text-right">Rp {{ '{:,.2f}'.format(total_harga) }}</div>
         </div>
         <button class="btn btn-primary btn-block mt-3">CHECKOUT</button>
     </div>
 </div>
 </div>
-</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+    // Quantity change event
     document.querySelectorAll('.btn-quantity').forEach(button => {
         button.addEventListener('click', function (event) {
             event.preventDefault();
@@ -79,7 +82,6 @@
 
             // Get the product ID
             var productId = $(this).data("id");
-            // console.log(productId):
 
             // Update quantity based on action
             if (action === 'increment') {
@@ -112,6 +114,4 @@
         });
     });
 </script>
-
-
 {% endblock %}

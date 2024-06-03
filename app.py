@@ -42,12 +42,64 @@ def home():
 
 @app.route("/about", methods=["GET", "POST"])
 def about():
-    return render_template("about.html")
+    token = request.cookies.get("token")
+    status = False
+    username = None
+    pesan = 0
+    user_info = None
+
+    if token:
+        try:
+            payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+            user_id = payload.get("user_id")
+            user_info = db.users.find_one({"_id": ObjectId(user_id)})
+            if user_info:
+                status = True
+                username = user_info.get("username")
+                pesan = db.cartuser.count_documents({"user_id": str(user_info["_id"])})
+        except jwt.ExpiredSignatureError:
+            pass
+        except jwt.InvalidTokenError:
+            pass
+
+    return render_template(
+        "about.html",
+        user_info=user_info,
+        status=status,
+        username=username,
+        pesan=pesan,
+    )
 
 
 @app.route("/contact", methods=["GET", "POST"])
 def contact():
-    return render_template("contact.html")
+    token = request.cookies.get("token")
+    status = False
+    username = None
+    pesan = 0
+    user_info = None
+
+    if token:
+        try:
+            payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+            user_id = payload.get("user_id")
+            user_info = db.users.find_one({"_id": ObjectId(user_id)})
+            if user_info:
+                status = True
+                username = user_info.get("username")
+                pesan = db.cartuser.count_documents({"user_id": str(user_info["_id"])})
+        except jwt.ExpiredSignatureError:
+            pass
+        except jwt.InvalidTokenError:
+            pass
+
+    return render_template(
+        "contact.html",
+        user_info=user_info,
+        status=status,
+        username=username,
+        pesan=pesan,
+    )
 
 
 # -------------------------------------------  START ADMIN ROUTES ------------------------------------------------------#
@@ -361,16 +413,21 @@ def product():
 @token_required
 def shoppingcart(user):
     cart_items = list(db.cartuser.find({"user_id": str(user["_id"])}))
+    total_harga = 0
     for item in cart_items:
         product = db.produk.find_one({"_id": ObjectId(item["product_id"])})
         item["product_name"] = product.get("nama")
         item["product_price"] = product.get("harga")
         item["product_photo"] = f"imgproduct/{product['nama']}.jpg"
+        total_harga += item["product_price"] * item["quantity"]
     pesan = db.cartuser.count_documents({"user_id": str(user["_id"])})
     username = user.get("username")
-    # print(cart_items)
     return render_template(
-        "user/shoppingcart.html", username=username, cart_items=cart_items, pesan=pesan
+        "user/shoppingcart.html",
+        username=username,
+        cart_items=cart_items,
+        pesan=pesan,
+        total_harga=total_harga,
     )
 
 
@@ -383,17 +440,25 @@ def add_shopping_cart(user):
         if not product or product["stock"] <= 0:
             return jsonify({"result": "error", "message": "Product not available."})
 
-        db.users.update_one({"_id": user["_id"]}, {"$inc": {"shopping_cart": 1}})
+        # Check if the product is already in the cart
+        cart_item = db.cartuser.find_one(
+            {"user_id": str(user["_id"]), "product_id": product_id}
+        )
 
-        cart_item = {
-            "user_id": str(user["_id"]),
-            "product_id": product_id,
-            "product_name": product.get("nama"),
-            "product_price": product.get("harga"),
-            "product_photo": product.get("foto"),
-            "quantity": 1,
-        }
-        db.cartuser.insert_one(cart_item)
+        if cart_item:
+            # If product is already in the cart, update the quantity
+            db.cartuser.update_one({"_id": cart_item["_id"]}, {"$inc": {"quantity": 1}})
+        else:
+            # If product is not in the cart, add it
+            cart_item = {
+                "user_id": str(user["_id"]),
+                "product_id": product_id,
+                "product_name": product.get("nama"),
+                "product_price": product.get("harga"),
+                "product_photo": product.get("foto"),
+                "quantity": 1,
+            }
+            db.cartuser.insert_one(cart_item)
 
         return jsonify({"result": "success", "message": "Product added to cart."})
     except Exception as e:
@@ -405,28 +470,34 @@ def update_cart():
     try:
         token = request.cookies.get("token")
         if not token:
-            return (
-                jsonify(
-                    {"result": "error", "message": "Token missing. Please login again."}
-                ),
+            return jsonify(
+                {"result": "error", "message": "Token missing. Please login again."}
             )
 
         payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
         user_id = payload.get("user_id")
         product_id = request.json.get("product_id")
-        # print(product_id)
         action = request.json.get("action")
 
         # Update cart based on action
         if action == "increment":
             db.cartuser.update_one(
-                {"product_id": str(product_id)}, {"$inc": {"quantity": +1}}
+                {"user_id": str(user_id), "product_id": str(product_id)},
+                {"$inc": {"quantity": 1}},
             )
         elif action == "decrement":
             db.cartuser.update_one(
-                {"product_id": str(product_id)}, {"$inc": {"quantity": -1}}
+                {"user_id": str(user_id), "product_id": str(product_id)},
+                {"$inc": {"quantity": -1}},
             )
-            db.cartuser.delete_one({"product_id": product_id, "quantity": {"$lte": 0}})
+            db.cartuser.delete_one(
+                {
+                    "user_id": str(user_id),
+                    "product_id": str(product_id),
+                    "quantity": {"$lte": 0},
+                }
+            )
+
         return jsonify({"result": "success"}), 200
     except Exception as e:
         return jsonify({"result": "error", "message": str(e)}), 500
