@@ -31,7 +31,7 @@
                 <td>{{ product.harga }}</td>
                 <td>{{ product.stock }}</td>
                 <td><img src="{{ url_for('static', filename='imgproduct/' ~ product.foto) }}" alt="{{ product.nama }}"
-                        width="50"></td>
+                        width="100"></td>
                 <td>
                     <a href="{{ url_for('editproduk', _id=product._id) }}" class="btn btn-primary btn-sm py-2"><i
                             class="fa-regular fa-pen-to-square px-1"></i>Edit</a>

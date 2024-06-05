@@ -64,7 +64,7 @@
         <div class="navbar-nav ms-auto p-4 p-lg-0">
           <a href="/" class="nav-item nav-link active">Home</a>
           <a href="/about" class="nav-item nav-link">About Us</a>
-          <a href="/produkuser" class="nav-item nav-link">Products</a>
+          <a href="#produk" class="nav-item nav-link">Products</a>
           <a href="/contact" class="nav-item nav-link">Contact Us</a>
         </div>
         <div class="d-none d-lg-flex ms-2">
@@ -189,13 +189,10 @@
                     <span class="text-primary me-1">Stock:{{ prod['stock'] }}</span><br>
                     <span class="text-body">Rp. {{ prod['harga'] }}</span>
                   </div>
-                  <div class="d-flex border-top">
-                    <small class="w-50 text-center border-end py-2">
-                      <a class="text-body" href=""><i class="fa fa-eye text-primary me-2"></i>View
-                        detail</a>
-                    </small>
+                  <div class="d-flex border-top justify-content-center">
                     <small class="w-50 text-center py-2">
-                      <a class="text-body" href=""><i class="fa fa-shopping-bag text-primary me-2"></i>Add to cart</a>
+                      <a class="text-body" onclick="alert('Harap login terlebih dahulu')" href=""><i
+                          class="fa fa-shopping-bag text-primary me-2"></i>Add to cart</a>
                     </small>
                   </div>
                 </div>
