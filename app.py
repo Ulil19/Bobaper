@@ -287,7 +287,7 @@ def validate_user_login():
         # Generate JWT token with user ID
         payload = {
             "user_id": str(user["_id"]),
-            "exp": datetime.utcnow() + timedelta(days=1),
+            "exp": datetime.now() + timedelta(days=1),
         }
         token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
         return jsonify({"result": "success", "token": token})
@@ -322,10 +322,13 @@ def profile():
 @app.route("/shoppingcart", methods=["GET", "POST"])
 def shoppingcart():
     return render_template("user/shoppingcart.html")
+@app.route("/checkout", methods=["GET", "POST"])
+def checkout():
+    return render_template("user/checkout.html")
 
 
 # --------------------------------------END USER ROUTES----------------------------------------------------#
 
 
 if __name__ == "__main__":
-    app.run("0.0.0.0", port=5000, debug=True)
+    app.run("0.0.0.0", port=5001, debug=True)
