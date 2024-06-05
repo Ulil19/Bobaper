@@ -243,9 +243,6 @@ def editproduk(_id):
     return render_template("admin/editproduk.html", data=data)
 
 
-from bson import ObjectId
-
-
 @app.route("/deleteproduk/<_id>")
 @login_required
 def delete_produk(_id):
@@ -505,7 +502,64 @@ def update_cart():
 
 @app.route("/checkout", methods=["GET", "POST"])
 def checkout():
-    return render_template("user/checkout.html")
+    token = request.cookies.get("token")
+    if not token:
+        return redirect(url_for("loginuser"))
+
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+        user_id = payload.get("user_id")
+        user_doc = db.users.find_one({"_id": ObjectId(user_id)})
+        username = user_doc.get("username")
+        pesan = db.cartuser.count_documents({"user_id": str(user_doc["_id"])})
+
+        # Handle POST request for checkout
+        if request.method == "POST":
+            data = request.json
+            cart_items = data.get("cart_items", [])
+            total_harga = data.get("total_harga", 0.0)
+            pengiriman = data.get("pengiriman")
+            # print(pengiriman)
+
+            # Set delivery method cookie
+            response = make_response(jsonify({"result": "success"}))
+            response.set_cookie("pengiriman", pengiriman)
+            return response
+
+        # Handle GET request for checkout page
+        cart_items = list(db.cartuser.find({"user_id": str(user_id)}))
+        total_harga = sum(
+            item["product_price"] * item["quantity"] for item in cart_items
+        )
+
+        pengiriman = request.cookies.get("pengiriman")
+        # print(pengiriman)
+
+        return render_template(
+            "user/checkout.html",
+            cart_items=cart_items,
+            total_harga=total_harga,
+            username=username,
+            pesan=pesan,
+            pengiriman=pengiriman,
+        )
+
+    except jwt.ExpiredSignatureError:
+        return redirect(
+            url_for("loginuser", error_msg="Token expired. Please login again.")
+        )
+    except jwt.InvalidTokenError:
+        return redirect(
+            url_for("loginuser", error_msg="Invalid token. Please login again.")
+        )
+    except Exception as e:
+        return jsonify({"result": "error", "message": str(e)}), 500
+    
+
+@app.route("/pesanan", methods=["GET", "POST"])
+def pesanan():
+    
+    return render_template("user/pesanan.html")
 
 
 @app.route("/review", methods=["GET", "POST"])
@@ -518,12 +572,6 @@ def profile():
     return render_template("user/profile.html")
 
 
-@app.route("/shoppingcart", methods=["GET", "POST"])
-def shoppingcart():
-    return render_template("user/shoppingcart.html")
-@app.route("/checkout", methods=["GET", "POST"])
-def checkout():
-    return render_template("user/checkout.html")
 @app.route("/logoutuser", methods=["GET", "POST"])
 def logoutuser():
     response = make_response(redirect(url_for("loginuser")))

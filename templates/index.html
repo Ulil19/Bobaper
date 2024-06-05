@@ -60,29 +60,40 @@
       <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
         <span class="navbar-toggler-icon"></span>
       </button>
+      {% if status %}
       <div class="collapse navbar-collapse" id="navbarCollapse">
         <div class="navbar-nav ms-auto p-4 p-lg-0">
-          <a href="/" class="nav-item nav-link active">Home</a>
+          <a href="/product" class="nav-item nav-link active">Home</a>
           <a href="/about" class="nav-item nav-link">About Us</a>
-          <a href="#produk" class="nav-item nav-link">Products</a>
+          <a href="/product" class="nav-item nav-link">Products</a>
           <a href="/contact" class="nav-item nav-link">Contact Us</a>
         </div>
-        <div class="d-none d-lg-flex ms-2">
-          <div class="dropdown me-3">
-            <a class="btn-sm-square bg-white rounded-circle text-body dropdown-toggle" href="#" role="button"
-              id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
-              <small class="fa fa-user"></small>
-            </a>
-            <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-              <li><a class="dropdown-item" href="{{ url_for('loginuser') }}">Login</a></li>
-              <li><a class="dropdown-item" href="{{ url_for('registeruser') }}">Register</a></li>
-            </ul>
+        {% elif not status %}
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+          <div class="navbar-nav ms-auto p-4 p-lg-0">
+            <a href="/" class="nav-item nav-link active">Home</a>
+            <a href="/about" class="nav-item nav-link">About Us</a>
+            <a href="#produk" class="nav-item nav-link">Products</a>
+            <a href="/contact" class="nav-item nav-link">Contact Us</a>
           </div>
-          <a onclick="alert('Harap login terlebih dahulu')" class="btn-sm-square bg-white rounded-circle ms-3" href="">
-            <small class="fa fa-shopping-bag text-body"></small>
-          </a>
+          {% endif %}
+          <div class="d-none d-lg-flex ms-2">
+            <div class="dropdown me-3">
+              <a class="btn-sm-square bg-white rounded-circle text-body dropdown-toggle" href="#" role="button"
+                id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                <small class="fa fa-user"></small>
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                <li><a class="dropdown-item" href="{{ url_for('loginuser') }}">Login</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('registeruser') }}">Register</a></li>
+              </ul>
+            </div>
+            <a onclick="alert('Harap login terlebih dahulu')" class="btn-sm-square bg-white rounded-circle ms-3"
+              href="">
+              <small class="fa fa-shopping-bag text-body"></small>
+            </a>
+          </div>
         </div>
-      </div>
     </nav>
   </div>
   <!-- Navbar End -->
