@@ -1,33 +1,107 @@
 body {
-    background: #BA68C8;
-  }
-  
-  .form-control:focus {
-    box-shadow: none;
-    border-color: #BA68C8;
-  }
-  
-  .profile-button {
-    background: #BA68C8;
-    box-shadow: none;
-    border: none;
-  }
-  
-  .profile-button:hover {
-    background: #682773;
-  }
-  
-  .profile-button:focus {
-    background: #682773;
-    box-shadow: none;
-  }
-  
-  .profile-button:active {
-    background: #682773;
-    box-shadow: none;
-  }
-  
-  .back:hover {
-    color: #682773;
-    cursor: pointer;
-  }
+  background: #BA68C8;
+}
+
+.profile {
+  margin: 20px 0;
+}
+
+.profile-sidebar {
+  padding: 20px 0 10px 0;
+  background: #fff;
+  text-align: center; /* Tambahkan text-align: center untuk meratakan gambar ke tengah */
+}
+
+.profile-userpic img {
+  margin: 20px auto; /* Tambahkan margin auto untuk meratakan gambar ke tengah */
+  width: 50%;
+  height: 50%;
+  border-radius: 50% !important;
+}
+
+.profile-usertitle {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.profile-usertitle-name {
+  color: #5a7391;
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 7px;
+}
+
+.profile-usertitle-job {
+  text-transform: uppercase;
+  color: #5b9bd1;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+
+.profile-usermenu {
+  margin-top: 30px;
+}
+
+.profile-usermenu ul li {
+  border-bottom: 1px solid #f0f4f7;
+}
+
+.profile-usermenu ul li a {
+  color: #93a3b5;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.profile-usermenu ul li a i {
+  margin-right: 8px;
+  font-size: 14px;
+}
+
+.profile-usermenu ul li a:hover {
+  background-color: #fafcfd;
+  color: #5b9bd1;
+}
+
+.profile-usermenu ul li.active a {
+  color: #5b9bd1;
+  background-color: #f6f9fb;
+  border-left: 2px solid #5b9bd1;
+  margin-left: -2px;
+}
+
+.profile-content {
+  padding: 20px;
+  background: #fff;
+  min-height: 460px;
+}
+
+.form-control:focus {
+  box-shadow: none;
+  border-color: #BA68C8;
+}
+
+.profile-button {
+  background: #BA68C8;
+  box-shadow: none;
+  border: none;
+}
+
+.profile-button:hover {
+  background: #682773;
+}
+
+.profile-button:focus {
+  background: #682773;
+  box-shadow: none;
+}
+
+.profile-button:active {
+  background: #682773;
+  box-shadow: none;
+}
+
+.back:hover {
+  color: #682773;
+  cursor: pointer;
+}

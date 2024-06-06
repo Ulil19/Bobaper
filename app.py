@@ -518,12 +518,8 @@ def profile():
     return render_template("user/profile.html")
 
 
-@app.route("/shoppingcart", methods=["GET", "POST"])
-def shoppingcart():
-    return render_template("user/shoppingcart.html")
-@app.route("/checkout", methods=["GET", "POST"])
-def checkout():
-    return render_template("user/checkout.html")
+
+
 @app.route("/logoutuser", methods=["GET", "POST"])
 def logoutuser():
     response = make_response(redirect(url_for("loginuser")))
