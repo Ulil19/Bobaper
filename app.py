@@ -500,6 +500,27 @@ def update_cart():
         return jsonify({"result": "error", "message": str(e)}), 500
 
 
+@app.route("/deletecartitem", methods=["POST"])
+def delete_cart_item():
+    try:
+        token = request.cookies.get("token")
+        if not token:
+            return jsonify(
+                {"result": "error", "message": "Token missing. Please login again."}
+            )
+
+        payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+        user_id = payload.get("user_id")
+        product_id = request.json.get("product_id")
+
+        # Delete the cart item
+        db.cartuser.delete_one({"user_id": str(user_id), "product_id": str(product_id)})
+
+        return jsonify({"result": "success"}), 200
+    except Exception as e:
+        return jsonify({"result": "error", "message": str(e)}), 500
+
+
 @app.route("/checkout", methods=["GET", "POST"])
 def checkout():
     token = request.cookies.get("token")

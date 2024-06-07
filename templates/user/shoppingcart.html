@@ -23,7 +23,8 @@
                             <div class="row text-muted">{{ item.product_name }}</div>
                             <div class="row">{{ item.product_description }}</div>
                         </div>
-                        <div class="col text-right">Rp {{ item.product_price }} <span class="close">&#10005;</span>
+                        <div class="col text-right">Rp {{ '{:,.2f}'.format(item.product_price) }} <span
+                                class="close"></span>
                         </div>
                         <div class="col">
                             <a href="#" class="btn btn-outline-secondary btn-sm btn-quantity" data-action="decrement"
@@ -34,6 +35,7 @@
                         </div>
                         <div class="col text-right">Rp {{ '{:,.2f}'.format(item.product_price * item.quantity) }}</div>
                     </div>
+                    <a href="#" class="btn btn-outline-secondary btn-sm close" data-id="{{ item.product_id }}">Hapus</a>
                 </div>
                 {% endfor %}
             </div>
@@ -115,6 +117,36 @@
         });
     });
 
+    // Delete item event
+    document.querySelectorAll('.btn.close').forEach(button => {
+        button.addEventListener('click', function (event) {
+            event.preventDefault();
+
+            // Get the product ID
+            var productId = $(this).data("id");
+
+            fetch('/deletecartitem', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    product_id: productId
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.result === 'success') {
+                        // Reload the page to reflect changes
+                        location.reload();
+                    } else {
+                        alert(data.message);
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        });
+    });
+
     // Checkout event
     document.querySelector('.btn-primary').addEventListener('click', function (event) {
         event.preventDefault();
@@ -164,7 +196,7 @@
             }
         });
     });
-
 </script>
+
 
 {% endblock %}
