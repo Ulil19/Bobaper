@@ -68,6 +68,7 @@ def about():
         status=status,
         username=username,
         pesan=pesan,
+        user=user_info,
     )
 
 
@@ -99,6 +100,7 @@ def contact():
         status=status,
         username=username,
         pesan=pesan,
+        user=user_info,
     )
 
 
@@ -312,6 +314,7 @@ def registerusersave():
         "email": email,
         "username": username,
         "password": pass_hash,
+        "profile_picture": "profile_pics/Default_Profile_Pictures.png",
         "date_created": now,
         "shopping_cart": 0,
     }
@@ -392,6 +395,7 @@ def product():
         return render_template(
             "user/produkuser.html",
             user_id=user_id,
+            user=user,
             produk=produk,
             username=username,
             pesan=pesan,
@@ -424,6 +428,7 @@ def shoppingcart(user):
         username=username,
         cart_items=cart_items,
         pesan=pesan,
+        user=user,
         total_harga=total_harga,
     )
 
@@ -590,7 +595,26 @@ def review():
 
 @app.route("/profile", methods=["GET", "POST"])
 def profile():
-    return render_template("user/profile.html")
+    token = request.cookies.get("token")
+    if not token:
+        return redirect(url_for("loginuser"))
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+        user_id = payload.get("user_id")
+        user_doc = db.users.find_one({"_id": ObjectId(user_id)})
+        pesan = db.cartuser.count_documents({"user_id": str(user_doc["_id"])})
+        username = user_doc.get("username")
+        return render_template(
+            "user/profile.html", username=username, pesan=pesan, user=user_doc
+        )
+    except jwt.ExpiredSignatureError:
+        return redirect(
+            url_for("loginuser", error_msg="Token expired. Please login again.")
+        )
+    except jwt.InvalidTokenError:
+        return redirect(
+            url_for("loginuser", error_msg="Invalid token. Please login again.")
+        )
 
 
 @app.route("/logoutuser", methods=["GET", "POST"])

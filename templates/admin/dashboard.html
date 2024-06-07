@@ -28,7 +28,7 @@
             <tr>
                 <th scope="row">{{ loop.index }}</th>
                 <td>{{ product.nama }}</td>
-                <td>{{ product.harga }}</td>
+                <td>Rp. {{ '{:,}'.format(product.harga) }}</td>
                 <td>{{ product.stock }}</td>
                 <td><img src="{{ url_for('static', filename='imgproduct/' ~ product.foto) }}" alt="{{ product.nama }}"
                         width="100"></td>

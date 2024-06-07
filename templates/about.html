@@ -74,7 +74,7 @@
                     <a href="/product" class="nav-item nav-link">Products</a>
                     <a href="/contact" class="nav-item nav-link">Contact Us</a>
                 </div>
-                {% else %}
+                {% elif not status %}
                 <div class="navbar-nav ms-auto p-4 p-lg-0">
                     <a href="/" class="nav-item nav-link active">Home</a>
                     <a href="/about" class="nav-item nav-link">About Us</a>
@@ -82,38 +82,47 @@
                     <a href="/contact" class="nav-item nav-link">Contact Us</a>
                 </div>
                 {% endif %}
-                <div class="d-none d-lg-flex ms-2">
-                    <div class="dropdown me-3">
-                        <a class="btn-sm-square bg-white rounded-circle text-body dropdown-toggle" href="#"
-                            role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
-                            <small class="fa fa-user"></small>
+                <div class="d-none d-lg-flex ms-2 px-2">
+                    {% if status %}
+                    <div class="dropdown me-3 position-relative d-flex px-2">
+                        <a class="btn-sm-square rounded-circle text-body dropdown-toggle d-flex align-items-center"
+                            href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            <img src="{{ url_for('static', filename=user.profile_picture) }}" class="rounded-circle"
+                                style="width: 25px; height: 25px;">
+                            <span class="ms-1">{{ username }}</span>
                         </a>
-                        {% if status %}
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                             <li><a class="dropdown-item" href="{{ url_for('profile') }}">Profile</a></li>
                             <li><a class="dropdown-item" href="{{ url_for('logoutuser') }}">Logout</a></li>
                         </ul>
-                        {% else %}
+                    </div>
+                    <a class="btn-sm-square rounded-circle ms-3 position-relative" href="/shoppingcart">
+                        <small class="fa fa-shopping-bag text-body"></small>
+                        <span class="badge badge-pill badge-danger position-absolute top-0 end-0"
+                            style="font-size: 0.7rem; color: black; padding: 2px 4px;">{{ pesan | default(0,
+                            true)
+                            }}</span>
+                    </a>
+                </div>
+                {% elif not status %}
+                <div class="d-none d-lg-flex ms-2">
+                    <div class="dropdown me-3 position-relative d-flex px-2">
+                        <a class="btn-sm-square bg-white rounded-circle text-body dropdown-toggle" href="#"
+                            role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                            <small class="fa fa-user"></small>
+                        </a>
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                             <li><a class="dropdown-item" href="{{ url_for('loginuser') }}">Login</a></li>
                             <li><a class="dropdown-item" href="{{ url_for('registeruser') }}">Register</a></li>
                         </ul>
-                        {% endif %}
                     </div>
-                    {% if status %}
-                    <a class="btn-sm-square bg-white rounded-circle ms-3 position-relative" href="/shoppingcart">
-                        <small class="fa fa-shopping-bag text-body"></small>
-                        <span class="badge badge-pill badge-danger position-absolute top-0 end-0"
-                            style="font-size: 0.7rem; color: black; padding: 2px 4px;">{{ pesan | default(0, true)
-                            }}</span>
-                    </a>
-                    {% else %}
-                    <a onclick="alert('Harap login terlebih dahulu')" class="btn-sm-square bg-white rounded-circle ms-3"
+                    <a onclick="alert('Harap login terlebih dahulu')" class="btn-sm-square rounded-circle ms-3"
                         href="#">
                         <small class="fa fa-shopping-bag text-body"></small>
                     </a>
-                    {% endif %}
                 </div>
+                {% endif %}
             </div>
         </nav>
     </div>
@@ -140,7 +149,7 @@
             <div class="row g-5 align-items-center">
                 <div class="col-lg-6 wow fadeIn" data-wow-delay="0.1s">
                     <div class="about-img position-relative overflow-hidden p-5 pe-0">
-                        <img class="img-fluid w-100" src="{{ url_for('static', filename='img/about.jpg') }}">
+                        <img class="img-fluid w-100" src="{{ url_for('static', filename='img/about.png') }}">
                     </div>
                 </div>
                 <div class="col-lg-6 wow fadeIn" data-wow-delay="0.3s">

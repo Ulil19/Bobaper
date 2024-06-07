@@ -31,7 +31,7 @@
                                 <div class="text-center p-4">
                                     <a class="d-block h5 mb-2" href="">{{ produk['nama'] }}</a>
                                     <span class="text-primary me-1">Stok: {{ produk['stock'] }}</span><br>
-                                    <span class="text-body me-3">Harga: Rp.{{ '{:,.2f}'.format(produk['harga']) }}</span>
+                                    <span class="text-body me-3">Harga: Rp. {{ '{:,}'.format(produk['harga']) }}</span>
                                 </div>
                                 <div class="d-flex border-top justify-content-center">
                                     <small class="text-center py-2">

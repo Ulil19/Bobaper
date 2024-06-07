@@ -33,7 +33,7 @@
                             <a href="#" class="btn btn-outline-secondary btn-sm btn-quantity" data-action="increment"
                                 data-id="{{ item.product_id }}">+</a>
                         </div>
-                        <div class="col text-right">Rp {{ '{:,.2f}'.format(item.product_price * item.quantity) }}</div>
+                        <div class="col text-right">Rp {{ '{:,}'.format(item.product_price * item.quantity) }}</div>
                     </div>
                     <a href="#" class="btn btn-outline-secondary btn-sm close" data-id="{{ item.product_id }}">Hapus</a>
                 </div>
@@ -52,7 +52,7 @@
         <hr>
         <div class="row">
             <div class="col">ITEMS {{ cart_items|length }}</div>
-            <div class="col text-right mb-1">Rp {{ '{:,.2f}'.format(total_harga) }}</div>
+            <div class="col text-right mb-1">Rp {{ '{:,}'.format(total_harga) }}</div>
         </div>
         <form>
             <p>Pengiriman</p>
@@ -65,7 +65,7 @@
         </form>
         <div class="row mt-3" style="border-top: 1px solid rgba(0,0,0,.1); padding-top: 2vh;">
             <div class="col">TOTAL HARGA</div>
-            <div class="col text-right">Rp {{ '{:,.2f}'.format(total_harga) }}</div>
+            <div class="col text-right">Rp {{ '{:,}'.format(total_harga) }}</div>
         </div>
         <a href="/checkout" class="btn btn-primary btn-block mt-3" id="btn-checkout">CHECKOUT</a>
     </div>

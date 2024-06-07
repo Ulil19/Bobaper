@@ -18,17 +18,18 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarCollapse">
-            <div class="navbar-nav ms-auto p-4 p-lg-0">
+            <div class="navbar-nav ms-auto p-4 p-lg-0 px-lg-3">
                 <a href="/product" class="nav-item nav-link active">Home</a>
                 <a href="/about" class="nav-item nav-link">About Us</a>
                 <a href="/product" class="nav-item nav-link">Products</a>
                 <a href="/contact" class="nav-item nav-link">Contact Us</a>
             </div>
             <div class="d-none d-lg-flex ms-2 px-2">
-                <div class="dropdown me-3">
-                    <a class="btn-sm-square bg-white rounded-circle text-body dropdown-toggle d-flex align-items-center"
-                        href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
-                        <small class="fa fa-user"></small>
+                <div class="dropdown me-3 position-relative d-flex px-2">
+                    <a class="btn-sm-square rounded-circle text-body dropdown-toggle d-flex align-items-center" href="#"
+                        role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img src="{{ url_for('static', filename=user.profile_picture) }}" class="rounded-circle"
+                            style="width: 25px; height: 25px;">
                         <span class="ms-1">{{ username }}</span>
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
@@ -36,7 +37,7 @@
                         <li><a class="dropdown-item" href="/logoutuser">Logout</a></li>
                     </ul>
                 </div>
-                <a class="btn-sm-square bg-white rounded-circle ms-3 position-relative" href="/shoppingcart">
+                <a class="btn-sm-square rounded-circle ms-3 position-relative" href="/shoppingcart">
                     <small class="fa fa-shopping-bag text-body"></small>
                     <span class="badge badge-pill badge-danger position-absolute top-0 end-0"
                         style="font-size: 0.7rem; color: black; padding: 2px 4px;">{{ pesan | default(0, true) }}</span>

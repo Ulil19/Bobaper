@@ -1,9 +1,9 @@
 body {
-  background: #BA68C8;
+  background: #d0cece;
 }
 
-.profile {
-  margin: 20px 0;
+.mycontainer {
+  margin-top: 8rem;
 }
 
 .profile-sidebar {
@@ -71,18 +71,17 @@ body {
 }
 
 .profile-content {
-  padding: 20px;
   background: #fff;
   min-height: 460px;
 }
 
 .form-control:focus {
   box-shadow: none;
-  border-color: #BA68C8;
+  border-color: #ba68c8;
 }
 
 .profile-button {
-  background: #BA68C8;
+  background: #ba68c8;
   box-shadow: none;
   border: none;
 }
