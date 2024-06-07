@@ -554,11 +554,11 @@ def checkout():
         )
     except Exception as e:
         return jsonify({"result": "error", "message": str(e)}), 500
-    
+
 
 @app.route("/pesanan", methods=["GET", "POST"])
 def pesanan():
-    
+
     return render_template("user/pesanan.html")
 
 
@@ -570,7 +570,6 @@ def review():
 @app.route("/profile", methods=["GET", "POST"])
 def profile():
     return render_template("user/profile.html")
-
 
 
 @app.route("/logoutuser", methods=["GET", "POST"])
