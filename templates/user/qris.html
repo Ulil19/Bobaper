@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Qris Payment</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            width: 360px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .logo {
+            margin-bottom: 20px;
+            width: 200px;
+            /* Adjust the width as needed */
+            height: auto;
+            /* This will maintain the aspect ratio */
+        }
+
+        .qr-code {
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .qr-image {
+            width: 200px;
+            /* Adjust the width as needed */
+            height: auto;
+            /* This will maintain the aspect ratio */
+        }
+
+        .instructions {
+            text-align: left;
+            font-size: 14px;
+            margin-top: 20px;
+        }
+
+        .instructions li {
+            margin-bottom: 10px;
+        }
+
+        .footer {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #888;
+        }
+
+        .lang-selector {
+            margin-top: 10px;
+        }
+
+        .lang-selector a {
+            margin: 0 5px;
+            color: #0073e6;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <img src="./static/img/logo.png" alt="Tokopedia Logo" class="logo">
+        <h2>Scan QR code dengan aplikasi pembayaranmu</h2>
+        <p>Selesaikan pembayaran </p>
+        <div class="qr-code">
+            <img src="./static/img/qris.png" alt="QR Code" class="qr-image">
+        </div>
+        <h3>Total Bayar</h3>
+        <p>Rp70.300</p>
+        <div class="instructions">
+            <ol>
+                <li>Buka aplikasi bank atau e-wallet yang mendukung pembayaran QRIS di HP-mu.</li>
+                <li>Scan QR code di atas.</li>
+                <li>Pastikan total tagihan sudah benar, lalu klik "Bayar".</li>
+                <li>Setelah berhasil, pembayaran akan terverifikasi otomatis.</li>
+            </ol>
+            <p>Harap tidak menutup halaman ini sebelum pembayaran terverifikasi</p>
+        </div>
+        <div class="footer">
+            <p>&copy; 2024</p>
+        </div>
+    </div>
+</body>
+
+</html>
