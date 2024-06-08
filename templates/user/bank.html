@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopee Payment Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background-color: white;
+            width: 60%;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        .header {
+            background-color: #ff22f4;
+            padding: 10px;
+            text-align: center;
+            color: white;
+            font-size: 24px;
+            border-radius: 8px 8px 0 0;
+        }
+        .content {
+            padding: 20px;
+        }
+        .total-payment, .pay-within {
+            font-size: 18px;
+            margin: 10px 0;
+        }
+        .bank-details {
+            margin: 20px 0;
+        }
+        .bank-details p {
+            margin: 5px 0;
+        }
+        .bank-details .account-number {
+            font-size: 18px;
+            color: #ff5722;
+            display: flex;
+            align-items: center;
+        }
+        .bank-details .copy-button {
+            background-color: #ff5722;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            margin-left: 10px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .instructions {
+            margin-top: 20px;
+        }
+        .instructions h3 {
+            margin-bottom: 10px;
+        }
+        .instructions p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">Pembayaran</div>
+        <div class="content">
+            <div class="total-payment">Total Pembayaran: <strong>Rp43.500</strong></div>
+            <div class="bank-details">
+                <p>Bank BRI</p>
+                <p>No. Rekening:</p>
+                <div class="account-number">
+                    0077 0103 2206 538 
+                    <button class="copy-button" onclick="copyToClipboard()">SALIN</button>
+                </div>
+                <p>Hanya menerima dari Bank BRI</p>
+            </div>
+            <div class="instructions">
+                <h3>Petunjuk Transfer mBanking</h3>
+                <p>1. Masuk ke menu Mobile Banking BRI. Kemudian, pilih <strong>Pembayaran > BRIVA</strong>.</p>
+                <p>2. Masukkan <strong>Nomor BRIVA:0077 0103 2206 538</strong>.</p>
+                <p>3. Masukkan PIN Anda dan pilih <strong>Send</strong>. Apabila pesan konfirmasi untuk transaksi menggunakan SMS muncul, pilih <strong>OK</strong>. Status transaksi akan dikirimkan melalui SMS dan dapat dijadikan sebagai bukti pembayaran.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function copyToClipboard() {
+            const accountNumber = "007701032206538";
+            navigator.clipboard.writeText(accountNumber).then(() => {
+                alert('Nomor rekening berhasil disalin: ' + accountNumber);
+            }, () => {
+                alert('Gagal menyalin nomor rekening');
+            });
+        }
+    </script>
+</body>
+</html>
