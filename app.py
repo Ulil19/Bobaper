@@ -17,6 +17,7 @@ import jwt
 from bson import ObjectId
 from datetime import datetime, timedelta
 import hashlib
+from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 
@@ -568,6 +569,7 @@ def checkout():
             username=username,
             pesan=pesan,
             pengiriman=pengiriman,
+            user=user_doc,
         )
 
     except jwt.ExpiredSignatureError:
@@ -584,8 +586,11 @@ def checkout():
 
 @app.route("/pesanan", methods=["GET", "POST"])
 def pesanan():
-
-    return render_template("user/pesanan.html")
+    user = {
+        'username': 'ramadhanirizky298',
+        'profile_picture': 'profile.jpg'  # Ensure this image exists in the 'static' folder
+    }
+    return render_template('user/pesanan.html', user=user)
 
 
 @app.route("/review", methods=["GET", "POST"])
@@ -594,29 +599,58 @@ def review():
 
 
 @app.route("/profile", methods=["GET", "POST"])
-def profile():
-    token = request.cookies.get("token")
-    if not token:
-        return redirect(url_for("loginuser"))
-    try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
-        user_id = payload.get("user_id")
-        user_doc = db.users.find_one({"_id": ObjectId(user_id)})
-        pesan = db.cartuser.count_documents({"user_id": str(user_doc["_id"])})
-        username = user_doc.get("username")
-        return render_template(
-            "user/profile.html", username=username, pesan=pesan, user=user_doc
-        )
-    except jwt.ExpiredSignatureError:
-        return redirect(
-            url_for("loginuser", error_msg="Token expired. Please login again.")
-        )
-    except jwt.InvalidTokenError:
-        return redirect(
-            url_for("loginuser", error_msg="Invalid token. Please login again.")
+@token_required
+def profile(user):
+    if request.method == "POST":
+        # Get the form data
+        username = request.form.get("username")
+        email = user.get("email")  # Retrieve existing email from user object
+        notelp = int(request.form.get("notelp"))
+        address = request.form.get("address")
+
+        # Handle file upload
+        profile_picture = request.files.get("profile_picture")
+        profile_picture_filename = user.get('profile_picture', 'default.jpg')  # Default to existing picture or default.jpg
+
+        if profile_picture:
+            # Generate a secure filename based on the user's input
+            profile_filename = secure_filename(profile_picture.filename)
+            extension = profile_filename.split(".")[-1]
+            profile_picture_filename = f"profile_pics/{username}.{extension}"
+            
+            # Save the new profile picture
+            profile_picture.save(os.path.join(app.static_folder, profile_picture_filename))
+
+        # Update the user document in the database
+        db.users.update_one(
+            {"_id": ObjectId(user["_id"])},
+            {"$set": {
+                "username": username,
+                "notelp": notelp,
+                "address": address,
+                "profile_picture": profile_picture_filename
+            }}
         )
 
+        # Update the user object to reflect the changes
+        user.update({
+            "username": username,
+            "notelp": notelp,
+            "address": address,
+            "profile_picture": profile_picture_filename
+        })
 
+    pesan = db.cartuser.count_documents({"user_id": str(user["_id"])})
+    return render_template(
+        "user/profile.html", username=user.get("username"), pesan=pesan, user=user
+    )
+
+@app.route("/bank", methods=["GET", "POST"])
+def bank():
+    return render_template("user/bank.html")
+@app.route("/qris", methods=["GET", "POST"])
+def qris():
+    return render_template("user/qris.html")
 @app.route("/logoutuser", methods=["GET", "POST"])
 def logoutuser():
     response = make_response(redirect(url_for("loginuser")))
