@@ -537,17 +537,14 @@ def checkout():
         payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
         user_id = payload.get("user_id")
         user_doc = db.users.find_one({"_id": ObjectId(user_id)})
+        if not user_doc:
+            raise Exception("User not found")
         username = user_doc.get("username")
         pesan = db.cartuser.count_documents({"user_id": str(user_doc["_id"])})
 
         # Handle POST request for checkout
         if request.method == "POST":
-            namalengkap = request.form.get("namalengkap")
-            nohp = request.form.get("nohp")
-            address = request.form.get("address")
-            address2 = request.form.get("address2")
-            payment_method = request.form.get("paymentMethod")
-            pengiriman = request.cookies.get("pengiriman")
+            pengiriman = request.form.get("pengiriman")  # Get pengiriman from form data
 
             # Get cart items from the user's cart
             cart_items = list(db.cartuser.find({"user_id": str(user_id)}))
@@ -558,11 +555,6 @@ def checkout():
             # Save the order to the database
             order = {
                 "user_id": str(user_doc["_id"]),
-                "namalengkap": namalengkap,
-                "nohp": nohp,
-                "address": address,
-                "address2": address2,
-                "payment_method": payment_method,
                 "pengiriman": pengiriman,
                 "cart_items": cart_items,
                 "total_harga": total_harga,
@@ -571,7 +563,7 @@ def checkout():
             }
             db.orders.insert_one(order)
 
-            return redirect(url_for("statuspesananuser"))
+            return redirect(url_for("checkout"))
 
         # Handle GET request for checkout page
         cart_items = list(db.cartuser.find({"user_id": str(user_id)}))
@@ -600,6 +592,8 @@ def checkout():
             url_for("loginuser", error_msg="Invalid token. Please login again.")
         )
     except Exception as e:
+        # Log the exception to the server logs
+        app.logger.error(f"An error occurred: {str(e)}")
         return jsonify({"result": "error", "message": str(e)}), 500
 
 
@@ -710,4 +704,4 @@ def logoutuser():
 
 
 if __name__ == "__main__":
-    app.run("0.0.0.0", port=5001, debug=True)
+    app.run("0.0.0.0", port=5000, debug=True)

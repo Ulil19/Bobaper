@@ -54,25 +54,37 @@
             <div class="col">ITEMS {{ cart_items|length }}</div>
             <div class="col text-right mb-1">Rp {{ '{:,}'.format(total_harga) }}</div>
         </div>
-        <form>
+        <form method="POST" action="/checkout">
             <p>Pengiriman</p>
             <select class="form-control" id="pengiriman" name="pengiriman" required>
                 <option class="text-muted" disabled selected>------ Pilih Pengiriman ------</option>
                 <option class="text-muted" value="Ambil di Tempat">Ambil di Tempat</option>
-                <option class="text-muted" value="Dikirim Sesuai Alamat">Dikirim sesuai alamat (Biaya Ongkir ditanggung
-                    pembeli)</option>
+                <option class="text-muted" value="Dikirim Sesuai Alamat">Dikirim sesuai alamat (Biaya Ongkir ditanggung pembeli)</option>
             </select>
+            <div class="row mt-3" style="border-top: 1px solid rgba(0,0,0,.1); padding-top: 2vh;">
+                <div class="col">TOTAL HARGA</div>
+                <div class="col text-right">Rp {{ '{:,}'.format(total_harga) }}</div>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block mt-3" id="btn-checkout">CHECKOUT</button>
         </form>
-        <div class="row mt-3" style="border-top: 1px solid rgba(0,0,0,.1); padding-top: 2vh;">
-            <div class="col">TOTAL HARGA</div>
-            <div class="col text-right">Rp {{ '{:,}'.format(total_harga) }}</div>
-        </div>
-        <a href="/checkout" class="btn btn-primary btn-block mt-3" id="btn-checkout">CHECKOUT</a>
+
     </div>
 </div>
 </div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+    document.querySelector('#btn-checkout').addEventListener('click', function (event) {
+        event.preventDefault();
+        
+        const form = event.target.closest('form');
+        if (form) {
+            form.submit();
+        } else {
+            alert('Form not found!');
+        }
+    });
+
     // Quantity change event
     document.querySelectorAll('.btn-quantity').forEach(button => {
         button.addEventListener('click', function (event) {
@@ -84,7 +96,7 @@
             let quantity = parseInt(quantityElement.innerText); // Get the current quantity
 
             // Get the product ID
-            var productId = $(this).data("id");
+            var productId = this.getAttribute('data-id');
 
             // Update quantity based on action
             if (action === 'increment') {
@@ -104,16 +116,16 @@
                     action: action
                 })
             })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.result === 'success') {
-                        // Reload the page to reflect changes
-                        location.reload();
-                    } else {
-                        alert(data.message);
-                    }
-                })
-                .catch(error => console.error('Error:', error));
+            .then(response => response.json())
+            .then(data => {
+                if (data.result === 'success') {
+                    // Reload the page to reflect changes
+                    location.reload();
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(error => console.error('Error:', error));
         });
     });
 
@@ -123,7 +135,7 @@
             event.preventDefault();
 
             // Get the product ID
-            var productId = $(this).data("id");
+            var productId = this.getAttribute('data-id');
 
             fetch('/deletecartitem', {
                 method: 'POST',
@@ -134,68 +146,20 @@
                     product_id: productId
                 })
             })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.result === 'success') {
-                        // Reload the page to reflect changes
-                        location.reload();
-                    } else {
-                        alert(data.message);
-                    }
-                })
-                .catch(error => console.error('Error:', error));
-        });
-    });
-
-    // Checkout event
-    document.querySelector('.btn-primary').addEventListener('click', function (event) {
-        event.preventDefault();
-
-        const cartItems = [];
-        document.querySelectorAll('.row.border-top.border-bottom').forEach(row => {
-            const productId = row.querySelector('.btn-quantity[data-action="increment"]').getAttribute('data-id');
-            const quantity = parseInt(row.querySelector('.border').innerText);
-            const productName = row.querySelector('.text-muted').innerText;
-            const productPrice = parseFloat(row.querySelector('.col.text-right').innerText.replace('Rp ', '').replace(',', ''));
-
-            cartItems.push({
-                product_id: productId,
-                product_name: productName,
-                product_price: productPrice,
-                quantity: quantity
-            });
-        });
-
-        const totalHarga = parseFloat(document.querySelector('.summary .col.text-right').innerText.replace('Rp ', '').replace(',', ''));
-        // Get the selected value from the dropdown
-        var pengiriman = document.getElementById('pengiriman').value;
-
-        if (!pengiriman) {
-            alert('Please select a delivery method.');
-            return;
-        }
-
-        $.ajax({
-            url: '/checkout',
-            method: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify({
-                cart_items: cartItems,
-                total_harga: totalHarga,
-                pengiriman: pengiriman
-            }),
-            success: function (response) {
-                if (response.result === 'success') {
-                    window.location.href = '/checkout';
+            .then(response => response.json())
+            .then(data => {
+                if (data.result === 'success') {
+                    // Reload the page to reflect changes
+                    location.reload();
                 } else {
-                    alert(response.message);
+                    alert(data.message);
                 }
-            },
-            error: function (error) {
-                console.error('Error:', error);
-            }
+            })
+            .catch(error => console.error('Error:', error));
         });
     });
+});
+
 </script>
 
 
