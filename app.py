@@ -629,7 +629,7 @@ def pesan():
                 "cart_items": cart_items,
                 "payment_proof": filepath,
                 "status": "sedang dikonfirmasi",
-                "created_at": datetime.utcnow(),
+                "created_at": datetime.now(),
             }
 
             # Save order to database
