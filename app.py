@@ -544,26 +544,27 @@ def checkout():
 
         # Handle POST request for checkout
         if request.method == "POST":
-            pengiriman = request.form.get("pengiriman")  # Get pengiriman from form data
+            if "checkout" in request.form:  # Check if the 'Pesan' button was clicked
+                pengiriman = request.form.get("pengiriman")  # Get pengiriman from form data
 
-            # Get cart items from the user's cart
-            cart_items = list(db.cartuser.find({"user_id": str(user_id)}))
-            total_harga = sum(
-                item["product_price"] * item["quantity"] for item in cart_items
-            )
+                # Get cart items from the user's cart
+                cart_items = list(db.cartuser.find({"user_id": str(user_id)}))
+                total_harga = sum(
+                    item["product_price"] * item["quantity"] for item in cart_items
+                )
 
-            # Save the order to the database
-            order = {
-                "user_id": str(user_doc["_id"]),
-                "pengiriman": pengiriman,
-                "cart_items": cart_items,
-                "total_harga": total_harga,
-                "status": "sedang dikonfirmasi",
-                "created_at": datetime.utcnow(),
-            }
-            db.orders.insert_one(order)
+                # Save the order to the database
+                order = {
+                    "user_id": str(user_doc["_id"]),
+                    "pengiriman": pengiriman,
+                    "cart_items": cart_items,
+                    "total_harga": total_harga,
+                    "status": "sedang dikonfirmasi",
+                    "created_at": datetime.utcnow(),
+                }
+                db.orders.insert_one(order)
 
-            return redirect(url_for("checkout"))
+                return redirect(url_for("statuspesananuser"))
 
         # Handle GET request for checkout page
         cart_items = list(db.cartuser.find({"user_id": str(user_id)}))

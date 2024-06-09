@@ -1,0 +1,107 @@
+{% extends "/user/layout/layoutuser.html" %} {% block content %}
+<div class="container" style="margin-top: 8rem">
+  <h2 class="mb-4">Status Pesanan Anda</h2>
+  {% if orders %}
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th scope="col">No</th>
+        <th scope="col">Order ID</th>
+        <th scope="col">Tanggal</th>
+        <th scope="col">Total Harga</th>
+        <th scope="col">Status</th>
+        <th scope="col">Detail</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for order in orders %}
+      <tr>
+        <th scope="row">{{ loop.index }}</th>
+        <td>{{ order._id }}</td>
+        <td>{{ order.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+        <td>Rp. {{ '{:,}'.format(order.total_harga) }}</td>
+        <td>{{ order.status }}</td>
+        <td>
+          <button
+            class="btn btn-primary btn-sm"
+            onclick="showOrderDetails('{{ order._id }}')"
+          >
+            Detail
+          </button>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p class="text-muted">Anda belum memiliki pesanan.</p>
+  {% endif %}
+</div>
+
+<div
+  class="modal fade"
+  id="orderDetailsModal"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="orderDetailsModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="orderDetailsModalLabel">Detail Pesanan</h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <!-- Order details will be loaded here via JavaScript -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+          Tutup
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function showOrderDetails(orderId) {
+    // Fetch order details using AJAX and show them in the modal
+    fetch(`/orderdetails/${orderId}`)
+      .then((response) => response.json())
+      .then((data) => {
+        const modalBody = document.querySelector(
+          "#orderDetailsModal .modal-body"
+        );
+        modalBody.innerHTML = `
+        <p><strong>Order ID:</strong> ${data._id}</p>
+        <p><strong>Tanggal:</strong> ${new Date(
+          data.created_at
+        ).toLocaleString()}</p>
+        <p><strong>Total Harga:</strong> Rp. ${data.total_harga.toLocaleString()}</p>
+        <p><strong>Status:</strong> ${data.status}</p>
+        <h5>Items:</h5>
+        <ul>
+          ${data.cart_items
+            .map(
+              (item) =>
+                `<li>${item.product_name} - ${
+                  item.quantity
+                } x Rp. ${item.product_price.toLocaleString()}</li>`
+            )
+            .join("")}
+        </ul>
+      `;
+        $("#orderDetailsModal").modal("show");
+      })
+      .catch((error) => console.error("Error fetching order details:", error));
+  }
+</script>
+{% endblock %}
