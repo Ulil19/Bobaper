@@ -615,17 +615,21 @@ def pesan():
             total_harga = sum(
                 item["product_price"] * item["quantity"] for item in cart_items
             )
+            pengiriman = request.cookies.get("pengiriman")
+            # print(pengiriman)
+
 
             # Prepare order data
             order_data = {
                 "user_id": user_id,
+                "nama": data.get("namalengkap"),
                 "username": user.get("username"),
                 "notelp": data.get("nohp"),
                 "address": data.get("address"),
                 "address2": data.get("address2"),
                 "payment_method": payment_method,
                 "total_harga": total_harga,
-                "pengiriman": data.get("pengiriman"),
+                "pengiriman": pengiriman,
                 "cart_items": cart_items,
                 "payment_proof": filepath,
                 "status": "sedang dikonfirmasi",

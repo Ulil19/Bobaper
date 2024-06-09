@@ -50,7 +50,7 @@
 
         <div class="mb-3">
           <label for="nohp">No HP <span class="text-muted">(Wajib)</span></label>
-          <input type="number" class="form-control" id="nohp" placeholder="+62" required value="{{ user.notelp }}" />
+          <input type="number" class="form-control" id="nohp" name="nohp" placeholder="+62" required value="{{ user.notelp }}" />
           <div class="invalid-feedback">Please enter your phone number.</div>
         </div>
 
@@ -199,6 +199,9 @@
       } else if (paymentMethod === 'cod') {
         formData.append('payment_method', 'cod');
       }
+
+      // Append phone number manually to formData
+      formData.append('nohp', $('#nohp').val());
 
       $.ajax({
         url: '/pesan',
