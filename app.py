@@ -616,8 +616,6 @@ def pesan():
                 item["product_price"] * item["quantity"] for item in cart_items
             )
             pengiriman = request.cookies.get("pengiriman")
-            # print(pengiriman)
-
 
             # Prepare order data
             order_data = {
@@ -640,7 +638,9 @@ def pesan():
             db.orders.insert_one(order_data)
 
             # Clear user's cart
-            db.cartuser.delete_many({"user_id": str(user_id)})
+            result = db.cartuser.delete_many({"user_id": str(user_id)})
+            if result.deleted_count == 0:
+                raise Exception("Cart items were not deleted")
 
             return jsonify({"result": "success"})
         else:
@@ -655,6 +655,7 @@ def pesan():
         )
     except Exception as e:
         return jsonify({"result": "error", "message": str(e)}), 500
+
 
 
 @app.route("/statuspesananuser", methods=["GET"])
