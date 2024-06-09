@@ -542,16 +542,36 @@ def checkout():
 
         # Handle POST request for checkout
         if request.method == "POST":
-            data = request.json
-            cart_items = data.get("cart_items", [])
-            total_harga = data.get("total_harga", 0.0)
-            pengiriman = data.get("pengiriman")
-            # print(pengiriman)
+            namalengkap = request.form.get("namalengkap")
+            nohp = request.form.get("nohp")
+            address = request.form.get("address")
+            address2 = request.form.get("address2")
+            payment_method = request.form.get("paymentMethod")
+            pengiriman = request.cookies.get("pengiriman")
 
-            # Set delivery method cookie
-            response = make_response(jsonify({"result": "success"}))
-            response.set_cookie("pengiriman", pengiriman)
-            return response
+            # Get cart items from the user's cart
+            cart_items = list(db.cartuser.find({"user_id": str(user_id)}))
+            total_harga = sum(
+                item["product_price"] * item["quantity"] for item in cart_items
+            )
+
+            # Save the order to the database
+            order = {
+                "user_id": str(user_doc["_id"]),
+                "namalengkap": namalengkap,
+                "nohp": nohp,
+                "address": address,
+                "address2": address2,
+                "payment_method": payment_method,
+                "pengiriman": pengiriman,
+                "cart_items": cart_items,
+                "total_harga": total_harga,
+                "status": "sedang dikonfirmasi",
+                "created_at": datetime.utcnow(),
+            }
+            db.orders.insert_one(order)
+
+            return redirect(url_for("statuspesananuser"))
 
         # Handle GET request for checkout page
         cart_items = list(db.cartuser.find({"user_id": str(user_id)}))
@@ -560,7 +580,6 @@ def checkout():
         )
 
         pengiriman = request.cookies.get("pengiriman")
-        # print(pengiriman)
 
         return render_template(
             "user/checkout.html",
@@ -584,13 +603,39 @@ def checkout():
         return jsonify({"result": "error", "message": str(e)}), 500
 
 
-@app.route("/pesanan", methods=["GET", "POST"])
-def pesanan():
-    user = {
-        'username': 'ramadhanirizky298',
-        'profile_picture': 'profile.jpg'  # Ensure this image exists in the 'static' folder
-    }
-    return render_template('user/pesanan.html', user=user)
+@app.route("/statuspesananuser", methods=["GET"])
+def statuspesananuser():
+    token = request.cookies.get("token")
+    if not token:
+        return redirect(url_for("loginuser"))
+
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+        user_id = payload.get("user_id")
+        user_doc = db.users.find_one({"_id": ObjectId(user_id)})
+        username = user_doc.get("username")
+
+        orders = list(db.orders.find({"user_id": str(user_id)}))
+        for order in orders:
+            order["_id"] = str(order["_id"])
+
+        return render_template(
+            "user/statuspesananuser.html",
+            user=user_doc,
+            username=username,
+            orders=orders,
+        )
+
+    except jwt.ExpiredSignatureError:
+        return redirect(
+            url_for("loginuser", error_msg="Token expired. Please login again.")
+        )
+    except jwt.InvalidTokenError:
+        return redirect(
+            url_for("loginuser", error_msg="Invalid token. Please login again.")
+        )
+    except Exception as e:
+        return jsonify({"result": "error", "message": str(e)}), 500
 
 
 @app.route("/review", methods=["GET", "POST"])
@@ -610,47 +655,50 @@ def profile(user):
 
         # Handle file upload
         profile_picture = request.files.get("profile_picture")
-        profile_picture_filename = user.get('profile_picture', 'default.jpg')  # Default to existing picture or default.jpg
+        profile_picture_filename = user.get(
+            "profile_picture", "default.jpg"
+        )  # Default to existing picture or default.jpg
 
         if profile_picture:
             # Generate a secure filename based on the user's input
             profile_filename = secure_filename(profile_picture.filename)
             extension = profile_filename.split(".")[-1]
             profile_picture_filename = f"profile_pics/{username}.{extension}"
-            
+
             # Save the new profile picture
-            profile_picture.save(os.path.join(app.static_folder, profile_picture_filename))
+            profile_picture.save(
+                os.path.join(app.static_folder, profile_picture_filename)
+            )
 
         # Update the user document in the database
         db.users.update_one(
             {"_id": ObjectId(user["_id"])},
-            {"$set": {
-                "username": username,
-                "notelp": notelp,
-                "address": address,
-                "profile_picture": profile_picture_filename
-            }}
+            {
+                "$set": {
+                    "username": username,
+                    "notelp": notelp,
+                    "address": address,
+                    "profile_picture": profile_picture_filename,
+                }
+            },
         )
 
         # Update the user object to reflect the changes
-        user.update({
-            "username": username,
-            "notelp": notelp,
-            "address": address,
-            "profile_picture": profile_picture_filename
-        })
+        user.update(
+            {
+                "username": username,
+                "notelp": notelp,
+                "address": address,
+                "profile_picture": profile_picture_filename,
+            }
+        )
 
     pesan = db.cartuser.count_documents({"user_id": str(user["_id"])})
     return render_template(
         "user/profile.html", username=user.get("username"), pesan=pesan, user=user
     )
 
-@app.route("/bank", methods=["GET", "POST"])
-def bank():
-    return render_template("user/bank.html")
-@app.route("/qris", methods=["GET", "POST"])
-def qris():
-    return render_template("user/qris.html")
+
 @app.route("/logoutuser", methods=["GET", "POST"])
 def logoutuser():
     response = make_response(redirect(url_for("loginuser")))

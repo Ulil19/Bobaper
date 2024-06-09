@@ -31,7 +31,7 @@
     </div>
     <div class="col-md-8 order-md-1" style="margin-top: 2rem;">
       <h4 class="mb-3">Alamat pembeli</h4>
-      <form id="paymentForm" class="needs-validation" novalidate method="POST">
+      <form id="paymentForm" class="needs-validation" novalidate method="POST" enctype="multipart/form-data">
         <div class="mb-3">
           <label for="namalengkap">Nama Lengkap</label>
           <input type="text" class="form-control" id="namalengkap" name="namalengkap" required />
@@ -56,7 +56,8 @@
 
         <div class="mb-3">
           <label for="address">Alamat</label>
-          <textarea class="form-control" id="address" placeholder="Jalan" name="address" required>{{ user.address }}</textarea>
+          <textarea class="form-control" id="address" placeholder="Jalan" name="address"
+            required>{{ user.address }}</textarea>
           <div class="invalid-feedback">Please enter your shipping address.</div>
         </div>
 
@@ -82,33 +83,104 @@
             <label class="custom-control-label" for="cod">COD</label>
           </div>
         </div>
-        
+
+        <div id="bank-section" class="payment-section">
+          <div class="header">Pembayaran Bank</div>
+          <div class="content">
+            <div class="total-payment">Total Pembayaran: <strong>Rp. {{ '{:,}'.format(total_harga)}}</strong></div>
+            <div class="bank-details">
+              <p>Bank BRI</p>
+              <p>No. Rekening:</p>
+              <div class="account-number">
+                7174465724
+                <button type="button" class="btn btn-primary btn-sm copy-button"
+                  onclick="copyToClipboard()">SALIN</button>
+              </div>
+              <p>Mohammad Ahnaf Raid Yosna
+                BANK BSI</p>
+            </div>
+            <div class="instructions">
+              <h3>Petunjuk Transfer mBanking</h3>
+              <p>1. Masuk ke menu Mobile Banking BRI. Kemudian, pilih <strong>Pembayaran > BRIVA</strong>.</p>
+              <p>2. Masukkan <strong>Nomor BRIVA:7174465724</strong>.</p>
+              <p>3. Masukkan PIN Anda dan pilih <strong>Send</strong>. Apabila pesan konfirmasi untuk transaksi
+                menggunakan SMS muncul, pilih <strong>OK</strong>. Status transaksi akan dikirimkan melalui SMS dan
+                dapat dijadikan sebagai bukti pembayaran.</p>
+            </div>
+            <div class="mb-3">
+              <label for="bankProof">Upload Bukti Pembayaran</label>
+              <input type="file" class="form-control-file" id="bankProof" name="bankProof" required />
+            </div>
+          </div>
+        </div>
+
+        <div id="qris-section" class="payment-section">
+          <h2>Scan QR code dengan aplikasi pembayaranmu</h2>
+          <p>Selesaikan pembayaran</p>
+          <div class="qr-code">
+            <img src="./static/img/qris.png" alt="QR Code" class="qr-image">
+          </div>
+          <h3>Total Bayar</h3>
+          <p>Rp. {{ '{:,}'.format(total_harga)}}</p>
+          <div class="instructions">
+            <ol>
+              <li>Buka aplikasi bank atau e-wallet yang mendukung pembayaran QRIS di HP-mu.</li>
+              <li>Scan QR code di atas.</li>
+              <li>Pastikan total tagihan sudah benar, lalu klik "Bayar".</li>
+              <li>Setelah berhasil, pembayaran akan terverifikasi otomatis.</li>
+            </ol>
+            <p>Harap tidak menutup halaman ini sebelum pembayaran terverifikasi</p>
+          </div>
+          <div class="mb-3">
+            <label for="qrisProof">Upload Bukti Pembayaran</label>
+            <input type="file" class="form-control-file" id="qrisProof" name="qrisProof" required />
+          </div>
+        </div>
+
+        <div id="cod-section" class="payment-section">
+          <h5>Proses COD akan dikonfirmasi oleh admin</h5>
+        </div>
         <hr class="mb-4" />
-        <button class="btn btn-primary btn-lg btn-block" type="submit">Pay</button>
+        <button class="btn btn-primary btn-lg btn-block" type="submit">Pesan</button>
       </form>
     </div>
   </div>
 </div>
-
 <script>
-  document.getElementById('paymentForm').addEventListener('submit', function(event) {
-    const selectedPaymentMethod = document.querySelector('input[name="paymentMethod"]:checked').id;
-    let actionUrl = '';
+  function showPaymentSection() {
+    const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').id;
+    const bankSection = document.getElementById('bank-section');
+    const qrisSection = document.getElementById('qris-section');
+    const codSection = document.getElementById('cod-section');
 
-    switch (selectedPaymentMethod) {
-      case 'bank':
-        actionUrl = '/bank';
-        break;
-      case 'qris':
-        actionUrl = '/qris';
-        break;
-      case 'cod':
-        actionUrl = '/cod';
-        break;
-     
+    bankSection.style.display = 'none';
+    qrisSection.style.display = 'none';
+    codSection.style.display = 'none';
+
+    if (paymentMethod === 'bank') {
+      bankSection.style.display = 'block';
+    } else if (paymentMethod === 'qris') {
+      qrisSection.style.display = 'block';
+    } else if (paymentMethod === 'cod') {
+      codSection.style.display = 'block';
     }
+  }
 
-    this.action = actionUrl;
+  document.addEventListener('DOMContentLoaded', function () {
+    const radioButtons = document.querySelectorAll('input[name="paymentMethod"]');
+    radioButtons.forEach(radio => {
+      radio.addEventListener('change', showPaymentSection);
+    });
+    showPaymentSection(); // Show the initial selection
   });
+
+  function copyToClipboard() {
+    const accountNumber = document.querySelector('.account-number').innerText.trim();
+    navigator.clipboard.writeText(accountNumber).then(function () {
+      alert('Nomor rekening disalin ke clipboard!');
+    }, function () {
+      alert('Gagal menyalin nomor rekening.');
+    });
+  }
 </script>
 {% endblock %}
