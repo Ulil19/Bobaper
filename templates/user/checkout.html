@@ -1,12 +1,11 @@
-{% extends "/user/layout/layoutuser.html" %} {% block content %}
-<div class="container" style="margin-top: 8rem">
+{% extends "/user/layout/layoutuser.html" %}
+{% block content %}
+<div class="container" style="margin-top: 8rem;">
   <div class="row">
     <div class="col-md-4 order-md-2 mb-4">
       <h4 class="d-flex justify-content-between align-items-center mb-3">
         <span class="text-muted">Your cart</span>
-        <span class="text-muted badge badge-secondary badge-pill"
-          >{{ cart_items|length }}</span
-        >
+        <span class="text-muted badge badge-secondary badge-pill">{{ cart_items|length }}</span>
       </h4>
       <ul class="list-group mb-3">
         {% for item in cart_items %}
@@ -15,43 +14,27 @@
             <h6 class="my-0">{{ item.product_name }}</h6>
             <span class="text-muted">jumlah : {{ item.quantity }}</span>
           </div>
-          <span class="text-muted"
-            >Rp. {{ '{:,}'.format(item.product_price * item.quantity) }}</span
-          >
+          <span class="text-muted">Rp. {{ '{:,}'.format(item.product_price * item.quantity) }}</span>
         </li>
         {% endfor %}
         <li class="list-group-item d-flex justify-content-between">
           <span>Total (RUPIAH)</span>
-          <strong>Rp {{ '{:,}'.format(total_harga)}} </strong>
+          <strong>Rp. {{ '{:,}'.format(total_harga) }} </strong>
         </li>
       </ul>
       <div class="mb-3">
         <h6>Pengiriman</h6>
         <p>Pengiriman : {{ pengiriman }}</p>
-        <p class="small text-muted" style="margin-bottom: 3px">Note:</p>
-        <p class="text-muted small">
-          jika pengiriman diantar, biaya ongkir akan dihubungi lewat whatapps
-        </p>
+        <p class="small text-muted" style="margin-bottom: 3px;">Note:</p>
+        <p class="text-muted small">jika pengiriman diantar, biaya ongkir akan dihubungi lewat whatapps</p>
       </div>
     </div>
-    <div class="col-md-8 order-md-1" style="margin-top: 2rem">
+    <div class="col-md-8 order-md-1" style="margin-top: 2rem;">
       <h4 class="mb-3">Alamat pembeli</h4>
-      <form
-        id="paymentForm"
-        class="needs-validation"
-        novalidate
-        method="POST"
-        enctype="multipart/form-data"
-      >
+      <form id="paymentForm" class="needs-validation" novalidate method="POST" enctype="multipart/form-data">
         <div class="mb-3">
           <label for="namalengkap">Nama Lengkap</label>
-          <input
-            type="text"
-            class="form-control"
-            id="namalengkap"
-            name="namalengkap"
-            required
-          />
+          <input type="text" class="form-control" id="namalengkap" name="namalengkap" required />
           <div class="invalid-feedback">Please enter your name.</div>
         </div>
 
@@ -61,57 +44,26 @@
             <div class="input-group-prepend">
               <span class="input-group-text">@</span>
             </div>
-            <input
-              type="text"
-              class="form-control"
-              id="username"
-              value="{{ username }}"
-              readonly
-            />
+            <input type="text" class="form-control" id="username" value="{{ username }}" readonly />
           </div>
         </div>
 
         <div class="mb-3">
-          <label for="nohp"
-            >No HP <span class="text-muted">(Wajib)</span></label
-          >
-          <input
-            type="number"
-            class="form-control"
-            id="nohp"
-            placeholder="+62"
-            required
-            value="{{ user.notelp }}"
-          />
+          <label for="nohp">No HP <span class="text-muted">(Wajib)</span></label>
+          <input type="number" class="form-control" id="nohp" placeholder="+62" required value="{{ user.notelp }}" />
           <div class="invalid-feedback">Please enter your phone number.</div>
         </div>
 
         <div class="mb-3">
           <label for="address">Alamat</label>
-          <textarea
-            class="form-control"
-            id="address"
-            placeholder="Jalan"
-            name="address"
-            required
-          >
-{{ user.address }}</textarea
-          >
-          <div class="invalid-feedback">
-            Please enter your shipping address.
-          </div>
+          <textarea class="form-control" id="address" placeholder="Jalan" name="address"
+            required>{{ user.address }}</textarea>
+          <div class="invalid-feedback">Please enter your shipping address.</div>
         </div>
 
         <div class="mb-3">
-          <label for="address2"
-            >Alamat 2 <span class="text-muted">(Optional)</span></label
-          >
-          <textarea
-            class="form-control"
-            id="address2"
-            placeholder="Norumah"
-            name="address2"
-          ></textarea>
+          <label for="address2">Alamat 2 <span class="text-muted">(Optional)</span></label>
+          <textarea class="form-control" id="address2" placeholder="Norumah" name="address2"></textarea>
         </div>
 
         <hr class="mb-4" />
@@ -119,34 +71,15 @@
         <h4 class="mb-3">Payment</h4>
         <div class="d-block my-3">
           <div class="custom-control custom-radio">
-            <input
-              id="bank"
-              name="paymentMethod"
-              type="radio"
-              class="custom-control-input"
-              checked
-              required
-            />
+            <input id="bank" name="paymentMethod" type="radio" class="custom-control-input" checked required />
             <label class="custom-control-label" for="bank">Bank</label>
           </div>
           <div class="custom-control custom-radio">
-            <input
-              id="qris"
-              name="paymentMethod"
-              type="radio"
-              class="custom-control-input"
-              required
-            />
+            <input id="qris" name="paymentMethod" type="radio" class="custom-control-input" required />
             <label class="custom-control-label" for="qris">Qris</label>
           </div>
           <div class="custom-control custom-radio">
-            <input
-              id="cod"
-              name="paymentMethod"
-              type="radio"
-              class="custom-control-input"
-              required
-            />
+            <input id="cod" name="paymentMethod" type="radio" class="custom-control-input" required />
             <label class="custom-control-label" for="cod">COD</label>
           </div>
         </div>
@@ -154,48 +87,28 @@
         <div id="bank-section" class="payment-section">
           <div class="header">Pembayaran Bank</div>
           <div class="content">
-            <div class="total-payment">
-              Total Pembayaran:
-              <strong>Rp. {{ '{:,}'.format(total_harga)}}</strong>
-            </div>
+            <div class="total-payment">Total Pembayaran: <strong>Rp. {{ '{:,}'.format(total_harga)}}</strong></div>
             <div class="bank-details">
               <p>Bank BRI</p>
               <p>No. Rekening:</p>
               <div class="account-number">
                 7174465724
-                <button
-                  type="button"
-                  class="btn btn-primary btn-sm copy-button"
-                  onclick="copyToClipboard()"
-                >
-                  SALIN
-                </button>
+                <button type="button" class="btn btn-primary btn-sm copy-button"
+                  onclick="copyToClipboard()">SALIN</button>
               </div>
               <p>Mohammad Ahnaf Raid Yosna BANK BSI</p>
             </div>
             <div class="instructions">
               <h3>Petunjuk Transfer mBanking</h3>
-              <p>
-                1. Masuk ke menu Mobile Banking BRI. Kemudian, pilih
-                <strong>Pembayaran > BRIVA</strong>.
-              </p>
+              <p>1. Masuk ke menu Mobile Banking BRI. Kemudian, pilih <strong>Pembayaran > BRIVA</strong>.</p>
               <p>2. Masukkan <strong>Nomor BRIVA:7174465724</strong>.</p>
-              <p>
-                3. Masukkan PIN Anda dan pilih <strong>Send</strong>. Apabila
-                pesan konfirmasi untuk transaksi menggunakan SMS muncul, pilih
-                <strong>OK</strong>. Status transaksi akan dikirimkan melalui
-                SMS dan dapat dijadikan sebagai bukti pembayaran.
-              </p>
+              <p>3. Masukkan PIN Anda dan pilih <strong>Send</strong>. Apabila pesan konfirmasi untuk transaksi
+                menggunakan SMS muncul, pilih <strong>OK</strong>. Status transaksi akan dikirimkan melalui SMS dan
+                dapat dijadikan sebagai bukti pembayaran.</p>
             </div>
             <div class="mb-3">
               <label for="bankProof">Upload Bukti Pembayaran</label>
-              <input
-                type="file"
-                class="form-control-file"
-                id="bankProof"
-                name="bankProof"
-                required
-              />
+              <input type="file" class="form-control-file" id="bankProof" name="bankProof" required />
             </div>
           </div>
         </div>
@@ -204,33 +117,22 @@
           <h2>Scan QR code dengan aplikasi pembayaranmu</h2>
           <p>Selesaikan pembayaran</p>
           <div class="qr-code">
-            <img src="./static/img/qris.png" alt="QR Code" class="qr-image" />
+            <img src="./static/img/qris.png" alt="QR Code" class="qr-image">
           </div>
           <h3>Total Bayar</h3>
           <p>Rp. {{ '{:,}'.format(total_harga)}}</p>
           <div class="instructions">
             <ol>
-              <li>
-                Buka aplikasi bank atau e-wallet yang mendukung pembayaran QRIS
-                di HP-mu.
-              </li>
+              <li>Buka aplikasi bank atau e-wallet yang mendukung pembayaran QRIS di HP-mu.</li>
               <li>Scan QR code di atas.</li>
               <li>Pastikan total tagihan sudah benar, lalu klik "Bayar".</li>
               <li>Setelah berhasil, pembayaran akan terverifikasi otomatis.</li>
             </ol>
-            <p>
-              Harap tidak menutup halaman ini sebelum pembayaran terverifikasi
-            </p>
+            <p>Harap tidak menutup halaman ini sebelum pembayaran terverifikasi</p>
           </div>
           <div class="mb-3">
             <label for="qrisProof">Upload Bukti Pembayaran</label>
-            <input
-              type="file"
-              class="form-control-file"
-              id="qrisProof"
-              name="qrisProof"
-              required
-            />
+            <input type="file" class="form-control-file" id="qrisProof" name="qrisProof" required />
           </div>
         </div>
 
@@ -238,61 +140,84 @@
           <h5>Proses COD akan dikonfirmasi oleh admin</h5>
         </div>
         <hr class="mb-4" />
-        <button
-          class="btn btn-primary btn-lg btn-block"
-          type="submit"
-          name="checkout"
-        >
-          Pesan
-        </button>
+        <button href="/pesan" class="btn btn-primary btn-lg btn-block" type="submit">Pesan</button>
       </form>
     </div>
   </div>
 </div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
   function showPaymentSection() {
-    const paymentMethod = document.querySelector(
-      'input[name="paymentMethod"]:checked'
-    ).id;
-    const bankSection = document.getElementById("bank-section");
-    const qrisSection = document.getElementById("qris-section");
-    const codSection = document.getElementById("cod-section");
+    const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').id;
+    const bankSection = document.getElementById('bank-section');
+    const qrisSection = document.getElementById('qris-section');
+    const codSection = document.getElementById('cod-section');
 
-    bankSection.style.display = "none";
-    qrisSection.style.display = "none";
-    codSection.style.display = "none";
+    bankSection.style.display = 'none';
+    qrisSection.style.display = 'none';
+    codSection.style.display = 'none';
 
-    if (paymentMethod === "bank") {
-      bankSection.style.display = "block";
-    } else if (paymentMethod === "qris") {
-      qrisSection.style.display = "block";
-    } else if (paymentMethod === "cod") {
-      codSection.style.display = "block";
+    if (paymentMethod === 'bank') {
+      bankSection.style.display = 'block';
+    } else if (paymentMethod === 'qris') {
+      qrisSection.style.display = 'block';
+    } else if (paymentMethod === 'cod') {
+      codSection.style.display = 'block';
     }
   }
 
-  document.addEventListener("DOMContentLoaded", function () {
-    const radioButtons = document.querySelectorAll(
-      'input[name="paymentMethod"]'
-    );
-    radioButtons.forEach((radio) => {
-      radio.addEventListener("change", showPaymentSection);
+  document.addEventListener('DOMContentLoaded', function () {
+    const radioButtons = document.querySelectorAll('input[name="paymentMethod"]');
+    radioButtons.forEach(radio => {
+      radio.addEventListener('change', showPaymentSection);
     });
     showPaymentSection(); // Show the initial selection
   });
 
   function copyToClipboard() {
-    const accountNumber = document
-      .querySelector(".account-number")
-      .innerText.trim();
-    navigator.clipboard.writeText(accountNumber).then(
-      function () {
-        alert("Nomor rekening disalin ke clipboard!");
-      },
-      function () {
-        alert("Gagal menyalin nomor rekening.");
-      }
-    );
+    const accountNumber = document.querySelector('.account-number').innerText.trim();
+    navigator.clipboard.writeText(accountNumber).then(function () {
+      alert('Nomor rekening disalin ke clipboard!');
+    }, function () {
+      alert('Gagal menyalin nomor rekening.');
+    });
   }
+
+  $(document).ready(function () {
+    $('#paymentForm').on('submit', function (event) {
+      event.preventDefault(); // Prevent the default form submission
+
+      // Collect form data
+      var formData = new FormData(this);
+
+      // Include selected payment method section data
+      const paymentMethod = $('input[name="paymentMethod"]:checked').attr('id');
+      if (paymentMethod === 'bank') {
+        formData.append('payment_method', 'bank');
+      } else if (paymentMethod === 'qris') {
+        formData.append('payment_method', 'qris');
+      } else if (paymentMethod === 'cod') {
+        formData.append('payment_method', 'cod');
+      }
+
+      $.ajax({
+        url: '/pesan',
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function (response) {
+          if (response.result === 'success') {
+            window.location.href = '/statuspesananuser'; // Redirect to status page
+          } else {
+            alert('Failed to place order: ' + response.message);
+          }
+        },
+        error: function (xhr, status, error) {
+          alert('Error: ' + error);
+        }
+      });
+    });
+  });
 </script>
 {% endblock %}

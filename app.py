@@ -537,34 +537,21 @@ def checkout():
         payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
         user_id = payload.get("user_id")
         user_doc = db.users.find_one({"_id": ObjectId(user_id)})
-        if not user_doc:
-            raise Exception("User not found")
         username = user_doc.get("username")
         pesan = db.cartuser.count_documents({"user_id": str(user_doc["_id"])})
 
         # Handle POST request for checkout
         if request.method == "POST":
-            if "checkout" in request.form:  # Check if the 'Pesan' button was clicked
-                pengiriman = request.form.get("pengiriman")  # Get pengiriman from form data
+            data = request.json
+            cart_items = data.get("cart_items", [])
+            total_harga = data.get("total_harga", 0.0)
+            pengiriman = data.get("pengiriman")
+            # print(pengiriman)
 
-                # Get cart items from the user's cart
-                cart_items = list(db.cartuser.find({"user_id": str(user_id)}))
-                total_harga = sum(
-                    item["product_price"] * item["quantity"] for item in cart_items
-                )
-
-                # Save the order to the database
-                order = {
-                    "user_id": str(user_doc["_id"]),
-                    "pengiriman": pengiriman,
-                    "cart_items": cart_items,
-                    "total_harga": total_harga,
-                    "status": "sedang dikonfirmasi",
-                    "created_at": datetime.utcnow(),
-                }
-                db.orders.insert_one(order)
-
-                return redirect(url_for("statuspesananuser"))
+            # Set delivery method cookie
+            response = make_response(jsonify({"result": "success"}))
+            response.set_cookie("pengiriman", pengiriman)
+            return response
 
         # Handle GET request for checkout page
         cart_items = list(db.cartuser.find({"user_id": str(user_id)}))
@@ -573,6 +560,7 @@ def checkout():
         )
 
         pengiriman = request.cookies.get("pengiriman")
+        # print(pengiriman)
 
         return render_template(
             "user/checkout.html",
@@ -593,8 +581,75 @@ def checkout():
             url_for("loginuser", error_msg="Invalid token. Please login again.")
         )
     except Exception as e:
-        # Log the exception to the server logs
-        app.logger.error(f"An error occurred: {str(e)}")
+        return jsonify({"result": "error", "message": str(e)}), 500
+
+
+@app.route("/pesan", methods=["POST"])
+def pesan():
+    token = request.cookies.get("token")
+    if not token:
+        return redirect(url_for("loginuser"))
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+        user_id = payload.get("user_id")
+        user = db.users.find_one({"_id": ObjectId(user_id)})
+        username = user.get("username")
+
+        if request.method == "POST":
+            data = request.form.to_dict()
+            payment_method = data.get("payment_method")
+
+            # Handle file upload
+            file = request.files.get("bankProof") or request.files.get("qrisProof")
+            if file:
+                filename = secure_filename(file.filename)
+                extension = filename.split(".")[-1]
+                buktibayar = f"{username}.{extension}"
+                filepath = f"static/buktipembayaran/{buktibayar}"
+                file.save(filepath)
+            else:
+                filepath = None  # or handle error appropriately
+
+            # Get cart items and calculate total_harga
+            cart_items = list(db.cartuser.find({"user_id": str(user_id)}))
+            total_harga = sum(
+                item["product_price"] * item["quantity"] for item in cart_items
+            )
+
+            # Prepare order data
+            order_data = {
+                "user_id": user_id,
+                "username": user.get("username"),
+                "notelp": data.get("nohp"),
+                "address": data.get("address"),
+                "address2": data.get("address2"),
+                "payment_method": payment_method,
+                "total_harga": total_harga,
+                "pengiriman": data.get("pengiriman"),
+                "cart_items": cart_items,
+                "payment_proof": filepath,
+                "status": "sedang dikonfirmasi",
+                "created_at": datetime.utcnow(),
+            }
+
+            # Save order to database
+            db.orders.insert_one(order_data)
+
+            # Clear user's cart
+            db.cartuser.delete_many({"user_id": str(user_id)})
+
+            return jsonify({"result": "success"})
+        else:
+            return jsonify({"result": "error", "message": "Invalid request method"})
+    except jwt.ExpiredSignatureError:
+        return redirect(
+            url_for("loginuser", error_msg="Token expired. Please login again.")
+        )
+    except jwt.InvalidTokenError:
+        return redirect(
+            url_for("loginuser", error_msg="Invalid token. Please login again.")
+        )
+    except Exception as e:
         return jsonify({"result": "error", "message": str(e)}), 500
 
 
@@ -616,8 +671,8 @@ def statuspesananuser():
 
         return render_template(
             "user/statuspesananuser.html",
-            user=user_doc,
             username=username,
+            user=user_doc,
             orders=orders,
         )
 
@@ -705,4 +760,4 @@ def logoutuser():
 
 
 if __name__ == "__main__":
-    app.run("0.0.0.0", port=5000, debug=True)
+    app.run("0.0.0.0", port=5001, debug=True)

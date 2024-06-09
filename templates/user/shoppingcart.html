@@ -67,7 +67,7 @@
             <div class="col">TOTAL HARGA</div>
             <div class="col text-right">Rp {{ '{:,}'.format(total_harga) }}</div>
         </div>
-        <a href="#" class="btn btn-primary btn-block mt-3" id="btn-checkout">CHECKOUT</a>
+        <a href="/checkout" class="btn btn-primary btn-block mt-3" id="btn-checkout">CHECKOUT</a>
     </div>
 </div>
 </div>
@@ -148,42 +148,55 @@
     });
 
     // Checkout event
-    document.getElementById('btn-checkout').addEventListener('click', function (event) {
+    document.querySelector('.btn-primary').addEventListener('click', function (event) {
         event.preventDefault();
 
-        // Redirect to the checkout route
-        window.location.href = '/checkout';
-    });
+        const cartItems = [];
+        document.querySelectorAll('.row.border-top.border-bottom').forEach(row => {
+            const productId = row.querySelector('.btn-quantity[data-action="increment"]').getAttribute('data-id');
+            const quantity = parseInt(row.querySelector('.border').innerText);
+            const productName = row.querySelector('.text-muted').innerText;
+            const productPrice = parseFloat(row.querySelector('.col.text-right').innerText.replace('Rp ', '').replace(',', ''));
 
-    const totalHarga = parseFloat(document.querySelector('.summary .col.text-right').innerText.replace('Rp ', '').replace(',', ''));
-    // Get the selected value from the dropdown
-    var pengiriman = document.getElementById('pengiriman').value;
+            cartItems.push({
+                product_id: productId,
+                product_name: productName,
+                product_price: productPrice,
+                quantity: quantity
+            });
+        });
 
-    if (!pengiriman) {
-        alert('Please select a delivery method.');
-        return;
-    }
+        const totalHarga = parseFloat(document.querySelector('.summary .col.text-right').innerText.replace('Rp ', '').replace(',', ''));
+        // Get the selected value from the dropdown
+        var pengiriman = document.getElementById('pengiriman').value;
 
-    $.ajax({
-        url: '/checkout',
-        method: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify({
-            cart_items: cartItems,
-            total_harga: totalHarga,
-            pengiriman: pengiriman
-        }),
-        success: function (response) {
-            if (response.result === 'success') {
-                window.location.href = '/checkout';
-            } else {
-                alert(response.message);
-            }
-        },
-        error: function (error) {
-            console.error('Error:', error);
+        if (!pengiriman) {
+            alert('Please select a delivery method.');
+            return;
         }
+
+        $.ajax({
+            url: '/checkout',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                cart_items: cartItems,
+                total_harga: totalHarga,
+                pengiriman: pengiriman
+            }),
+            success: function (response) {
+                if (response.result === 'success') {
+                    window.location.href = '/checkout';
+                } else {
+                    alert(response.message);
+                }
+            },
+            error: function (error) {
+                console.error('Error:', error);
+            }
+        });
     });
- 
 </script>
+
+
 {% endblock %}
