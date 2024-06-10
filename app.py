@@ -221,31 +221,7 @@ def tambahproduk():
     return render_template("admin/tambahproduk.html")
 
 
-# @app.route("/editproduk/<_id>", methods=["GET", "POST"])
-# @login_required
-# def editproduk(_id):
-#     if request.method == "POST":
-#         id = request.form["_id"]
-#         nama = request.form["nama"]
-#         harga = float(request.form["harga"])
-#         stock = int(request.form["stock"])
-#         nama_foto = request.files["foto"]
-#         doc = {"nama": nama, "harga": harga, "stock": stock}
 
-#         if nama_foto:
-#             # Mengambil ekstensi file asli
-#             ekstensi_file = nama_foto.filename.split(".")[-1]
-#             nama_file = f"{nama}.{ekstensi_file}"
-#             file_path = f"static/imgproduct/{nama_file}"
-#             nama_foto.save(file_path)
-#             doc["foto"] = nama_file
-
-#         db.produk.update_one({"_id": ObjectId(id)}, {"$set": doc})
-#         return redirect(url_for("dashboard"))
-
-#     id = ObjectId(_id)
-#     data = db.produk.find_one({"_id": id})
-#     return render_template("admin/editproduk.html", data=data)
 
 @app.route("/editproduk/<_id>", methods=["GET", "POST"])
 @login_required
@@ -785,19 +761,6 @@ def statuspesananuser():
         orders = list(db.orders.find({"user_id": str(user_id)}))
         for order in orders:
             order["_id"] = str(order["_id"])
-            product_id = order.get("product_id")
-
-            if product_id:
-                product = db.produk.find_one({"_id": ObjectId(product_id)})
-                if product:
-                    order["product_photo"] = product.get("foto")
-                    order["product_name"] = product.get("nama")
-                    order["product_price"] = product.get("harga")
-                else:
-                    order["product_photo"] = ""
-            else:
-                order["product_photo"] = ""
-                
 
         return render_template(
             "user/statuspesananuser.html",
@@ -816,7 +779,6 @@ def statuspesananuser():
         )
     except Exception as e:
         return jsonify({"result": "error", "message": str(e)}), 500
-
 
 
 @app.route("/review", methods=["GET", "POST"])
