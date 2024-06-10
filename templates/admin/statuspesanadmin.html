@@ -26,7 +26,7 @@
                 <td rowspan="{{ order.cart_items|length }}">{{ index }}.</td>
                 <td rowspan="{{ order.cart_items|length }}">{{ order._id }}</td>
                 <td rowspan="{{ order.cart_items|length }}">{{ order.nama }}</td>
-                <td><img src="{{ url_for('static', filename='img/' ~ order.cart_items[0].product_photo) }}"
+                <td><img src="{{ url_for('static', filename='imgproduct/' ~ order.cart_items[0].product_photo) }}"
                         class="product-image" alt="Product Image"></td>
                 <td>{{ order.cart_items[0].product_name }}</td>
                 <td>{{ order.cart_items[0].quantity }}</td>
@@ -38,8 +38,8 @@
             </tr>
             {% for item in order.cart_items[1:] %}
             <tr>
-                <td><img src="{{ url_for('static', filename='img/' ~ item.product_photo) }}" class="product-image"
-                        alt="Product Image"></td>
+                <td><img src="{{ url_for('static', filename='imgproduct/' ~ item.product_photo) }}"
+                        class="product-image" alt="Product Image"></td>
                 <td>{{ item.product_name }}</td>
                 <td>{{ item.quantity }}</td>
             </tr>

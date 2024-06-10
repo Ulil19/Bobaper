@@ -203,7 +203,7 @@ def tambahproduk():
         nama_foto = request.files["foto"]
 
         if nama_foto:
-            # Remove spaces from the file name
+            # Remove spaces and make the filename URL-safe
             sanitized_nama = nama.replace(" ", "_")
             # Get the original file extension
             ekstensi_file = nama_foto.filename.split(".")[-1]
@@ -213,14 +213,11 @@ def tambahproduk():
         else:
             nama_file = None
 
-        print(nama_file)
         doc = {"nama": nama, "harga": harga, "stock": stock, "foto": nama_file}
         db.produk.insert_one(doc)
         return redirect(url_for("dashboard"))
 
     return render_template("admin/tambahproduk.html")
-
-
 
 
 @app.route("/editproduk/<_id>", methods=["GET", "POST"])
@@ -235,7 +232,7 @@ def editproduk(_id):
         doc = {"nama": nama, "harga": harga, "stock": stock}
 
         if nama_foto:
-            # Remove spaces from the file name
+            # Remove spaces and make the filename URL-safe
             sanitized_nama = nama.replace(" ", "_")
             # Get the original file extension
             ekstensi_file = nama_foto.filename.split(".")[-1]
@@ -250,7 +247,6 @@ def editproduk(_id):
     id = ObjectId(_id)
     data = db.produk.find_one({"_id": id})
     return render_template("admin/editproduk.html", data=data)
-
 
 
 @app.route("/deleteproduk/<_id>")
@@ -274,7 +270,7 @@ def konfirmasipesananadmin():
             order["_id"] = str(order["_id"])
             for item in order["cart_items"]:
                 item["_id"] = str(item["_id"])
-        print(orders)
+        # print(orders)
 
         # Pass the filtered orders to the template
         return render_template("admin/konfirmasipesananadmin.html", orders=orders)
@@ -319,7 +315,7 @@ def statuspesananadmin():
         orders = list(db.orders.find({"status": {"$in": ["Di Proses", "Di Kirim"]}}))
         for order in orders:
             order["_id"] = str(order["_id"])
-
+        # print(orders)
         return render_template(
             "admin/statuspesanadmin.html",
             orders=orders,
@@ -509,7 +505,7 @@ def shoppingcart(user):
         product = db.produk.find_one({"_id": ObjectId(item["product_id"])})
         item["product_name"] = product.get("nama")
         item["product_price"] = product.get("harga")
-        item["product_photo"] = f"imgproduct/{product['nama']}.jpg"
+        item["product_photo"] = f"imgproduct/{product['foto']}"
         total_harga += item["product_price"] * item["quantity"]
     pesan = db.cartuser.count_documents({"user_id": str(user["_id"])})
     username = user.get("username")
@@ -720,7 +716,7 @@ def pesan():
                 "cart_items": cart_items,
                 "payment_proof": filepath,
                 "status": "sedang dikonfirmasi",
-                "created_at": datetime.now(),
+                "created_at": datetime.now().strftime("%Y-%m-%d %H:%M"),
             }
 
             # Save order to database

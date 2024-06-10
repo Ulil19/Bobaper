@@ -64,7 +64,8 @@
         </div>
         <div class="add-review mt-5">
             <div class="d-flex align-items-center">
-                <img src="{{ url_for('static', filename='img/images.jpeg') }}" alt="Profile" class="rounded-circle" width="50">
+                <img src="{{ url_for('static', filename='img/images.jpeg') }}" alt="Profile" class="rounded-circle"
+                    width="50">
                 <input type="text" class="form-control ms-3" id="trigger-review" placeholder="Add your review" readonly>
             </div>
             <form id="review-form" class="mt-3 d-none">
@@ -100,11 +101,13 @@
                 },
                 success: function (response) {
                     alert("Product added to cart!");
+                    window.location.reload();
                 },
                 error: function (xhr, status, error) {
                     alert("An error occurred: " + error);
                 }
             });
+
         });
 
         // Load all reviews when the page loads
@@ -121,13 +124,13 @@
         });
 
         // Show the review form when the "Add your review" input is clicked
-        $('#trigger-review').click(function() {
+        $('#trigger-review').click(function () {
             $(this).addClass('d-none');
             $('#review-form').removeClass('d-none');
         });
 
         // Hide the review form when the cancel button is clicked
-        $('#cancel-review').click(function() {
+        $('#cancel-review').click(function () {
             $('#review-form')[0].reset();
             $('#review-form').addClass('d-none');
             $('#trigger-review').removeClass('d-none');

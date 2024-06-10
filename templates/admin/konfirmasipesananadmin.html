@@ -29,6 +29,7 @@
                         <th>Total</th>
                         <th>Status Pembayaran</th>
                         <th>Bukti Pembayaran</th>
+                        <th>Tanggal Pemesanan</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -58,10 +59,11 @@
                         </td>
                         <td rowspan="{{ order.cart_items|length }}">
                             {% if order.payment_proof %}
-                            <img src="{{ url_for('static', filename=order.payment_proof) }}" class="square" width="40">
-                            {% else %}
-                            <span>None</span>
+                            <img src="{{ order.payment_proof }}" class="square" width="40">
                             {% endif %}
+                        </td>
+                        <td rowspan="{{ order.cart_items|length }}">
+                            {{ order.created_at }}
                         </td>
                         <td rowspan="{{ order.cart_items|length }}">
                             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
