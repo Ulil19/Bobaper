@@ -219,6 +219,32 @@ def tambahproduk():
     return render_template("admin/tambahproduk.html")
 
 
+# @app.route("/editproduk/<_id>", methods=["GET", "POST"])
+# @login_required
+# def editproduk(_id):
+#     if request.method == "POST":
+#         id = request.form["_id"]
+#         nama = request.form["nama"]
+#         harga = float(request.form["harga"])
+#         stock = int(request.form["stock"])
+#         nama_foto = request.files["foto"]
+#         doc = {"nama": nama, "harga": harga, "stock": stock}
+
+#         if nama_foto:
+#             # Mengambil ekstensi file asli
+#             ekstensi_file = nama_foto.filename.split(".")[-1]
+#             nama_file = f"{nama}.{ekstensi_file}"
+#             file_path = f"static/imgproduct/{nama_file}"
+#             nama_foto.save(file_path)
+#             doc["foto"] = nama_file
+
+#         db.produk.update_one({"_id": ObjectId(id)}, {"$set": doc})
+#         return redirect(url_for("dashboard"))
+
+#     id = ObjectId(_id)
+#     data = db.produk.find_one({"_id": id})
+#     return render_template("admin/editproduk.html", data=data)
+
 @app.route("/editproduk/<_id>", methods=["GET", "POST"])
 @login_required
 def editproduk(_id):
@@ -231,9 +257,11 @@ def editproduk(_id):
         doc = {"nama": nama, "harga": harga, "stock": stock}
 
         if nama_foto:
-            # Mengambil ekstensi file asli
+            # Remove spaces from the file name
+            sanitized_nama = nama.replace(" ", "_")
+            # Get the original file extension
             ekstensi_file = nama_foto.filename.split(".")[-1]
-            nama_file = f"{nama}.{ekstensi_file}"
+            nama_file = f"{sanitized_nama}.{ekstensi_file}"
             file_path = f"static/imgproduct/{nama_file}"
             nama_foto.save(file_path)
             doc["foto"] = nama_file
@@ -258,8 +286,90 @@ def delete_produk(_id):
 
 
 @app.route("/konfirmasipesananadmin", methods=["GET", "POST"])
+@login_required
+def konfirmasipesananadmin():
+    try:
+        # Ambil semua pesanan dengan status 'sedang dikonfirmasi' dari database
+        orders = list(db.orders.find({"status": "sedang dikonfirmasi"}))
+        for order in orders:
+            order["_id"] = str(order["_id"])
+            for item in order["cart_items"]:
+                item["_id"] = str(item["_id"])
+        print(orders)
+
+        # Pass the filtered orders to the template
+        return render_template("admin/konfirmasipesananadmin.html", orders=orders)
+    except Exception as e:
+        return jsonify({"result": "error", "message": str(e)}), 500
+
+
+@app.route("/confirm_admin", methods=["POST"])
+@login_required
+def confirm_admin():
+    data = request.json
+    action = data.get("action")
+    id_pesan = data.get("idPesan")
+
+    if action == "accept":
+        status = "Di Proses"
+        pesan = f"Pesanan dengan ID {id_pesan} sedang diproses."
+    elif action == "reject":
+        status = "Di Tolak"
+        pesan = f"Pesanan dengan ID {id_pesan} telah ditolak."
+    else:
+        return jsonify({"message": "Aksi tidak dikenal"}), 400
+
+    # Update order status in the database
+    result = db.orders.update_one(
+        {"_id": ObjectId(id_pesan)}, {"$set": {"status": status}}
+    )
+    if result.modified_count == 0:
+        return jsonify({"message": "Gagal memperbarui status pesanan"}), 500
+
+    # Log the notification for admin
+    print(f"Pengguna diberitahu: {pesan}")
+
+    return jsonify({"message": pesan})
+
+
+@app.route("/statuspesanadmin", methods=["GET"])
+@login_required
 def statuspesananadmin():
-    return render_template("admin/konfirmasipesananadmin.html")
+    try:
+        # Ambil semua pesanan dengan status 'Proses' atau 'Dikirim' dari database
+        orders = list(db.orders.find({"status": {"$in": ["Di Proses", "Di Kirim"]}}))
+        for order in orders:
+            order["_id"] = str(order["_id"])
+
+        return render_template(
+            "admin/statuspesanadmin.html",
+            orders=orders,
+        )
+    except Exception as e:
+        return jsonify({"result": "error", "message": str(e)}), 500
+
+
+@app.route("/dikirim_admin", methods=["POST"])
+@login_required
+def dikrim_admin():
+    data = request.json
+    action = data.get("action")
+    id_pesan = data.get("idPesan")
+
+    if action == "dikirim":
+        status = "Di Kirim"
+        pesan = f"Pesanan dengan ID {id_pesan} telah dikirim."
+    else:
+        return jsonify({"message": "Aksi tidak dikenal"}), 400
+
+    # Update order status in the database
+    result = db.orders.update_one(
+        {"_id": ObjectId(id_pesan)}, {"$set": {"status": status}}
+    )
+    if result.modified_count == 0:
+        return jsonify({"message": "Gagal memperbarui status pesanan"}), 500
+
+    return jsonify({"message": pesan})
 
 
 @app.route("/review/admin", methods=["GET", "POST"])
@@ -655,7 +765,6 @@ def pesan():
         )
     except Exception as e:
         return jsonify({"result": "error", "message": str(e)}), 500
-
 
 
 @app.route("/statuspesananuser", methods=["GET"])

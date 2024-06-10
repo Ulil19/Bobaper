@@ -1,0 +1,138 @@
+{% extends "admin/layout/layoutadmin.html" %}
+
+{% block title %}Status Pesanan{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mb-4">Status Pesanan</h1>
+    <table class="table table-custom">
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>ID Pesan</th>
+                <th>Nama Pemesan</th>
+                <th>Produk</th>
+                <th>Nama Produk</th>
+                <th>Quantity</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th>Opsi Kirim</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% set index = 1 %}
+            {% for order in orders %}
+            <tr>
+                <td rowspan="{{ order.cart_items|length }}">{{ index }}.</td>
+                <td rowspan="{{ order.cart_items|length }}">{{ order._id }}</td>
+                <td rowspan="{{ order.cart_items|length }}">{{ order.nama }}</td>
+                <td><img src="{{ url_for('static', filename='img/' ~ order.cart_items[0].product_photo) }}"
+                        class="product-image" alt="Product Image"></td>
+                <td>{{ order.cart_items[0].product_name }}</td>
+                <td>{{ order.cart_items[0].quantity }}</td>
+                <td rowspan="{{ order.cart_items|length }}">Rp.{{ order.total_harga }}</td>
+                <td rowspan="{{ order.cart_items|length }}">{{ order.status }}</td>
+                <td rowspan="{{ order.cart_items|length }}">
+                    <button class="btn btn-danger" onclick="notify('dikirim', '{{ order._id }}')">Dikirim</button>
+                </td>
+            </tr>
+            {% for item in order.cart_items[1:] %}
+            <tr>
+                <td><img src="{{ url_for('static', filename='img/' ~ item.product_photo) }}" class="product-image"
+                        alt="Product Image"></td>
+                <td>{{ item.product_name }}</td>
+                <td>{{ item.quantity }}</td>
+            </tr>
+            {% endfor %}
+            {% set index = index + 1 %}
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-beta3/js/bootstrap.bundle.min.js"></script>
+<script>
+    function notify(action, idPesan) {
+        let message = '';
+        if (action === 'dikirim') {
+            message = `Pesanan dengan ID ${idPesan} siap diantar.`;
+        }
+
+        Swal.fire({
+            title: '',
+            text: message,
+            icon: 'info',
+            confirmButtonText: 'OK'
+        });
+
+        // Kirim notifikasi ke backend
+        $.ajax({
+            url: '/dikirim_admin',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ action: action, idPesan: idPesan }),
+            success: function (response) {
+                console.log(response.message);
+                location.reload(); // Reload the page to reflect the changes
+            },
+            error: function (xhr, status, error) {
+                console.error(xhr.responseText);
+            }
+        });
+    }
+</script>
+
+<style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    .container {
+        background-color: #fff;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        margin-top: 50px;
+    }
+
+    .table-custom {
+        width: 100%;
+        margin: 0 auto;
+        border-collapse: collapse;
+    }
+
+    .table-custom th,
+    .table-custom td {
+        border: 1px solid #ddd;
+        padding: 10px;
+        text-align: center;
+    }
+
+    .table-custom th {
+        background-color: #343a40;
+        color: #fff;
+    }
+
+    .table-custom td {
+        vertical-align: middle;
+    }
+
+    .product-image {
+        width: 50px;
+        height: 50px;
+        object-fit: cover;
+    }
+
+    .btn-danger,
+    .btn-success {
+        width: 100px;
+    }
+
+    .btn-danger:hover,
+    .btn-success:hover {
+        opacity: 0.8;
+    }
+</style>
+{% endblock %}
