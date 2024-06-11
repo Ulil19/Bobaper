@@ -226,7 +226,7 @@ def editproduk(_id):
     if request.method == "POST":
         id = request.form["_id"]
         nama = request.form["nama"]
-        harga = float(request.form["harga"])
+        harga = int(request.form["harga"])
         stock = int(request.form["stock"])
         nama_foto = request.files["foto"]
         doc = {"nama": nama, "harga": harga, "stock": stock}
@@ -242,6 +242,29 @@ def editproduk(_id):
             doc["foto"] = nama_file
 
         db.produk.update_one({"_id": ObjectId(id)}, {"$set": doc})
+
+        # Update the cartuser collection with the new product details
+        cart_update_doc = {"product_name": nama, "product_price": harga}
+        if nama_foto:
+            cart_update_doc["product_photo"] = nama_file
+
+        db.cartuser.update_many({"product_id": id}, {"$set": cart_update_doc})
+
+        # Update the orders collection with the new product details
+        orders = db.orders.find({"cart_items.product_id": id})
+        for order in orders:
+            updated_cart_items = []
+            for item in order["cart_items"]:
+                if item["product_id"] == id:
+                    item["product_name"] = nama
+                    item["product_price"] = harga
+                    if nama_foto:
+                        item["product_photo"] = nama_file
+                updated_cart_items.append(item)
+            db.orders.update_one(
+                {"_id": order["_id"]}, {"$set": {"cart_items": updated_cart_items}}
+            )
+
         return redirect(url_for("dashboard"))
 
     id = ObjectId(_id)
@@ -722,6 +745,15 @@ def pesan():
             # Save order to database
             db.orders.insert_one(order_data)
 
+            # Update product stock
+            for item in cart_items:
+                product_id = ObjectId(item["product_id"])
+                quantity = item["quantity"]
+                db.produk.update_one(
+                    {"_id": product_id},
+                    {"$inc": {"stock": -quantity}}
+                )
+
             # Clear user's cart
             result = db.cartuser.delete_many({"user_id": str(user_id)})
             if result.deleted_count == 0:
@@ -742,6 +774,7 @@ def pesan():
         return jsonify({"result": "error", "message": str(e)}), 500
 
 
+
 @app.route("/statuspesananuser", methods=["GET"])
 def statuspesananuser():
     token = request.cookies.get("token")
@@ -757,7 +790,7 @@ def statuspesananuser():
         orders = list(db.orders.find({"user_id": str(user_id)}))
         for order in orders:
             order["_id"] = str(order["_id"])
-
+        # print(orders)
         return render_template(
             "user/statuspesananuser.html",
             username=username,
@@ -777,9 +810,89 @@ def statuspesananuser():
         return jsonify({"result": "error", "message": str(e)}), 500
 
 
+@app.route("/order/<order_id>")
+def order_detail(order_id):
+    token = request.cookies.get("token")
+    if not token:
+        return redirect(url_for("loginuser"))
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+        user_id = payload.get("user_id")
+        user_doc = db.users.find_one({"_id": ObjectId(user_id)})
+        username = user_doc.get("username")
+        orders = list(db.orders.find({}))
+        order = next((order for order in orders if str(order["_id"]) == order_id), None)
+        if not order:
+            return "Order not found", 404
+        return render_template(
+            "user/order_detail.html", user=user_doc, username=username, order=order
+        )
+    except jwt.ExpiredSignatureError:
+        return redirect(
+            url_for("loginuser", error_msg="Token expired. Please login again.")
+        )
+
+
+@app.route("/update_order_status/<order_id>", methods=["POST"])
+def update_order_status(order_id):
+    token = request.cookies.get("token")
+    if not token:
+        return redirect(url_for("loginuser"))
+
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+        user_id = payload.get("user_id")
+
+        # Update order status
+        result = db.orders.update_one(
+            {"_id": ObjectId(order_id), "user_id": str(user_id)},
+            {"$set": {"status": "Pesanan Selesai"}},
+        )
+
+        if result.matched_count == 0:
+            return (
+                jsonify(
+                    {
+                        "result": "error",
+                        "message": "Order not found or user not authorized",
+                    }
+                ),
+                404,
+            )
+
+        return jsonify({"result": "success"})
+
+    except jwt.ExpiredSignatureError:
+        return redirect(
+            url_for("loginuser", error_msg="Token expired. Please login again.")
+        )
+    except jwt.InvalidTokenError:
+        return redirect(
+            url_for("loginuser", error_msg="Invalid token. Please login again.")
+        )
+    except Exception as e:
+        return jsonify({"result": "error", "message": str(e)}), 500
+
+
 @app.route("/review", methods=["GET", "POST"])
 def review():
-    return render_template("user/review.html")
+    token = request.cookies.get("token")
+    if not token:
+        return redirect(url_for("loginuser"))
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+        user_id = payload.get("user_id")
+        user_doc = db.users.find_one({"_id": ObjectId(user_id)})
+        username = user_doc.get("username")
+        return render_template("user/review.html", user=user_doc, username=username)
+    except jwt.ExpiredSignatureError:
+        return redirect(
+            url_for("loginuser", error_msg="Token expired. Please login again.")
+        )
+    except jwt.InvalidTokenError:
+        return redirect(
+            url_for("loginuser", error_msg="Token invalid. Please login again.")
+        )
 
 
 @app.route("/profile", methods=["GET", "POST"])

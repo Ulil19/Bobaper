@@ -14,22 +14,63 @@
                 </div>
             </div>
             <div class="col-lg-6 col-md-5">
-                <p class="text-muted mb-1"><strong>{{ order.date }}</strong></p>
+                <p class="text-muted mb-1"><strong>{{ order.created_at }}</strong></p>
                 <p class="mb-1">Order ID: {{ order._id }}</p>
                 <p class="mb-1">Total Harga: {{ order.total_harga }}</p>
                 <p class="mb-1">Status: {{ order.status }}</p>
-
+                <p class="mb-1">Produk yang dipesan:</p>
+                <ul>
+                    {% for item in order.cart_items %}
+                    <li>{{ item.product_name }} (Jumlah: {{ item.quantity }})</li>
+                    {% endfor %}
+                </ul>
             </div>
             <div class="col-lg-4 col-md-5 text-end">
-                <button class="btn btn-primary mb-2 me-2">Detail</button>
-                <button class="btn btn-primary mb-2">Finish</button>
+                <a href="{{ url_for('order_detail', order_id=order._id) }}" class="btn btn-primary mb-2 me-2">Detail</a>
+                <button class="btn btn-primary mb-2 finish-btn" data-order-id="{{ order._id }}" {% if
+                    order.status=='sedang dikonfirmasi' or order.status=='Di Tolak' or order.status=='Pesanan Selesai'
+                    %}disabled{% endif %}>
+                    Finish
+                </button>
                 <div>
-                    <button class="btn btn-outline-secondary me-2">Review</button>
-                    <button class="btn btn-outline-secondary">Buy Again!</button>
+                    <button class="btn btn-outline-secondary me-2" {% if order.status !='Pesanan Selesai' %}disabled{%
+                        endif %}>
+                        Review
+                    </button>
+                    <button class="btn btn-outline-secondary me-2" onclick="window.location.href='/product'">Buy
+                        Again!</button>
                 </div>
             </div>
         </div>
     </div>
     {% endfor %}
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const finishButtons = document.querySelectorAll(".finish-btn");
+        finishButtons.forEach(button => {
+            button.addEventListener("click", function () {
+                const orderId = this.getAttribute("data-order-id");
+                fetch(`/update_order_status/${orderId}`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.result === "success") {
+                            location.reload();
+                        } else {
+                            alert(data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error:", error);
+                    });
+            });
+        });
+    });
+</script>
 {% endblock %}
