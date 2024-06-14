@@ -32,7 +32,7 @@
                 <tbody>
                     {% for admin in admins %}
                     <tr>
-                        <td>{{ loop.index }}</td>
+                        <td>{{ loop.index + (page - 1) * per_page }}</td>
                         <td>{{ admin.username }}</td>
                         <td>{{ admin.email }}</td>
                         <td>{{ admin.date_created.strftime('%d/%m/%Y') if admin.date_created else 'N/A' }}</td>
@@ -48,18 +48,18 @@
     </div>
 
     <!-- Pagination Section -->
+    {% with total_pages=ceil(admin_count / per_page) %}
     <div class="clearfix text-end">
-        <div class="hint-text">Showing <b>{{ admins|length }}</b> out of <b>{{ admins|length }}</b> entries</div>
+        <div class="hint-text">Showing <b>{{ admins|length }}</b> out of <b>{{ admin_count }}</b> entries</div>
         <ul class="pagination">
-            <li class="page-item"><a href="#" class="page-link">Previous</a></li>
-            <li class="page-item"><a href="#" class="page-link">1</a></li>
-            <li class="page-item"><a href="#" class="page-link">2</a></li>
-            <li class="page-item active"><a href="#" class="page-link">3</a></li>
-            <li class="page-item"><a href="#" class="page-link">4</a></li>
-            <li class="page-item"><a href="#" class="page-link">5</a></li>
-            <li class="page-item"><a href="#" class="page-link">Next</a></li>
+            <li class="page-item {% if page <= 1 %}disabled{% endif %}"><a href="{{ url_for('kelolauser', page=page-1) }}" class="page-link">Previous</a></li>
+            {% for p in range(1, total_pages + 1) %}
+            <li class="page-item {% if page == p %}active{% endif %}"><a href="{{ url_for('kelolauser', page=p) }}" class="page-link">{{ p }}</a></li>
+            {% endfor %}
+            <li class="page-item {% if page >= total_pages %}disabled{% endif %}"><a href="{{ url_for('kelolauser', page=page+1) }}" class="page-link">Next</a></li>
         </ul>
     </div>
+    {% endwith %}
     <br>
     <div class="table-title">
         <div class="row">
@@ -88,7 +88,7 @@
                 <tbody>
                     {% for user in users %}
                     <tr>
-                        <td>{{ loop.index }}</td>
+                        <td>{{ loop.index + (page - 1) * per_page }}</td>
                         <td>{{ user.username }}</td>
                         <td>{{ user.email }}</td>
                         <td>{{ user.date_created.strftime('%d/%m/%Y') if user.date_created else 'N/A' }}</td>
@@ -104,17 +104,17 @@
     </div>
 
     <!-- Pagination Section -->
+    {% with total_pages=ceil(user_count / per_page) %}
     <div class="clearfix text-end">
-        <div class="hint-text">Showing <b>{{ users|length }}</b> out of <b>{{ users|length }}</b> entries</div>
+        <div class="hint-text">Showing <b>{{ users|length }}</b> out of <b>{{ user_count }}</b> entries</div>
         <ul class="pagination">
-            <li class="page-item"><a href="#" class="page-link">Previous</a></li>
-            <li class="page-item"><a href="#" class="page-link">1</a></li>
-            <li class="page-item"><a href="#" class="page-link">2</a></li>
-            <li class="page-item active"><a href="#" class="page-link">3</a></li>
-            <li class="page-item"><a href="#" class="page-link">4</a></li>
-            <li class="page-item"><a href="#" class="page-link">5</a></li>
-            <li class="page-item"><a href="#" class="page-link">Next</a></li>
+            <li class="page-item {% if page <= 1 %}disabled{% endif %}"><a href="{{ url_for('kelolauser', page=page-1) }}" class="page-link">Previous</a></li>
+            {% for p in range(1, total_pages + 1) %}
+            <li class="page-item {% if page == p %}active{% endif %}"><a href="{{ url_for('kelolauser', page=p) }}" class="page-link">{{ p }}</a></li>
+            {% endfor %}
+            <li class="page-item {% if page >= total_pages %}disabled{% endif %}"><a href="{{ url_for('kelolauser', page=page+1) }}" class="page-link">Next</a></li>
         </ul>
     </div>
+    {% endwith %}
 </div>
 {% endblock %}

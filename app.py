@@ -18,6 +18,7 @@ from bson import ObjectId
 from datetime import datetime, timedelta
 import hashlib
 from werkzeug.utils import secure_filename
+from math import ceil
 
 app = Flask(__name__)
 
@@ -287,25 +288,40 @@ def delete_produk(_id):
 @login_required
 def konfirmasipesananadmin():
     try:
-        # Ambil semua pesanan dengan status 'sedang dikonfirmasi' dari database
-        orders = list(db.orders.find({"status": "sedang dikonfirmasi"}))
-        
-        # Iterate through orders and fetch user profile picture from MongoDB
+        per_page = 5  # Number of entries per page
+        page = int(request.args.get('page', 1))
+
+        # Calculate the total number of orders
+        order_count = db.orders.count_documents({"status": "sedang dikonfirmasi"})
+
+        # Fetch orders with pagination
+        orders = list(db.orders.find({"status": "sedang dikonfirmasi"})
+                      .skip((page - 1) * per_page)
+                      .limit(per_page))
+
+        # Process orders to include profile pictures
         for order in orders:
             order["_id"] = str(order["_id"])
             for item in order["cart_items"]:
                 item["_id"] = str(item["_id"])
-                
-            # Fetch user details from MongoDB using user_id or relevant identifier
-            user_id = order.get('user_id')  # Adjust this based on your MongoDB schema
-            user = db.users.find_one({"_id": ObjectId(user_id)})  # Example query to get user
+
+            # Fetch user details
+            user_id = order.get('user_id')
+            user = db.users.find_one({"_id": ObjectId(user_id)})
             if user:
                 order["profile_picture"] = url_for('static', filename=user.get('profile_picture', 'profile_pics/default.jpg'))
             else:
-                order["profile_picture"] = url_for('static', filename='profile_pics/default.jpg')  # Default image if user not found
+                order["profile_picture"] = url_for('static', filename='profile_pics/default.jpg')
 
         # Pass the filtered orders to the template
-        return render_template("admin/konfirmasipesananadmin.html", orders=orders)
+        return render_template(
+            "admin/konfirmasipesananadmin.html",
+            orders=orders,
+            order_count=order_count,
+            page=page,
+            per_page=per_page,
+            ceil=ceil
+        )
     except Exception as e:
         return jsonify({"result": "error", "message": str(e)}), 500
 
@@ -387,9 +403,27 @@ def reviewadmin():
 @app.route("/kelolauser/admin", methods=["GET", "POST"])
 @login_required
 def kelolauser():
-    admins = list(db.admins.find())
-    users = list(db.users.find())
-    return render_template("admin/kelolauser.html", admins=admins, users=users)
+    per_page = 5  # Number of entries per page
+    page = int(request.args.get('page', 1))
+
+    # Fetching admins with pagination
+    admin_count = db.admins.count_documents({})
+    admins = db.admins.find().skip((page - 1) * per_page).limit(per_page)
+
+    # Fetching users with pagination
+    user_count = db.users.count_documents({})
+    users = db.users.find().skip((page - 1) * per_page).limit(per_page)
+
+    return render_template(
+        "admin/kelolauser.html",
+        admins=list(admins),
+        users=list(users),
+        admin_count=admin_count,
+        user_count=user_count,
+        page=page,
+        per_page=per_page,
+        ceil=ceil  # Pass the ceil function to the template
+    )
 
 
 @app.route("/logoutadmin")
