@@ -289,11 +289,20 @@ def konfirmasipesananadmin():
     try:
         # Ambil semua pesanan dengan status 'sedang dikonfirmasi' dari database
         orders = list(db.orders.find({"status": "sedang dikonfirmasi"}))
+        
+        # Iterate through orders and fetch user profile picture from MongoDB
         for order in orders:
             order["_id"] = str(order["_id"])
             for item in order["cart_items"]:
                 item["_id"] = str(item["_id"])
-        # print(orders)
+                
+            # Fetch user details from MongoDB using user_id or relevant identifier
+            user_id = order.get('user_id')  # Adjust this based on your MongoDB schema
+            user = db.users.find_one({"_id": ObjectId(user_id)})  # Example query to get user
+            if user:
+                order["profile_picture"] = url_for('static', filename=user.get('profile_picture', 'profile_pics/default.jpg'))
+            else:
+                order["profile_picture"] = url_for('static', filename='profile_pics/default.jpg')  # Default image if user not found
 
         # Pass the filtered orders to the template
         return render_template("admin/konfirmasipesananadmin.html", orders=orders)

@@ -5,49 +5,49 @@
 {% block content %}
 <div class="container">
     <h1 class="mb-4">Status Pesanan</h1>
-    <table class="table table-custom">
-        <thead>
-            <tr>
-                <th>No</th>
-                <th>ID Pesan</th>
-                <th>Nama Pemesan</th>
-                <th>Produk</th>
-                <th>Nama Produk</th>
-                <th>Quantity</th>
-                <th>Total</th>
-                <th>Status</th>
-                <th>Opsi Kirim</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% set index = 1 %}
-            {% for order in orders %}
-            <tr>
-                <td rowspan="{{ order.cart_items|length }}">{{ index }}.</td>
-                <td rowspan="{{ order.cart_items|length }}">{{ order._id }}</td>
-                <td rowspan="{{ order.cart_items|length }}">{{ order.nama }}</td>
-                <td><img src="{{ url_for('static', filename='imgproduct/' ~ order.cart_items[0].product_photo) }}"
-                        class="product-image" alt="Product Image"></td>
-                <td>{{ order.cart_items[0].product_name }}</td>
-                <td>{{ order.cart_items[0].quantity }}</td>
-                <td rowspan="{{ order.cart_items|length }}">Rp.{{ order.total_harga }}</td>
-                <td rowspan="{{ order.cart_items|length }}">{{ order.status }}</td>
-                <td rowspan="{{ order.cart_items|length }}">
-                    <button class="btn btn-danger" onclick="notify('dikirim', '{{ order._id }}')">Dikirim</button>
-                </td>
-            </tr>
-            {% for item in order.cart_items[1:] %}
-            <tr>
-                <td><img src="{{ url_for('static', filename='imgproduct/' ~ item.product_photo) }}"
-                        class="product-image" alt="Product Image"></td>
-                <td>{{ item.product_name }}</td>
-                <td>{{ item.quantity }}</td>
-            </tr>
-            {% endfor %}
-            {% set index = index + 1 %}
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="table-responsive">
+        <table class="table table-custom">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>ID Pesan</th>
+                    <th>Nama Pemesan</th>
+                    <th>Produk</th>
+                    <th>Nama Produk</th>
+                    <th>Quantity</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                    <th>Opsi Kirim</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                <tr>
+                    <td rowspan="{{ order.cart_items|length }}">{{ loop.index }}.</td>
+                    <td rowspan="{{ order.cart_items|length }}">{{ order._id }}</td>
+                    <td rowspan="{{ order.cart_items|length }}">{{ order.nama }}</td>
+                    <td><img src="{{ url_for('static', filename='imgproduct/' ~ order.cart_items[0].product_photo) }}"
+                            class="product-image" alt="Product Image"></td>
+                    <td>{{ order.cart_items[0].product_name }}</td>
+                    <td>{{ order.cart_items[0].quantity }}</td>
+                    <td rowspan="{{ order.cart_items|length }}">Rp.{{ order.total_harga }}</td>
+                    <td rowspan="{{ order.cart_items|length }}">{{ order.status }}</td>
+                    <td rowspan="{{ order.cart_items|length }}">
+                        <button class="btn btn-danger" onclick="notify('dikirim', '{{ order._id }}')">Dikirim</button>
+                    </td>
+                </tr>
+                {% for item in order.cart_items[1:] %}
+                <tr>
+                    <td><img src="{{ url_for('static', filename='imgproduct/' ~ item.product_photo) }}"
+                            class="product-image" alt="Product Image"></td>
+                    <td>{{ item.product_name }}</td>
+                    <td>{{ item.quantity }}</td>
+                </tr>
+                {% endfor %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -95,18 +95,24 @@
         border-radius: 8px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         margin-top: 50px;
+        max-width: 1200px;  /* Adjusted for larger width */
+        margin: 0 auto;  /* Centered the container */
+    }
+
+    .table-responsive {
+        overflow-x: auto;
     }
 
     .table-custom {
         width: 100%;
-        margin: 0 auto;
         border-collapse: collapse;
+        margin: 0 auto;  /* Center align the table */
     }
 
     .table-custom th,
     .table-custom td {
         border: 1px solid #ddd;
-        padding: 10px;
+        padding: 12px;  /* Increased padding for better spacing */
         text-align: center;
     }
 
@@ -120,9 +126,10 @@
     }
 
     .product-image {
-        width: 50px;
-        height: 50px;
+        width: 60px;  /* Slightly larger for better visibility */
+        height: 60px; 
         object-fit: cover;
+        border-radius: 4px;  /* Added border radius for better appearance */
     }
 
     .btn-danger,
@@ -133,6 +140,10 @@
     .btn-danger:hover,
     .btn-success:hover {
         opacity: 0.8;
+    }
+
+    h1 {
+        text-align: center;  /* Center align the header */
     }
 </style>
 {% endblock %}
