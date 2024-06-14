@@ -3,13 +3,10 @@
 {% block content %}
 <div class="container my-6 pt-5">
     <h4 class="mb-4">Write Review</h4>
-    <form method="POST" action="{{ url_for('submit_review') }}">
+    <form action="{{ url_for('submit_review') }}" method="post">
         <input type="hidden" name="product_id" value="{{ product_id }}">
-        <div class="mb-3">
-            <label for="review" class="form-label">Review</label>
-            <textarea class="form-control" id="review" name="review" rows="3" required></textarea>
-        </div>
-        <button type="submit" class="btn btn-primary">Submit Review</button>
+        <textarea name="review" placeholder="Write your review here"></textarea>
+        <button type="submit">Submit Review</button>
     </form>
 </div>
 {% endblock %}

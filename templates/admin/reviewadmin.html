@@ -5,109 +5,26 @@
 {% block content %}
 <div class="container mb-5">
     <div class="row g-2">
+        {% for review in reviews %}
         <div class="col-md-4">
             <div class="card p-3 text-center px-4">
                 <div class="user-image">
-                    <img src="https://i.imgur.com/PKHvlRS.jpg" class="rounded-circle" width="80">
+                    <img src="{{ review.user_image | default('https://i.imgur.com/PKHvlRS.jpg') }}" class="rounded-circle" width="80">
                 </div>
                 <div class="user-content">
-                    <h5 class="mb-0">Bruce Hardy</h5>
-                    <span>Software Developer</span>
-                    <p class="mt-5" style="font-size: 12px">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                        do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-                        nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                    <h5 class="mb-0">{{ review.username | default('Unknown User') }}</h5>
+                    <span>{{ review.product_id | default('No Product ID') }}</span>
+                    <p class="mt-5" style="font-size: 12px">{{ review.review | default('No review text provided.') }}</p>
                 </div>
                 <div class="ratings" style="color: blue;">
+                    {% set rating = review.rating | default(0) %}
+                    {% for _ in range(rating | int) %}
                     <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
+                    {% endfor %}
                 </div>
             </div>
         </div>
-
-        <div class="col-md-4">
-            <div class="card p-3 text-center px-4">
-                <div class="user-image">
-                    <img src="https://i.imgur.com/w2CKRB9.jpg" class="rounded-circle" width="80">
-                </div>
-                <div class="user-content">
-                    <h5 class="mb-0">Mark Smith</h5>
-                    <span>Web Developer</span>
-                    <p class="mt-5" style="font-size: 12px">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                        do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-                        nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                </div>
-                <div class="ratings" style="color: blue;">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="card p-3 text-center px-4">
-                <div class="user-image">
-                    <img src="https://i.imgur.com/ACeArwY.jpg" class="rounded-circle" width="80">
-                </div>
-                <div class="user-content">
-                    <h5 class="mb-0">Veera Duncan</h5>
-                    <span>Software Architect</span>
-                    <p class="mt-5" style="font-size: 12px">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                        do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-                        nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                </div>
-                <div class="ratings" style="color: blue;">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card p-3 text-center px-4">
-                <div class="user-image">
-                    <img src="https://i.imgur.com/ACeArwY.jpg" class="rounded-circle" width="80">
-                </div>
-                <div class="user-content">
-                    <h5 class="mb-0">Veera Duncan</h5>
-                    <span>Software Architect</span>
-                    <p class="mt-5" style="font-size: 12px">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                        do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-                        nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                </div>
-                <div class="ratings" style="color: blue;">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card p-3 text-center px-4">
-                <div class="user-image">
-                    <img src="https://i.imgur.com/ACeArwY.jpg" class="rounded-circle" width="80">
-                </div>
-                <div class="user-content">
-                    <h5 class="mb-0">Veera Duncan</h5>
-                    <span>Software Architect</span>
-                    <p class="mt-5" style="font-size: 12px">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                        do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-                        nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                </div>
-                <div class="ratings" style="color: blue;">
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                    <i class="fa fa-star"></i>
-                </div>
-            </div>
-        </div>
+        {% endfor %}
     </div>
 </div>
 {% endblock %}

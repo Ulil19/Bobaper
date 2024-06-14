@@ -397,7 +397,9 @@ def dikrim_admin():
 
 @app.route("/review/admin", methods=["GET", "POST"])
 def reviewadmin():
-    return render_template("admin/reviewadmin.html")
+    reviews = list(db.reviews.find())  # Fetch reviews
+    return render_template("admin/reviewadmin.html", reviews=reviews)
+
 
 
 @app.route("/kelolauser/admin", methods=["GET", "POST"])
@@ -983,13 +985,9 @@ def submit_review():
         
         return redirect(url_for("product"))
     except jwt.ExpiredSignatureError:
-        return redirect(
-            url_for("loginuser", error_msg="Token expired. Please login again.")
-        )
+        return redirect(url_for("loginuser", error_msg="Token expired. Please login again."))
     except jwt.InvalidTokenError:
-        return redirect(
-            url_for("loginuser", error_msg="Invalid token. Please login again.")
-        )
+        return redirect(url_for("loginuser", error_msg="Invalid token. Please login again."))
     except Exception as e:
         return jsonify({"result": "error", "message": str(e)}), 500
 
