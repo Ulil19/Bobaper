@@ -27,7 +27,7 @@
             </div>
             <div class="col-lg-4 col-md-5 text-end">
                 <a href="{{ url_for('order_detail', order_id=order._id) }}" class="btn btn-primary mb-2 me-2">Detail</a>
-                <button class="btn btn-primary mb-2 finish-btn" data-order-id="{{ order._id }}" {% if
+                <button class="btn btn-primary mb-2 me-4 finish-btn" data-order-id="{{ order._id }}" {% if
                     order.status=='sedang dikonfirmasi' or order.status=='Di Tolak' or order.status=='Pesanan Selesai'
                     %}disabled{% endif %}>
                     Finish
@@ -37,7 +37,7 @@
                         endif %}>
                         Review
                     </button>
-                    <button class="btn btn-outline-secondary me-2" onclick="window.location.href='/product'">Buy
+                    <button class="btn btn-outline-secondary me-4" onclick="window.location.href='/product'">Buy
                         Again!</button>
                 </div>
             </div>
