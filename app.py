@@ -425,6 +425,24 @@ def kelolauser():
         ceil=ceil  # Pass the ceil function to the template
     )
 
+@app.route("/kelolauser/delete_admin/<admin_id>", methods=["DELETE"])
+@login_required
+def delete_admin(admin_id):
+    result = db.admins.delete_one({"_id": ObjectId(admin_id)})
+    if result.deleted_count:
+        return jsonify({"success": True}), 200
+    else:
+        return jsonify({"success": False}), 404
+
+@app.route("/kelolauser/delete_user/<user_id>", methods=["DELETE"])
+@login_required
+def delete_user(user_id):
+    result = db.users.delete_one({"_id": ObjectId(user_id)})
+    if result.deleted_count:
+        return jsonify({"success": True}), 200
+    else:
+        return jsonify({"success": False}), 404
+
 
 @app.route("/logoutadmin")
 def logoutadmin():
