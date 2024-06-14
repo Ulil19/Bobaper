@@ -27,18 +27,14 @@
             </div>
             <div class="col-lg-4 col-md-5 text-end">
                 <a href="{{ url_for('order_detail', order_id=order._id) }}" class="btn btn-primary mb-2 me-2">Detail</a>
-                <button class="btn btn-primary mb-2 me-4 finish-btn" data-order-id="{{ order._id }}" {% if
-                    order.status=='sedang dikonfirmasi' or order.status=='Di Tolak' or order.status=='Pesanan Selesai'
-                    %}disabled{% endif %}>
+                <button class="btn btn-primary mb-2 me-4 finish-btn" data-order-id="{{ order._id }}" {% if order.status=='sedang dikonfirmasi' or order.status=='Di Tolak' or order.status=='Pesanan Selesai' %}disabled{% endif %}>
                     Finish
                 </button>
                 <div>
-                    <button class="btn btn-outline-secondary me-2" {% if order.status !='Pesanan Selesai' %}disabled{%
-                        endif %}>
+                    <button class="btn btn-outline-secondary me-2 review-btn" data-product-id="{{ order.cart_items[0].product_id }}" {% if order.status != 'Pesanan Selesai' %}disabled{% endif %}>
                         Review
                     </button>
-                    <button class="btn btn-outline-secondary me-4" onclick="window.location.href='/product'">Buy
-                        Again!</button>
+                    <button class="btn btn-outline-secondary me-4" onclick="window.location.href='/product'">Buy Again!</button>
                 </div>
             </div>
         </div>
@@ -69,6 +65,15 @@
                     .catch(error => {
                         console.error("Error:", error);
                     });
+            });
+        });
+    });
+    document.addEventListener("DOMContentLoaded", function () {
+        const reviewButtons = document.querySelectorAll(".review-btn");
+        reviewButtons.forEach(button => {
+            button.addEventListener("click", function () {
+                const productId = this.getAttribute("data-product-id");
+                window.location.href = `/write_review?product_id=${productId}`;
             });
         });
     });

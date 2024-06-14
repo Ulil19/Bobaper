@@ -510,6 +510,7 @@ def product():
         produk = list(db.produk.find())
         username = user.get("username")
         pesan = db.cartuser.count_documents({"user_id": str(user["_id"])})
+        reviews = list(db.reviews.find())  # Fetch reviews
         return render_template(
             "user/produkuser.html",
             user_id=user_id,
@@ -517,6 +518,7 @@ def product():
             produk=produk,
             username=username,
             pesan=pesan,
+            reviews=reviews  # Pass reviews to template
         )
     except jwt.ExpiredSignatureError:
         return redirect(
@@ -526,7 +528,6 @@ def product():
         return redirect(
             url_for("loginuser", error_msg="Invalid token. Please login again.")
         )
-
 
 @app.route("/shoppingcart", methods=["GET"])
 @token_required
@@ -799,14 +800,12 @@ def statuspesananuser():
         orders = list(db.orders.find({"user_id": str(user_id)}))
         for order in orders:
             order["_id"] = str(order["_id"])
-        # print(orders)
         return render_template(
             "user/statuspesananuser.html",
             username=username,
             user=user_doc,
             orders=orders,
         )
-
     except jwt.ExpiredSignatureError:
         return redirect(
             url_for("loginuser", error_msg="Token expired. Please login again.")
@@ -817,7 +816,6 @@ def statuspesananuser():
         )
     except Exception as e:
         return jsonify({"result": "error", "message": str(e)}), 500
-
 
 @app.route("/order/<order_id>")
 def order_detail(order_id):
@@ -882,27 +880,66 @@ def update_order_status(order_id):
     except Exception as e:
         return jsonify({"result": "error", "message": str(e)}), 500
 
-
-@app.route("/review", methods=["GET", "POST"])
-def review():
+@app.route("/write_review", methods=["GET"])
+def write_review():
     token = request.cookies.get("token")
     if not token:
         return redirect(url_for("loginuser"))
+    
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
         user_id = payload.get("user_id")
-        user_doc = db.users.find_one({"_id": ObjectId(user_id)})
-        username = user_doc.get("username")
-        return render_template("user/review.html", user=user_doc, username=username)
+        user = db.users.find_one({"_id": ObjectId(user_id)})
+        product_id = request.args.get("product_id")
+        
+        if not product_id:
+            return redirect(url_for("product"))
+        
+        return render_template("user/write_review.html", user=user, product_id=product_id)
     except jwt.ExpiredSignatureError:
         return redirect(
             url_for("loginuser", error_msg="Token expired. Please login again.")
         )
     except jwt.InvalidTokenError:
         return redirect(
-            url_for("loginuser", error_msg="Token invalid. Please login again.")
+            url_for("loginuser", error_msg="Invalid token. Please login again.")
         )
 
+@app.route("/submit_review", methods=["POST"])
+def submit_review():
+    token = request.cookies.get("token")
+    if not token:
+        return redirect(url_for("loginuser"))
+    
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+        user_id = payload.get("user_id")
+        user_doc = db.users.find_one({"_id": ObjectId(user_id)})
+        
+        review_data = request.form
+        product_id = review_data.get("product_id")
+        review_text = review_data.get("review")
+
+        # Insert review into database
+        db.reviews.insert_one({
+            "user_id": str(user_id),
+            "product_id": product_id,
+            "review": review_text,
+            "username": user_doc.get("username"),
+            "created_at": datetime.now()
+        })
+        
+        return redirect(url_for("product"))
+    except jwt.ExpiredSignatureError:
+        return redirect(
+            url_for("loginuser", error_msg="Token expired. Please login again.")
+        )
+    except jwt.InvalidTokenError:
+        return redirect(
+            url_for("loginuser", error_msg="Invalid token. Please login again.")
+        )
+    except Exception as e:
+        return jsonify({"result": "error", "message": str(e)}), 500
 
 @app.route("/profile", methods=["GET", "POST"])
 @token_required
