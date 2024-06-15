@@ -565,6 +565,12 @@ def product():
         username = user.get("username")
         pesan = db.cartuser.count_documents({"user_id": str(user["_id"])})
         reviews = list(db.reviews.find())  # Fetch reviews
+        
+        # Ensure each review has a rating
+        for review in reviews:
+            if "rating" not in review:
+                review["rating"] = 0  # Default rating value if missing
+        
         return render_template(
             "user/produkuser.html",
             user_id=user_id,
@@ -582,6 +588,7 @@ def product():
         return redirect(
             url_for("loginuser", error_msg="Invalid token. Please login again.")
         )
+
 
 @app.route("/shoppingcart", methods=["GET"])
 @token_required
@@ -973,12 +980,14 @@ def submit_review():
         review_data = request.form
         product_id = review_data.get("product_id")
         review_text = review_data.get("review")
+        rating = int(review_data.get("rating", 0))  # Get rating from form data, default to 0 if not provided
 
         # Insert review into database
         db.reviews.insert_one({
             "user_id": str(user_id),
             "product_id": product_id,
             "review": review_text,
+            "rating": rating,  # Save the rating
             "username": user_doc.get("username"),
             "created_at": datetime.now()
         })
@@ -990,6 +999,8 @@ def submit_review():
         return redirect(url_for("loginuser", error_msg="Invalid token. Please login again."))
     except Exception as e:
         return jsonify({"result": "error", "message": str(e)}), 500
+
+
 
 @app.route("/profile", methods=["GET", "POST"])
 @token_required
