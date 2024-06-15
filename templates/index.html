@@ -215,39 +215,7 @@
     </div>
   </div>
   <!-- Product End -->
-  
-  <!-- Review Section Start -->
-<div class="review-section container-xxl py-5" id="reviews">
-  <div class="content-container">
-    <div class="section-header text-start mb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 500px">
-      <h1 class="display-5 mb-3">Our Review</h1>
-      <p>Bobapeer.id</p>
-    </div>
-    <div id="review-content">
-      {% for review in reviews %}
-      <div class="bg-light p-4 rounded mb-4 shadow-sm d-flex">
-        <div class="me-3">
-          <img src="{{ url_for('static', filename=review['profile_picture']) }}" alt="{{ review.username }}'s profile picture" class="rounded-circle" width="50" height="50">
-        </div>
-        <div>
-          <p><strong>{{ review.username }}</strong> ({{ review.created_at }}):</p>
-          <div class="rating">
-            {% for i in range(1, 6) %}
-              {% if i <= review.rating %}
-                <span class="fa fa-star checked"></span>
-              {% else %}
-                <span class="fa fa-star"></span>
-              {% endif %}
-            {% endfor %}
-          </div>
-          <p>{{ review.review }}</p>
-        </div>
-      </div>
-      {% endfor %}
-    </div>
-  </div>
-</div>
-<!-- Review Section End -->
+
 
 
   <!-- Footer Start -->
