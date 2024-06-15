@@ -39,7 +39,7 @@ TOKEN_KEY = "bobaper"
 @app.route("/", methods=["GET", "POST"])
 def home():
     produk = list(db.produk.find())
-    return render_template("index.html", produk=produk)
+    return render_template("index.html", produk=produk,)
 
 
 @app.route("/about", methods=["GET", "POST"])
