@@ -397,6 +397,11 @@ def dikrim_admin():
 
 @app.route("/review/admin", methods=["GET", "POST"])
 def reviewadmin():
+    if request.method == "POST":
+        review_id = request.form.get("review_id")
+        db.reviews.delete_one({"_id": ObjectId(review_id)})
+        return redirect(url_for("reviewadmin"))
+
     reviews = list(db.reviews.find())  # Fetch reviews
 
     # Fetch user data for each review to get the profile picture
@@ -405,7 +410,6 @@ def reviewadmin():
         review['profile_picture'] = review_user.get('profile_picture', 'default.jpg')
 
     return render_template("admin/reviewadmin.html", reviews=reviews)
-
 
 
 
