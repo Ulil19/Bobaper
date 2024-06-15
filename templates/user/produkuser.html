@@ -56,18 +56,23 @@
     </div>
     <div id="review-content">
       {% for review in reviews %}
-      <div class="bg-light p-4 rounded mb-4 shadow-sm">
-        <p><strong>{{ review.username }}</strong> ({{ review.created_at }}):</p>
-        <div class="rating">
-          {% for i in range(1, 6) %}
-            {% if i <= review.rating %}
-              <span class="fa fa-star checked"></span>
-            {% else %}
-              <span class="fa fa-star"></span>
-            {% endif %}
-          {% endfor %}
+      <div class="bg-light p-4 rounded mb-4 shadow-sm d-flex">
+        <div class="me-3">
+          <img src="{{ url_for('static', filename=review['profile_picture']) }}" alt="{{ review.username }}'s profile picture" class="rounded-circle" width="50" height="50">
         </div>
-        <p>{{ review.review }}</p>
+        <div>
+          <p><strong>{{ review.username }}</strong> ({{ review.created_at }}):</p>
+          <div class="rating">
+            {% for i in range(1, 6) %}
+              {% if i <= review.rating %}
+                <span class="fa fa-star checked"></span>
+              {% else %}
+                <span class="fa fa-star"></span>
+              {% endif %}
+            {% endfor %}
+          </div>
+          <p>{{ review.review }}</p>
+        </div>
       </div>
       {% endfor %}
     </div>
@@ -115,6 +120,9 @@
   }
   .fa-star.checked {
     color: gold;
+  }
+  .rounded-circle {
+    object-fit: cover;
   }
 </style>
 

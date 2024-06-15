@@ -398,7 +398,14 @@ def dikrim_admin():
 @app.route("/review/admin", methods=["GET", "POST"])
 def reviewadmin():
     reviews = list(db.reviews.find())  # Fetch reviews
+
+    # Fetch user data for each review to get the profile picture
+    for review in reviews:
+        review_user = db.users.find_one({"_id": ObjectId(review['user_id'])})
+        review['profile_picture'] = review_user.get('profile_picture', 'default.jpg')
+
     return render_template("admin/reviewadmin.html", reviews=reviews)
+
 
 
 
@@ -565,12 +572,14 @@ def product():
         username = user.get("username")
         pesan = db.cartuser.count_documents({"user_id": str(user["_id"])})
         reviews = list(db.reviews.find())  # Fetch reviews
-        
-        # Ensure each review has a rating
+
+        # Fetch user data for each review to get the profile picture
         for review in reviews:
+            review_user = db.users.find_one({"_id": ObjectId(review['user_id'])})
+            review['profile_picture'] = review_user.get('profile_picture', 'default.jpg')
             if "rating" not in review:
                 review["rating"] = 0  # Default rating value if missing
-        
+
         return render_template(
             "user/produkuser.html",
             user_id=user_id,
@@ -588,6 +597,7 @@ def product():
         return redirect(
             url_for("loginuser", error_msg="Invalid token. Please login again.")
         )
+
 
 
 @app.route("/shoppingcart", methods=["GET"])

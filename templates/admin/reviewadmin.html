@@ -9,7 +9,7 @@
         <div class="col-md-4">
             <div class="card p-3 text-center px-4">
                 <div class="user-image">
-                    <img src="{{ review.user_image | default('https://i.imgur.com/PKHvlRS.jpg') }}" class="rounded-circle" width="80">
+                    <img src="{{ url_for('static', filename=review.profile_picture) | default('https://i.imgur.com/PKHvlRS.jpg') }}" class="rounded-circle profile-picture">
                 </div>
                 <div class="user-content">
                     <h5 class="mb-0">{{ review.username | default('Unknown User') }}</h5>
@@ -27,4 +27,12 @@
         {% endfor %}
     </div>
 </div>
+
+<style>
+    .profile-picture {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+    }
+</style>
 {% endblock %}
