@@ -53,52 +53,6 @@
       rel="stylesheet"
     />
   </head>
-  <style>
-    @import url(//fonts.googleapis.com/css?family=Montserrat:300,500);
-    .team4 {
-      font-family: "Montserrat", sans-serif;
-      color: #8d97ad;
-      font-weight: 300;
-    }
-
-    .team4 h1,
-    .team4 h2,
-    .team4 h3,
-    .team4 h4,
-    .team4 h5,
-    .team4 h6 {
-      color: #3e4555;
-    }
-
-    .team4 .font-weight-medium {
-      font-weight: 500;
-    }
-
-    .team4 h5 {
-      line-height: 22px;
-      font-size: 18px;
-    }
-
-    .team4 .subtitle {
-      color: #8d97ad;
-      line-height: 24px;
-      font-size: 13px;
-    }
-
-    .team4 ul li a {
-      color: #8d97ad;
-      padding-right: 15px;
-      -webkit-transition: 0.1s ease-in;
-      -o-transition: 0.1s ease-in;
-      transition: 0.1s ease-in;
-    }
-
-    .team4 ul li a:hover {
-      -webkit-transform: translate3d(0px, -5px, 0px);
-      transform: translate3d(0px, -5px, 0px);
-      color: #316ce8;
-    }
-  </style>
   <body>
     <!-- Spinner Start -->
     <div
@@ -120,13 +74,6 @@
         </div>
         <div class="col-lg-6 px-5 text-end">
           <small>Follow us:</small>
-          <a class="text-body ms-3" href=""
-            ><i class="fab fa-facebook-f"></i
-          ></a>
-          <a class="text-body ms-3" href=""><i class="fab fa-twitter"></i></a>
-          <a class="text-body ms-3" href=""
-            ><i class="fab fa-linkedin-in"></i
-          ></a>
           <a class="text-body ms-3" href=""><i class="fab fa-instagram"></i></a>
         </div>
       </div>
@@ -188,6 +135,7 @@
                     >Profile</a
                   >
                 </li>
+                <li><a class="dropdown-item" href="/statuspesananuser">Status Pesan</a></li>
                 <li>
                   <a class="dropdown-item" href="{{ url_for('logoutuser') }}"
                     >Logout</a
@@ -257,10 +205,10 @@
         <nav aria-label="breadcrumb animated slideInDown">
           <ol class="breadcrumb mb-0">
             <li class="breadcrumb-item">
-              <a class="text-body" href="#">Home</a>
+              <a class="text-body" >Home</a>
             </li>
             <li class="breadcrumb-item">
-              <a class="text-body" href="#">Pages</a>
+              <a class="text-body">Pages</a>
             </li>
             <li class="breadcrumb-item text-dark active" aria-current="page">
               About Us
@@ -298,7 +246,7 @@
             <p class="mb-4">
               Hello, {{ username }}! Thank you for being a valued member.
             </p>
-            <a class="btn btn-primary py-3 px-5 mt-2" href="#produk"
+            <a class="btn btn-primary py-3 px-5 mt-2" href="/product"
               >View Products</a
             >
             {% else %}
@@ -334,11 +282,9 @@
       <div class="container">
         <div class="row justify-content-center mb-4">
           <div class="col-md-7 text-center">
-            <h3 class="mb-3">Experienced & Professional Team</h3>
+            <h3 class="mb-3">Final Project Team</h3>
             <h6 class="subtitle">
-              You can relay on our amazing features list and also our customer
-              services will be great experience for you without doubt and in
-              no-time
+              Kami adalah sebuah tim yang bertanggung jawab untuk membangun situs web ini.
             </h6>
           </div>
         </div>
@@ -356,33 +302,32 @@
               </div>
               <div class="col-md-12 text-center">
                 <div class="pt-2">
-                  <h5 class="mt-4 font-weight-medium mb-0">Michael Doe</h5>
-                  <h6 class="subtitle mb-3">Property Specialist</h6>
+                  <h5 class="mt-4 font-weight-medium mb-0">Muhammad Rizki</h5>
+                  <h6 class="subtitle mb-3">Frontend Developer</h6>
                   <p>
-                    You can relay on our amazing features list and also our
-                    customer services will be great experience.
+                    Orang yang bertugas untuk menentukan dan membuat tampilan menarik pada website. 
                   </p>
                   <ul class="list-inline">
                     <li class="list-inline-item">
-                      <a href="#" class="text-decoration-none d-block px-1"
-                        ><i class="icon-social-facebook"></i
+                        <a class="btn btn-square" href=""
+                        ><i class="fab fa-instagram"></i
                       ></a>
                     </li>
                     <li class="list-inline-item">
-                      <a href="#" class="text-decoration-none d-block px-1"
-                        ><i class="icon-social-twitter"></i
+                        <a class="btn btn-square" href=""
+                        ><i class="fab fa-twitter"></i
                       ></a>
                     </li>
                     <li class="list-inline-item">
-                      <a href="#" class="text-decoration-none d-block px-1"
-                        ><i class="icon-social-instagram"></i
+                        <a class="btn btn-square" href=""
+                        ><i class="fab fa-facebook-f"></i
                       ></a>
                     </li>
-                    <a
-                      class="btn btn-square btn-outline-light rounded-circle me-1"
-                      href=""
-                      ><i class="fab fa-instagram"></i
-                    ></a>
+                    <li class="list-inline-item">
+                        <a class="btn btn-square" href=""
+                        ><i class="fab fa-github"></i
+                      ></a>
+                    </li>
                   </ul>
                 </div>
               </div>
@@ -403,31 +348,30 @@
               </div>
               <div class="col-md-12 text-center">
                 <div class="pt-2">
-                  <h5 class="mt-4 font-weight-medium mb-0">Michael Doe</h5>
-                  <h6 class="subtitle mb-3">Property Specialist</h6>
+                  <h5 class="mt-4 font-weight-medium mb-0">Ulil Fathon</h5>
+                  <h6 class="subtitle mb-3">Backend Developer</h6>
                   <p>
-                    You can relay on our amazing features list and also our
-                    customer services will be great experience.
+                    orang yang bertugas merancang arsitektur aplikasi atau situs agar bisa berfungsi dengan baik.
                   </p>
                   <ul class="list-inline">
                     <li class="list-inline-item">
-                      <a href="#" class="text-decoration-none d-block px-1"
-                        ><i class="icon-social-facebook"></i
+                        <a class="btn btn-square" href=""
+                        ><i class="fab fa-instagram"></i
                       ></a>
                     </li>
                     <li class="list-inline-item">
-                      <a href="#" class="text-decoration-none d-block px-1"
-                        ><i class="icon-social-twitter"></i
+                        <a class="btn btn-square" href=""
+                        ><i class="fab fa-twitter"></i
                       ></a>
                     </li>
                     <li class="list-inline-item">
-                      <a href="#" class="text-decoration-none d-block px-1"
-                        ><i class="icon-social-instagram"></i
+                        <a class="btn btn-square" href=""
+                        ><i class="fab fa-facebook-f"></i
                       ></a>
                     </li>
                     <li class="list-inline-item">
-                      <a href="#" class="text-decoration-none d-block px-1"
-                        ><i class="icon-social-behance"></i
+                        <a class="btn btn-square" href=""
+                        ><i class="fab fa-github"></i
                       ></a>
                     </li>
                   </ul>
@@ -443,38 +387,35 @@
             <div class="row">
               <div class="col-md-12">
                 <img
-                  src="https://www.wrappixel.com/demos/ui-kit/wrapkit/assets/images/team/t3.jpg"
-                  alt="wrapkit"
-                  class="img-fluid rounded-circle"
+                  src="{{ url_for('static', filename='img/rama.jpg') }}"class="img-fluid rounded-circle" 
                 />
               </div>
               <div class="col-md-12 text-center">
                 <div class="pt-2">
-                  <h5 class="mt-4 font-weight-medium mb-0">Michael Doe</h5>
-                  <h6 class="subtitle mb-3">Property Specialist</h6>
+                  <h5 class="mt-4 font-weight-medium mb-0">Ramadhani Rizky S</h5>
+                  <h6 class="subtitle mb-3">Backend Developer</h6>
                   <p>
-                    You can relay on our amazing features list and also our
-                    customer services will be great experience.
+                    orang yang bertugas merancang arsitektur aplikasi atau situs agar bisa berfungsi dengan baik.
                   </p>
                   <ul class="list-inline">
                     <li class="list-inline-item">
-                      <a href="#" class="text-decoration-none d-block px-1"
-                        ><i class="icon-social-facebook"></i
+                        <a class="btn btn-square" href="https://www.instagram.com/r.rizky.s/"
+                        ><i class="fab fa-instagram"></i
                       ></a>
                     </li>
                     <li class="list-inline-item">
-                      <a href="#" class="text-decoration-none d-block px-1"
-                        ><i class="icon-social-twitter"></i
+                        <a class="btn btn-square" href=""
+                        ><i class="fab fa-twitter"></i
                       ></a>
                     </li>
                     <li class="list-inline-item">
-                      <a href="#" class="text-decoration-none d-block px-1"
-                        ><i class="icon-social-instagram"></i
+                        <a class="btn btn-square" href=""
+                        ><i class="fab fa-facebook-f"></i
                       ></a>
                     </li>
                     <li class="list-inline-item">
-                      <a href="#" class="text-decoration-none d-block px-1"
-                        ><i class="icon-social-behance"></i
+                        <a class="btn btn-square" href="https://github.com/Rikivos"
+                        ><i class="fab fa-github"></i
                       ></a>
                     </li>
                   </ul>
@@ -497,31 +438,30 @@
               </div>
               <div class="col-md-12 text-center">
                 <div class="pt-2">
-                  <h5 class="mt-4 font-weight-medium mb-0">Michael Doe</h5>
-                  <h6 class="subtitle mb-3">Property Specialist</h6>
+                  <h5 class="mt-4 font-weight-medium mb-0">Romaria Lestari</h5>
+                  <h6 class="subtitle mb-3">Frontend Developer</h6>
                   <p>
-                    You can relay on our amazing features list and also our
-                    customer services will be great experience.
+                    Orang yang bertugas untuk menentukan dan membuat tampilan menarik pada website. 
                   </p>
                   <ul class="list-inline">
                     <li class="list-inline-item">
-                      <a href="#" class="text-decoration-none d-block px-1"
-                        ><i class="icon-social-facebook"></i
+                        <a class="btn btn-square" href=""
+                        ><i class="fab fa-instagram"></i
                       ></a>
                     </li>
                     <li class="list-inline-item">
-                      <a href="#" class="text-decoration-none d-block px-1"
-                        ><i class="icon-social-twitter"></i
+                        <a class="btn btn-square" href=""
+                        ><i class="fab fa-twitter"></i
                       ></a>
                     </li>
                     <li class="list-inline-item">
-                      <a href="#" class="text-decoration-none d-block px-1"
-                        ><i class="icon-social-instagram"></i
+                        <a class="btn btn-square" href=""
+                        ><i class="fab fa-facebook-f"></i
                       ></a>
                     </li>
                     <li class="list-inline-item">
-                      <a href="#" class="text-decoration-none d-block px-1"
-                        ><i class="icon-social-behance"></i
+                        <a class="btn btn-square" href=""
+                        ><i class="fab fa-github"></i
                       ></a>
                     </li>
                   </ul>
@@ -577,14 +517,7 @@
             <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
               &copy; <a href="#">Bobapeer</a>, All Right Reserved.
             </div>
-            <div class="col-md-6 text-center text-md-end">
-              <div class="footer-menu">
-                <a href="">Home</a>
-                <a href="">Cookies</a>
-                <a href="">Help</a>
-                <a href="">FQAs</a>
-              </div>
-            </div>
+            
           </div>
         </div>
       </div>
