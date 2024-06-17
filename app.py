@@ -40,14 +40,14 @@ TOKEN_KEY = "bobaper"
 def home():
     produk = list(db.produk.find())
     reviews = list(db.reviews.find())  # Fetch reviews
-# Fetch user data for each review to get the profile picture
+    # Fetch user data for each review to get the profile picture
     for review in reviews:
-            review_user = db.users.find_one({"_id": ObjectId(review['user_id'])})
-            review['profile_picture'] = review_user.get('profile_picture', 'default.jpg')
-            if "rating" not in review:
-                review["rating"] = 0  # Default rating value if missing
+        review_user = db.users.find_one({"_id": ObjectId(review["user_id"])})
+        review["profile_picture"] = review_user.get("profile_picture", "default.jpg")
+        if "rating" not in review:
+            review["rating"] = 0  # Default rating value if missing
 
-    return render_template("index.html", produk=produk, reviews=reviews )
+    return render_template("index.html", produk=produk, reviews=reviews)
 
 
 @app.route("/about", methods=["GET", "POST"])
@@ -280,15 +280,13 @@ def editproduk(_id):
     return render_template("admin/editproduk.html", data=data)
 
 
-@app.route("/deleteproduk/<_id>")
+@app.route("/deleteproduk/<_id>", methods=["POST"])
 @login_required
 def delete_produk(_id):
     deleted_product = db.produk.find_one_and_delete({"_id": ObjectId(_id)})
     if deleted_product:
         db.cartuser.delete_many({"product_id": str(deleted_product["_id"])})
-        return redirect(url_for("dashboard"))
-    else:
-        return redirect(url_for("dashboard"))
+    return redirect(url_for("dashboard"))
 
 
 @app.route("/konfirmasipesananadmin", methods=["GET", "POST"])
@@ -296,15 +294,17 @@ def delete_produk(_id):
 def konfirmasipesananadmin():
     try:
         per_page = 5  # Number of entries per page
-        page = int(request.args.get('page', 1))
+        page = int(request.args.get("page", 1))
 
         # Calculate the total number of orders
         order_count = db.orders.count_documents({"status": "sedang dikonfirmasi"})
 
         # Fetch orders with pagination
-        orders = list(db.orders.find({"status": "sedang dikonfirmasi"})
-                      .skip((page - 1) * per_page)
-                      .limit(per_page))
+        orders = list(
+            db.orders.find({"status": "sedang dikonfirmasi"})
+            .skip((page - 1) * per_page)
+            .limit(per_page)
+        )
 
         # Process orders to include profile pictures
         for order in orders:
@@ -313,12 +313,17 @@ def konfirmasipesananadmin():
                 item["_id"] = str(item["_id"])
 
             # Fetch user details
-            user_id = order.get('user_id')
+            user_id = order.get("user_id")
             user = db.users.find_one({"_id": ObjectId(user_id)})
             if user:
-                order["profile_picture"] = url_for('static', filename=user.get('profile_picture', 'profile_pics/default.jpg'))
+                order["profile_picture"] = url_for(
+                    "static",
+                    filename=user.get("profile_picture", "profile_pics/default.jpg"),
+                )
             else:
-                order["profile_picture"] = url_for('static', filename='profile_pics/default.jpg')
+                order["profile_picture"] = url_for(
+                    "static", filename="profile_pics/default.jpg"
+                )
 
         # Pass the filtered orders to the template
         return render_template(
@@ -327,7 +332,7 @@ def konfirmasipesananadmin():
             order_count=order_count,
             page=page,
             per_page=per_page,
-            ceil=ceil
+            ceil=ceil,
         )
     except Exception as e:
         return jsonify({"result": "error", "message": str(e)}), 500
@@ -413,18 +418,17 @@ def reviewadmin():
 
     # Fetch user data for each review to get the profile picture
     for review in reviews:
-        review_user = db.users.find_one({"_id": ObjectId(review['user_id'])})
-        review['profile_picture'] = review_user.get('profile_picture', 'default.jpg')
+        review_user = db.users.find_one({"_id": ObjectId(review["user_id"])})
+        review["profile_picture"] = review_user.get("profile_picture", "default.jpg")
 
     return render_template("admin/reviewadmin.html", reviews=reviews)
-
 
 
 @app.route("/kelolauser/admin", methods=["GET", "POST"])
 @login_required
 def kelolauser():
     per_page = 5  # Number of entries per page
-    page = int(request.args.get('page', 1))
+    page = int(request.args.get("page", 1))
 
     # Fetching admins with pagination
     admin_count = db.admins.count_documents({})
@@ -442,8 +446,9 @@ def kelolauser():
         user_count=user_count,
         page=page,
         per_page=per_page,
-        ceil=ceil  # Pass the ceil function to the template
+        ceil=ceil,  # Pass the ceil function to the template
     )
+
 
 @app.route("/kelolauser/delete_admin/<admin_id>", methods=["DELETE"])
 @login_required
@@ -453,6 +458,7 @@ def delete_admin(admin_id):
         return jsonify({"success": True}), 200
     else:
         return jsonify({"success": False}), 404
+
 
 @app.route("/kelolauser/delete_user/<user_id>", methods=["DELETE"])
 @login_required
@@ -586,8 +592,10 @@ def product():
 
         # Fetch user data for each review to get the profile picture
         for review in reviews:
-            review_user = db.users.find_one({"_id": ObjectId(review['user_id'])})
-            review['profile_picture'] = review_user.get('profile_picture', 'default.jpg')
+            review_user = db.users.find_one({"_id": ObjectId(review["user_id"])})
+            review["profile_picture"] = review_user.get(
+                "profile_picture", "default.jpg"
+            )
             if "rating" not in review:
                 review["rating"] = 0  # Default rating value if missing
 
@@ -598,7 +606,7 @@ def product():
             produk=produk,
             username=username,
             pesan=pesan,
-            reviews=reviews  # Pass reviews to template
+            reviews=reviews,  # Pass reviews to template
         )
     except jwt.ExpiredSignatureError:
         return redirect(
@@ -608,7 +616,6 @@ def product():
         return redirect(
             url_for("loginuser", error_msg="Invalid token. Please login again.")
         )
-
 
 
 @app.route("/shoppingcart", methods=["GET"])
@@ -842,8 +849,7 @@ def pesan():
                 product_id = ObjectId(item["product_id"])
                 quantity = item["quantity"]
                 db.produk.update_one(
-                    {"_id": product_id},
-                    {"$inc": {"stock": -quantity}}
+                    {"_id": product_id}, {"$inc": {"stock": -quantity}}
                 )
 
             # Clear user's cart
@@ -864,7 +870,6 @@ def pesan():
         )
     except Exception as e:
         return jsonify({"result": "error", "message": str(e)}), 500
-
 
 
 @app.route("/statuspesananuser", methods=["GET"])
@@ -898,6 +903,7 @@ def statuspesananuser():
         )
     except Exception as e:
         return jsonify({"result": "error", "message": str(e)}), 500
+
 
 @app.route("/order/<order_id>")
 def order_detail(order_id):
@@ -962,22 +968,25 @@ def update_order_status(order_id):
     except Exception as e:
         return jsonify({"result": "error", "message": str(e)}), 500
 
+
 @app.route("/write_review", methods=["GET"])
 def write_review():
     token = request.cookies.get("token")
     if not token:
         return redirect(url_for("loginuser"))
-    
+
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
         user_id = payload.get("user_id")
         user = db.users.find_one({"_id": ObjectId(user_id)})
         product_id = request.args.get("product_id")
-        
+
         if not product_id:
             return redirect(url_for("product"))
-        
-        return render_template("user/write_review.html", user=user, product_id=product_id)
+
+        return render_template(
+            "user/write_review.html", user=user, product_id=product_id
+        )
     except jwt.ExpiredSignatureError:
         return redirect(
             url_for("loginuser", error_msg="Token expired. Please login again.")
@@ -987,40 +996,48 @@ def write_review():
             url_for("loginuser", error_msg="Invalid token. Please login again.")
         )
 
+
 @app.route("/submit_review", methods=["POST"])
 def submit_review():
     token = request.cookies.get("token")
     if not token:
         return redirect(url_for("loginuser"))
-    
+
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
         user_id = payload.get("user_id")
         user_doc = db.users.find_one({"_id": ObjectId(user_id)})
-        
+
         review_data = request.form
         product_id = review_data.get("product_id")
         review_text = review_data.get("review")
-        rating = int(review_data.get("rating", 0))  # Get rating from form data, default to 0 if not provided
+        rating = int(
+            review_data.get("rating", 0)
+        )  # Get rating from form data, default to 0 if not provided
 
         # Insert review into database
-        db.reviews.insert_one({
-            "user_id": str(user_id),
-            "product_id": product_id,
-            "review": review_text,
-            "rating": rating,  # Save the rating
-            "username": user_doc.get("username"),
-            "created_at": datetime.now()
-        })
-        
+        db.reviews.insert_one(
+            {
+                "user_id": str(user_id),
+                "product_id": product_id,
+                "review": review_text,
+                "rating": rating,  # Save the rating
+                "username": user_doc.get("username"),
+                "created_at": datetime.now(),
+            }
+        )
+
         return redirect(url_for("product"))
     except jwt.ExpiredSignatureError:
-        return redirect(url_for("loginuser", error_msg="Token expired. Please login again."))
+        return redirect(
+            url_for("loginuser", error_msg="Token expired. Please login again.")
+        )
     except jwt.InvalidTokenError:
-        return redirect(url_for("loginuser", error_msg="Invalid token. Please login again."))
+        return redirect(
+            url_for("loginuser", error_msg="Invalid token. Please login again.")
+        )
     except Exception as e:
         return jsonify({"result": "error", "message": str(e)}), 500
-
 
 
 @app.route("/profile", methods=["GET", "POST"])

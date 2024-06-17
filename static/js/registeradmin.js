@@ -55,14 +55,23 @@ $(document).ready(function () {
               password: password,
             },
             success: function (response) {
-              alert("You are signed up! Nice!");
-              window.location.replace("/login/admin");
+              Swal.fire({
+                icon: "success",
+                title: "Success",
+                text: "Admin registered successfully!",
+              }).then(() => {
+                window.location.replace("/login/admin");
+              });
             },
           });
         }
       },
       error: function () {
-        alert("An error occurred while checking the email.");
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "An error occurred while checking the email.",
+        });
       },
     });
   });

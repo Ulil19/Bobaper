@@ -82,11 +82,14 @@ $(document).ready(function () {
         },
         success: function (response) {
           if (response.result === "success") {
-            alert("Login successful!");
-            // Store token in session storage
-            sessionStorage.setItem("token", response.token);
-            // Redirect to product page with token
-            window.location.href = "/product";
+            Swal.fire({
+              icon: "success",
+              title: "Success",
+              text: "Login Berhasil!",
+            }).then(function () {
+              sessionStorage.setItem("token", response.token);
+              window.location.replace("/product");
+            });
           } else {
             $("#passwordHelp").text(response.message);
           }
@@ -161,8 +164,13 @@ $(document).ready(function () {
         },
         success: function (response) {
           if (response.result === "success") {
-            alert("User registered successfully!");
-            window.location.replace("/login/user");
+            Swal.fire({
+              icon: "success",
+              title: "Success",
+              text: "Registration Berhasil!",
+            }).then(function () {
+              window.location.replace("/login/user");
+            });
           } else {
             // Display error message
             if (response.message === "Email already registered") {
@@ -170,7 +178,11 @@ $(document).ready(function () {
             } else if (response.message === "Passwords do not match") {
               $("#passwordHelp2").text(response.message);
             } else {
-              alert("Registration failed. Please try again.");
+              Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: "Registration failed. Please try again.",
+              });
             }
           }
         },

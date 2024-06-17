@@ -1,10 +1,12 @@
 {% extends "/user/layout/layoutuser.html" %}
+
 <!-- Spinner Start -->
 <div id="spinner"
-class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
-<div class="spinner-border text-primary" role="status"></div>
+  class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+  <div class="spinner-border text-primary" role="status"></div>
 </div>
 <!-- Spinner End -->
+
 {% block content %}
 <!-- Carousel Start -->
 <div class="container-fluid p-0 mb-5 wow fadeIn" data-wow-delay="0.1s">
@@ -53,7 +55,6 @@ class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-5
 </div>
 <!-- Carousel End -->
 
-
 <!-- About Start -->
 <div class="container-xxl py-5">
   <div class="container">
@@ -74,6 +75,7 @@ class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-5
   </div>
 </div>
 <!-- About End -->
+
 <!-- Product Start -->
 <div class="produk" id="produk">
   <div class="container-xxl py-5">
@@ -91,19 +93,26 @@ class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-5
           <div class="row g-4">
             {% for produk in produk %}
             <div class="col-xl-3 col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-              <div class="product-item">
+              <div class="product-item position-relative">
                 <div class="position-relative bg-light overflow-hidden">
-                  <img class="img-fluid w-100" src="{{ url_for('static', filename='imgproduct/' + produk['foto']) }}" alt=""/>
-                  <div class="bg-secondary rounded text-white position-absolute start-0 top-0 m-4 py-1 px-3">New</div>
+                  <img class="img-fluid w-100" src="{{ url_for('static', filename='imgproduct/' + produk['foto']) }}"
+                    alt="" />
+                  {% if produk['stock'] == 0 %}
+                  <div
+                    class="out-of-stock-overlay d-flex justify-content-center align-items-center position-absolute top-0 start-0 w-100 h-100">
+                    <span>Out of Stock</span>
+                  </div>
+                  {% endif %}
                 </div>
                 <div class="text-center p-4">
                   <a class="d-block h5 mb-2" href="">{{ produk['nama'] }}</a>
-                  <span class="text-primary me-1">Stok: {{ produk['stock'] }}</span><br/>
+                  <span class="text-primary me-1">Stok: {{ produk['stock'] }}</span><br />
                   <span class="text-body me-3">Harga: Rp. {{ '{:,}'.format(produk['harga']) }}</span>
                 </div>
                 <div class="d-flex border-top justify-content-center">
                   <small class="text-center py-2">
-                    <a class="text-body mx-auto add-to-cart" data-id="{{ produk['_id'] }}">
+                    <a class="text-body mx-auto add-to-cart" data-id="{{ produk['_id'] }}"
+                      data-stock="{{ produk['stock'] }}">
                       <i class="fa fa-shopping-bag text-primary me-2"></i>Add to cart
                     </a>
                   </small>
@@ -130,18 +139,18 @@ class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-5
       {% for review in reviews %}
       <div class="bg-light p-4 rounded mb-4 shadow-sm d-flex">
         <div class="me-3">
-          <img src="{{ url_for('static', filename=review['profile_picture']) }}" alt="{{ review.username }}'s profile picture" class="rounded-circle" width="50" height="50">
+          <img src="{{ url_for('static', filename=review['profile_picture']) }}"
+            alt="{{ review.username }}'s profile picture" class="rounded-circle" width="50" height="50">
         </div>
         <div>
           <p><strong>{{ review.username }}</strong> ({{ review.created_at }}):</p>
           <div class="rating">
             {% for i in range(1, 6) %}
-              {% if i <= review.rating %}
-                <span class="fa fa-star checked"></span>
+            {% if i <= review.rating %} <span class="fa fa-star checked"></span>
               {% else %}
-                <span class="fa fa-star"></span>
+              <span class="fa fa-star"></span>
               {% endif %}
-            {% endfor %}
+              {% endfor %}
           </div>
           <p>{{ review.review }}</p>
         </div>
@@ -152,6 +161,7 @@ class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-5
 </div>
 <!-- Review Section End -->
 
+<!-- SweetAlert2 -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
   $(document).ready(function () {
@@ -159,8 +169,19 @@ class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-5
     $(".add-to-cart").click(function (e) {
       e.preventDefault();
 
-      // Get the product ID
+      // Get the product ID and stock
       var productId = $(this).data("id");
+      var productStock = $(this).data("stock");
+
+      // Check if stock is zero
+      if (productStock == 0) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Stock Habis',
+          text: 'Stock Produk  Habis!'
+        })
+        return;
+      }
 
       // Send an AJAX request to add the product to the shopping cart
       $.ajax({
@@ -170,14 +191,24 @@ class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-5
           product_id: productId
         },
         success: function (response) {
-          alert("Product added to cart!");
-          window.location.reload();
+          Swal.fire({
+            icon: 'success',
+            title: 'Success',
+            text: 'Product added to cart!'
+          }).then((result) => {
+            if (result.isConfirmed) {
+              window.location.reload();
+            }
+          });
         },
         error: function (xhr, status, error) {
-          alert("An error occurred: " + error);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'An error occurred: ' + error
+          });
         }
       });
-
     });
   });
 </script>
@@ -186,15 +217,29 @@ class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-5
   .rating {
     display: flex;
   }
+
   .fa-star {
     font-size: 1.5em;
     color: lightgray;
   }
+
   .fa-star.checked {
     color: gold;
   }
+
   .rounded-circle {
     object-fit: cover;
+  }
+
+  .out-of-stock-overlay {
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    font-size: 1.5em;
+    display: none;
+  }
+
+  .product-item.out-of-stock .out-of-stock-overlay {
+    display: flex;
   }
 </style>
 

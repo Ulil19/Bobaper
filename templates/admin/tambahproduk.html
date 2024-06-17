@@ -11,29 +11,29 @@
     </div>
 </div>
 <div class="container">
-    <form action="#" method="POST" enctype="multipart/form-data">
+    <form id="tambahProdukForm" action="#" method="POST" enctype="multipart/form-data">
         <div class="mb-3">
             <div class="form-group">
                 <label for="gambar" class="form-label">Gambar Produk</label>
-                <input type="file" class="form-control" id="gambar" name="foto" placeholder="Masukan Gambar">
+                <input type="file" class="form-control" id="gambar" name="foto" placeholder="Masukan Gambar" required>
             </div>
         </div>
         <div class="mb-3">
             <div class="form-group">
                 <label for="nama" class="form-label">Nama Produk</label>
-                <input type="text" class="form-control" id="nama" name="nama" placeholder="Masukan Nama">
+                <input type="text" class="form-control" id="nama" name="nama" placeholder="Masukan Nama" required>
             </div>
         </div>
         <div class="mb-3">
             <div class="form-group">
                 <label for="stock" class="form-label">Stock</label>
-                <input type="number" class="form-control" id="deskripsi" name="stock" placeholder="Masukan Stock">
+                <input type="number" class="form-control" id="stock" name="stock" placeholder="Masukan Stock" required>
             </div>
         </div>
         <div class="mb-3">
             <div class="form-group">
                 <label for="harga" class="form-label">Harga</label>
-                <input type="number" class="form-control" id="harga" name="harga" placeholder="Masukan Harga">
+                <input type="number" class="form-control" id="harga" name="harga" placeholder="Masukan Harga" required>
             </div>
         </div>
         <div class="d-flex justify-content-end mb-3 py-3">
@@ -42,4 +42,43 @@
         </div>
     </form>
 </div>
+
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#tambahProdukForm").submit(function (e) {
+            e.preventDefault();
+
+            var formData = new FormData(this);
+
+            $.ajax({
+                url: "/tambahproduk",  // Update with the actual endpoint to handle the form submission
+                type: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: 'Product added successfully!'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = "{{ url_for('dashboard') }}";
+                        }
+                    });
+                },
+                error: function (xhr, status, error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'An error occurred: ' + error
+                    });
+                }
+            });
+        });
+    });
+</script>
 {% endblock %}

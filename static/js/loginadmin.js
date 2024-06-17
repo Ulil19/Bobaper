@@ -27,9 +27,19 @@ function loginadmin() {
     success: function (response) {
       console.log(response);
       if (response["result"] === "success") {
-        window.location.href = "/dashboard";
+        Swal.fire({
+          icon: "success",
+          title: "Success",
+          text: "Login Berhasil!",
+        }).then(() => {
+          window.location.href = "/dashboard";
+        });
       } else {
-        alert(response["error_msg"]);
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Login Failed!",
+        });
       }
     },
   });
