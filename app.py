@@ -1023,7 +1023,7 @@ def submit_review():
                 "review": review_text,
                 "rating": rating,  # Save the rating
                 "username": user_doc.get("username"),
-                "created_at": datetime.now(),
+                "created_at": datetime.now().strftime("%Y-%m-%d %H:%M"),
             }
         )
 
