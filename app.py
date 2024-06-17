@@ -258,7 +258,6 @@ def editproduk(_id):
             for item in order["cart_items"]:
                 if item["product_id"] == id:
                     item["product_name"] = nama
-                    item["product_price"] = harga
                     if nama_foto:
                         item["product_photo"] = nama_file
                 updated_cart_items.append(item)
