@@ -29,8 +29,8 @@
                     <a class="btn-sm-square rounded-circle text-body dropdown-toggle d-flex align-items-center" href="#"
                         role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
                         <img src="{{ url_for('static', filename=user.profile_picture) }}" class="rounded-circle"
-                            style="width: 25px; height: 25px;">
-                        <span class="ms-1">{{ username }}</span>
+                            width="30" height="30">
+                        <span class=" ms-1">{{ username }}</span>
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                         <li><a class="dropdown-item" href="/profile">Profile</a></li>
@@ -47,4 +47,11 @@
         </div>
     </nav>
 </div>
+<style>
+    .rounded-circle img {
+        object-fit: cover;
+        width: 30 !important;
+        height: 30 !important;
+    }
+</style>
 <!-- Navbar End -->

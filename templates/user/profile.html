@@ -8,8 +8,8 @@
       <div class="profile-sidebar">
         <!-- FOTO PENGGUNA SIDEBAR -->
         <div class="profile-userpic">
-          <img src="{{ url_for('static', filename=user.get('profile_picture', 'default.jpg')) }}" 
-            alt="class="rounded-circle" width="50" height="50"">
+          <img src="{{ url_for('static', filename=user.get('profile_picture', 'default.jpg')) }}" class="rounded-circle"
+            width="250" height="250">
         </div>
         <!-- AKHIR FOTO PENGGUNA SIDEBAR -->
         <!-- JUDUL PENGGUNA SIDEBAR -->
@@ -55,9 +55,10 @@
             <div class="col-md-4 border-right">
               <div class="d-flex flex-column align-items-center text-center py-1 gap-2">
                 <img class="rounded-circle mt-5"
-                  src="{{ url_for('static', filename=user.get('profile_picture', 'default.jpg')) }}" width="90">
+                  src="{{ url_for('static', filename=user.get('profile_picture', 'default.jpg')) }}"
+                  class="rounded-circle" width="250" height="250">
                 <form id="profile-form" method="POST" enctype="multipart/form-data">
-                  <input type="file" name="profile_picture">
+                  <input type="file" name="profile_picture"> Masukan Photo Profil
               </div>
             </div>
             <div class="col-md-8">
@@ -108,4 +109,9 @@
       </div>
     </div>
   </div>
+  <style>
+    .rounded-circle {
+      object-fit: cover;
+    }
+  </style>
   {% endblock %}
