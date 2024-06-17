@@ -39,7 +39,15 @@ TOKEN_KEY = "bobaper"
 @app.route("/", methods=["GET", "POST"])
 def home():
     produk = list(db.produk.find())
-    return render_template("index.html", produk=produk,)
+    reviews = list(db.reviews.find())  # Fetch reviews
+# Fetch user data for each review to get the profile picture
+    for review in reviews:
+            review_user = db.users.find_one({"_id": ObjectId(review['user_id'])})
+            review['profile_picture'] = review_user.get('profile_picture', 'default.jpg')
+            if "rating" not in review:
+                review["rating"] = 0  # Default rating value if missing
+
+    return render_template("index.html", produk=produk, reviews=reviews )
 
 
 @app.route("/about", methods=["GET", "POST"])
