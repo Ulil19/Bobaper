@@ -656,6 +656,9 @@ def add_shopping_cart(user):
         )
 
         if cart_item:
+            # Check if adding one more exceeds the stock
+            if cart_item["quantity"] + 1 > product["stock"]:
+                return jsonify({"result": "error", "message": "Exceeds available stock."})
             # If product is already in the cart, update the quantity
             db.cartuser.update_one({"_id": cart_item["_id"]}, {"$inc": {"quantity": 1}})
         else:

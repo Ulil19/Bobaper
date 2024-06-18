@@ -63,9 +63,9 @@
       {% if status %}
       <div class="collapse navbar-collapse" id="navbarCollapse">
         <div class="navbar-nav ms-auto p-4 p-lg-0">
-          <a href="/product" class="nav-item nav-link active">Home</a>
+          <a href="/" class="nav-item nav-link active">Home</a>
           <a href="/about" class="nav-item nav-link">About Us</a>
-          <a href="/product" class="nav-item nav-link">Products</a>
+          <a href="#produkk" class="nav-item nav-link">Products</a>
           <a href="/contact" class="nav-item nav-link">Contact Us</a>
         </div>
         {% elif not status %}
@@ -73,7 +73,7 @@
           <div class="navbar-nav ms-auto p-4 p-lg-0">
             <a href="/" class="nav-item nav-link active">Home</a>
             <a href="/about" class="nav-item nav-link">About Us</a>
-            <a href="#produk" class="nav-item nav-link">Products</a>
+            <a href="#produkk" class="nav-item nav-link">Products</a>
             <a href="/contact" class="nav-item nav-link">Contact Us</a>
           </div>
           {% endif %}
@@ -169,7 +169,7 @@
 
 
   <!-- Product Start -->
-  <div class="produk" id="produk">
+  <div class="produk" id="produkk">
     <div class="container-xxl py-5">
       <div class="container">
         <div class="row g-0 gx-5 align-items-end">
@@ -227,7 +227,7 @@
               alt="{{ review.username }}'s profile picture" class="rounded-circle" width="50" height="50">
           </div>
           <div>
-            <p><strong>{{ review.username }}</strong> ({{ review.created_at }}):</p>
+            <p><strong>{{ review.username }}</strong> ({{ review.created_at }})</p>
             <div class="rating">
               {% for i in range(1, 6) %}
               {% if i <= review.rating %} <span class="fa fa-star checked"></span>

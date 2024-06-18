@@ -29,7 +29,7 @@
                         <div class="col">
                             <a href="#" class="btn btn-outline-secondary btn-sm btn-quantity" data-action="decrement"
                                 data-id="{{ item.product_id }}">-</a>
-                            <span class="border px-2">{{ item.quantity }}</span>
+                            <span class="border px-2" data-stock="{{ item.stock }}">{{ item.quantity }}</span>
                             <a href="#" class="btn btn-outline-secondary btn-sm btn-quantity" data-action="increment"
                                 data-id="{{ item.product_id }}">+</a>
                         </div>
@@ -80,11 +80,17 @@
 
             const action = this.getAttribute('data-action');
             const quantityElement = this.parentElement.querySelector('.border');
+            const stock = parseInt(quantityElement.getAttribute('data-stock'));
 
             let quantity = parseInt(quantityElement.innerText); // Get the current quantity
 
             // Get the product ID
             var productId = $(this).data("id");
+
+            if (action === 'increment' && quantity >= stock) {
+                alert('Cannot add more than available stock.');
+                return;
+            }
 
             // Update quantity based on action
             if (action === 'increment') {
@@ -197,6 +203,5 @@
         });
     });
 </script>
-
 
 {% endblock %}
