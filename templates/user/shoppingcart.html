@@ -185,6 +185,15 @@
             });
         });
 
+        if (cartItems.length === 0) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Warning',
+                text: 'Your cart is empty. Please add some products before proceeding to checkout.',
+            });
+            return;
+        }
+
         const totalHarga = parseFloat(document.querySelector('.summary .col.text-right').innerText.replace('Rp ', '').replace(',', ''));
         // Get the selected value from the dropdown
         var pengiriman = document.getElementById('pengiriman').value;
