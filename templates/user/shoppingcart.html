@@ -72,6 +72,7 @@
 </div>
 </div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     // Quantity change event
     document.querySelectorAll('.btn-quantity').forEach(button => {
@@ -87,14 +88,18 @@
             // Get the product ID
             var productId = $(this).data("id");
 
-            if (action === 'increment' && quantity >= stock) {
-                alert('Cannot add more than available stock.');
-                return;
-            }
-
             // Update quantity based on action
             if (action === 'increment') {
-                quantity += 1;
+                if (quantity >= stock) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Cannot add more than available stock.',
+                    });
+                    return;
+                } else {
+                    quantity += 1;
+                }
             } else if (action === 'decrement') {
                 quantity = Math.max(1, quantity - 1);
             }
@@ -110,16 +115,20 @@
                     action: action
                 })
             })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.result === 'success') {
-                        // Reload the page to reflect changes
-                        location.reload();
-                    } else {
-                        alert(data.message);
-                    }
-                })
-                .catch(error => console.error('Error:', error));
+            .then(response => response.json())
+            .then(data => {
+                if (data.result === 'success') {
+                    // Reload the page to reflect changes
+                    location.reload();
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: data.message,
+                    });
+                }
+            })
+            .catch(error => console.error('Error:', error));
         });
     });
 
@@ -140,16 +149,20 @@
                     product_id: productId
                 })
             })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.result === 'success') {
-                        // Reload the page to reflect changes
-                        location.reload();
-                    } else {
-                        alert(data.message);
-                    }
-                })
-                .catch(error => console.error('Error:', error));
+            .then(response => response.json())
+            .then(data => {
+                if (data.result === 'success') {
+                    // Reload the page to reflect changes
+                    location.reload();
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: data.message,
+                    });
+                }
+            })
+            .catch(error => console.error('Error:', error));
         });
     });
 
@@ -177,7 +190,11 @@
         var pengiriman = document.getElementById('pengiriman').value;
 
         if (!pengiriman) {
-            alert('Please select a delivery method.');
+            Swal.fire({
+                icon: 'warning',
+                title: 'Warning',
+                text: 'Please select a delivery method.',
+            });
             return;
         }
 
@@ -194,7 +211,11 @@
                 if (response.result === 'success') {
                     window.location.href = '/checkout';
                 } else {
-                    alert(response.message);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: response.message,
+                    });
                 }
             },
             error: function (error) {

@@ -39,7 +39,7 @@ TOKEN_KEY = "bobaper"
 @app.route("/", methods=["GET", "POST"])
 def home():
     produk = list(db.produk.find())
-    reviews = list(db.reviews.find())  # Fetch reviews
+    reviews = list(db.reviews.find().sort("created_at", -1)) # Fetch reviews
     # Fetch user data for each review to get the profile picture
     for review in reviews:
         review_user = db.users.find_one({"_id": ObjectId(review["user_id"])})
@@ -588,7 +588,9 @@ def product():
         produk = list(db.produk.find())
         username = user.get("username")
         pesan = db.cartuser.count_documents({"user_id": str(user["_id"])})
-        reviews = list(db.reviews.find())  # Fetch reviews
+
+        # Fetch reviews and sort by creation date descending
+        reviews = list(db.reviews.find().sort("created_at", -1))
 
         # Fetch user data for each review to get the profile picture
         for review in reviews:
@@ -616,6 +618,7 @@ def product():
         return redirect(
             url_for("loginuser", error_msg="Invalid token. Please login again.")
         )
+
 
 
 @app.route("/shoppingcart", methods=["GET"])
@@ -692,28 +695,38 @@ def update_cart():
         product_id = request.json.get("product_id")
         action = request.json.get("action")
 
-        # Update cart based on action
+        # Fetch current cart item and product
+        cart_item = db.cartuser.find_one({"user_id": str(user_id), "product_id": str(product_id)})
+        product = db.produk.find_one({"_id": ObjectId(product_id)})
+
+        if not cart_item or not product:
+            return jsonify({"result": "error", "message": "Product or cart item not found."})
+
+        current_quantity = cart_item["quantity"]
+        stock = product["stock"]
+
+        # Check stock before updating
         if action == "increment":
+            if current_quantity + 1 > stock:
+                return jsonify({"result": "error", "message": "Exceeds available stock."})
             db.cartuser.update_one(
                 {"user_id": str(user_id), "product_id": str(product_id)},
                 {"$inc": {"quantity": 1}},
             )
         elif action == "decrement":
-            db.cartuser.update_one(
-                {"user_id": str(user_id), "product_id": str(product_id)},
-                {"$inc": {"quantity": -1}},
-            )
-            db.cartuser.delete_one(
-                {
-                    "user_id": str(user_id),
-                    "product_id": str(product_id),
-                    "quantity": {"$lte": 0},
-                }
-            )
+            new_quantity = current_quantity - 1
+            if new_quantity <= 0:
+                db.cartuser.delete_one({"_id": cart_item["_id"]})
+            else:
+                db.cartuser.update_one(
+                    {"user_id": str(user_id), "product_id": str(product_id)},
+                    {"$set": {"quantity": new_quantity}},
+                )
 
         return jsonify({"result": "success"}), 200
     except Exception as e:
         return jsonify({"result": "error", "message": str(e)}), 500
+
 
 
 @app.route("/deletecartitem", methods=["POST"])
