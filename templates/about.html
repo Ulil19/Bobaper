@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="utf-8" />
     <title>Bobapeer</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
@@ -8,526 +9,414 @@
     <meta content="" name="description" />
 
     <!-- Favicon -->
-    <link
-      href="{{ url_for('static', filename='img/favicon.ico') }}"
-      rel="icon"
-    />
+    <link href="{{ url_for('static', filename='img/favicon.ico') }}" rel="icon" />
 
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500&family=Lora:wght@600;700&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500&family=Lora:wght@600;700&display=swap"
+        rel="stylesheet" />
 
     <!-- Icon Font Stylesheet -->
-    <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css"
-      rel="stylesheet"
-    />
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css"
-      rel="stylesheet"
-    />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet" />
 
     <!-- Libraries Stylesheet -->
-    <link
-      href="{{ url_for('static', filename='lib/animate/animate.min.css') }}"
-      rel="stylesheet"
-    />
-    <link
-      href="{{ url_for('static', filename='lib/owlcarousel/assets/owl.carousel.min.css') }}"
-      rel="stylesheet"
-    />
+    <link href="{{ url_for('static', filename='lib/animate/animate.min.css') }}" rel="stylesheet" />
+    <link href="{{ url_for('static', filename='lib/owlcarousel/assets/owl.carousel.min.css') }}" rel="stylesheet" />
 
     <!-- Customized Bootstrap Stylesheet -->
-    <link
-      href="{{ url_for('static', filename='css/bootstrap.min.css') }}"
-      rel="stylesheet"
-    />
+    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet" />
 
     <!-- Template Stylesheet -->
-    <link
-      href="{{ url_for('static', filename='css/style.css') }}"
-      rel="stylesheet"
-    />
-  </head>
-  <body>
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet" />
+</head>
+
+<body>
     <!-- Spinner Start -->
-    <div
-      id="spinner"
-      class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center"
-    >
-      <div class="spinner-border text-primary" role="status"></div>
+    <div id="spinner"
+        class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-border text-primary" role="status"></div>
     </div>
     <!-- Spinner End -->
 
     <!-- Navbar Start -->
-    <div
-      class="container-fluid fixed-top px-0 wow fadeIn"
-      data-wow-delay="0.1s"
-    >
-      <div class="top-bar row gx-0 align-items-center d-none d-lg-flex">
-        <div class="col-lg-6 px-5 text-start">
-          <small><i class="fa fa-map-marker-alt me-2"></i>Bobapeer.id</small>
+    <div class="container-fluid fixed-top px-0 wow fadeIn" data-wow-delay="0.1s">
+        <div class="top-bar row gx-0 align-items-center d-none d-lg-flex">
+            <div class="col-lg-6 px-5 text-start">
+                <small><i class="fa fa-map-marker-alt me-2"></i>Bobapeer.id</small>
+            </div>
+            <div class="col-lg-6 px-5 text-end">
+                <small>Follow us:</small>
+                <a class="text-body ms-3" href="https://www.instagram.com/bobapeer/"><i
+                        class="fab fa-instagram"></i></a>
+            </div>
         </div>
-        <div class="col-lg-6 px-5 text-end">
-          <small>Follow us:</small>
-          <a class="text-body ms-3" href="https://www.instagram.com/bobapeer/"><i class="fab fa-instagram"></i></a>
-        </div>
-      </div>
 
-      <nav
-        class="navbar navbar-expand-lg navbar-light py-lg-0 px-lg-5 wow fadeIn"
-        data-wow-delay="0.1s"
-      >
-        <a href="/" class="navbar-brand ms-4 ms-lg-0">
-          <h1 class="fw-bold text-danger m-0">
-            Bo<span class="text-secondary">ba</span>peer
-          </h1>
-        </a>
-        <button
-          type="button"
-          class="navbar-toggler me-4"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarCollapse"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarCollapse">
-          {% if status %}
-          <div class="navbar-nav ms-auto p-4 p-lg-0">
-            <a href="/product" class="nav-item nav-link active">Home</a>
-            <a href="/about" class="nav-item nav-link">About Us</a>
-            <a href="/product" class="nav-item nav-link">Products</a>
-            <a href="/contact" class="nav-item nav-link">Contact Us</a>
-          </div>
-          {% elif not status %}
-          <div class="navbar-nav ms-auto p-4 p-lg-0">
-            <a href="/" class="nav-item nav-link active">Home</a>
-            <a href="/about" class="nav-item nav-link">About Us</a>
-            <a href="/" class="nav-item nav-link">Products</a>
-            <a href="/contact" class="nav-item nav-link">Contact Us</a>
-          </div>
-          {% endif %}
-          <div class="d-none d-lg-flex ms-2 px-4">
-            {% if status %}
-            <div class="dropdown me-3 position-relative d-flex px-2">
-              <a
-                class="btn-sm-square rounded-circle text-body dropdown-toggle d-flex align-items-center"
-                href="#"
-                role="button"
-                id="dropdownMenuLink"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                <img
-                  src="{{ url_for('static', filename=user.profile_picture) }}"
-                  class="rounded-circle"
-                  style="width: 25px; height: 25px"
-                />
-                <span class="ms-1">{{ username }}</span>
-              </a>
-              <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                <li>
-                  <a class="dropdown-item" href="{{ url_for('profile') }}"
-                    >Profile</a
-                  >
-                </li>
-                <li><a class="dropdown-item" href="/statuspesananuser">Status Pesan</a></li>
-                <li>
-                  <a class="dropdown-item" href="{{ url_for('logoutuser') }}"
-                    >Logout</a
-                  >
-                </li>
-              </ul>
-            </div>
-            <a
-              class="btn-sm-square rounded-circle ms-3 position-relative"
-              href="/shoppingcart"
-            >
-              <small class="fa fa-shopping-bag text-body"></small>
-              <span
-                class="badge badge-pill badge-danger position-absolute top-0 end-0"
-                style="font-size: 0.7rem; color: black; padding: 2px 4px"
-                >{{ pesan | default(0, true) }}</span
-              >
+        <nav class="navbar navbar-expand-lg navbar-light py-lg-0 px-lg-5 wow fadeIn" data-wow-delay="0.1s">
+            <a href="/" class="navbar-brand ms-4 ms-lg-0">
+                <h1 class="fw-bold text-danger m-0">
+                    Bo<span class="text-secondary">ba</span>peer
+                </h1>
             </a>
-          </div>
-          {% elif not status %}
-          <div class="d-none d-lg-flex ms-2">
-            <div class="dropdown me-3 position-relative d-flex px-2">
-              <a
-                class="btn-sm-square rounded-circle text-body dropdown-toggle"
-                href="#"
-                role="button"
-                id="dropdownMenuLink"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                <small class="fa fa-user"></small>
-              </a>
-              <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                <li>
-                  <a class="dropdown-item" href="{{ url_for('loginuser') }}"
-                    >Login</a
-                  >
-                </li>
-                <li>
-                  <a class="dropdown-item" href="{{ url_for('registeruser') }}"
-                    >Register</a
-                  >
-                </li>
-              </ul>
+            <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse"
+                data-bs-target="#navbarCollapse">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                {% if status %}
+                <div class="navbar-nav ms-auto p-4 p-lg-0">
+                    <a href="/product" class="nav-item nav-link active">Home</a>
+                    <a href="/about" class="nav-item nav-link">About Us</a>
+                    <a href="/product" class="nav-item nav-link">Products</a>
+                    <a href="/contact" class="nav-item nav-link">Contact Us</a>
+                </div>
+                {% elif not status %}
+                <div class="navbar-nav ms-auto p-4 p-lg-0">
+                    <a href="/" class="nav-item nav-link active">Home</a>
+                    <a href="/about" class="nav-item nav-link">About Us</a>
+                    <a href="/" class="nav-item nav-link">Products</a>
+                    <a href="/contact" class="nav-item nav-link">Contact Us</a>
+                </div>
+                {% endif %}
+                <div class="d-none d-lg-flex ms-2 px-4">
+                    {% if status %}
+                    <div class="dropdown me-3 position-relative d-flex px-2">
+                        <a class="btn-sm-square rounded-circle text-body dropdown-toggle d-flex align-items-center"
+                            href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            <img src="{{ url_for('static', filename=user.profile_picture) }}" class="rounded-circle"
+                                style="width: 25px; height: 25px" />
+                            <span class="ms-1">{{ username }}</span>
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                            <li>
+                                <a class="dropdown-item" href="{{ url_for('profile') }}">Profile</a>
+                            </li>
+                            <li><a class="dropdown-item" href="/statuspesananuser">Status Pesan</a></li>
+                            <li>
+                                <a class="dropdown-item" href="{{ url_for('logoutuser') }}">Logout</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <a class="btn-sm-square rounded-circle ms-3 position-relative" href="/shoppingcart">
+                        <small class="fa fa-shopping-bag text-body"></small>
+                        <span class="badge badge-pill badge-danger position-absolute top-0 end-0"
+                            style="font-size: 0.7rem; color: black; padding: 2px 4px">{{ pesan | default(0, true)
+                            }}</span>
+                    </a>
+                </div>
+                {% elif not status %}
+                <div class="d-none d-lg-flex ms-2">
+                    <div class="dropdown me-3 position-relative d-flex px-2">
+                        <a class="btn-sm-square rounded-circle text-body dropdown-toggle" href="#" role="button"
+                            id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                            <small class="fa fa-user"></small>
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                            <li>
+                                <a class="dropdown-item" href="{{ url_for('loginuser') }}">Login</a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{{ url_for('registeruser') }}">Register</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <a onclick="alert('Harap login terlebih dahulu')" class="btn-sm-square rounded-circle ms-3"
+                        href="#">
+                        <small class="fa fa-shopping-bag text-body"></small>
+                    </a>
+                </div>
+                {% endif %}
             </div>
-            <a
-              onclick="alert('Harap login terlebih dahulu')"
-              class="btn-sm-square rounded-circle ms-3"
-              href="#"
-            >
-              <small class="fa fa-shopping-bag text-body"></small>
-            </a>
-          </div>
-          {% endif %}
-        </div>
-      </nav>
+        </nav>
     </div>
     <!-- Navbar End -->
 
     <!-- Page Header Start -->
-    <div
-      class="container-fluid page-header mb-5 wow fadeIn"
-      data-wow-delay="0.1s"
-    >
-      <div class="container">
-        <h1 class="display-3 mb-3 animated slideInDown">About Us</h1>
-        <nav aria-label="breadcrumb animated slideInDown">
-          <ol class="breadcrumb mb-0">
-            <li class="breadcrumb-item">
-              <a class="text-body" >Home</a>
-            </li>
-            <li class="breadcrumb-item">
-              <a class="text-body">Pages</a>
-            </li>
-            <li class="breadcrumb-item text-dark active" aria-current="page">
-              About Us
-            </li>
-          </ol>
-        </nav>
-      </div>
+    <div class="container-fluid page-header mb-5 wow fadeIn" data-wow-delay="0.1s">
+        <div class="container">
+            <h1 class="display-3 mb-3 animated slideInDown">About Us</h1>
+            <nav aria-label="breadcrumb animated slideInDown">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item">
+                        <a class="text-body">Home</a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a class="text-body">Pages</a>
+                    </li>
+                    <li class="breadcrumb-item text-dark active" aria-current="page">
+                        About Us
+                    </li>
+                </ol>
+            </nav>
+        </div>
     </div>
     <!-- Page Header End -->
 
     <!-- About Start -->
     <div class="container-xxl py-5">
-      <div class="container">
-        <div class="row g-5 align-items-center">
-          <div class="col-lg-6 wow fadeIn" data-wow-delay="0.1s">
-            <div class="about-img position-relative overflow-hidden p-5 pe-0">
-              <img
-                class="img-fluid w-100"
-                src="{{ url_for('static', filename='img/about.png') }}"
-              />
+        <div class="container">
+            <div class="row g-5 align-items-center">
+                <div class="col-lg-6 wow fadeIn" data-wow-delay="0.1s">
+                    <div class="about-img position-relative overflow-hidden p-5 pe-0">
+                        <img class="img-fluid w-100" src="{{ url_for('static', filename='img/about.png') }}" />
+                    </div>
+                </div>
+                <div class="col-lg-6 wow fadeIn" data-wow-delay="0.3s">
+                    <h6 class="section-title bg-white text-start text-primary pe-3">
+                        About Us
+                    </h6>
+                    <h1 class="mb-4">
+                        Welcome to <span class="text-primary">Bobapeer</span>
+                    </h1>
+                    <p class="mb-4">
+                        Welcome to Bobapeer, the place where you can find the best boba
+                        drinks!
+                    </p>
+                    {% if status %}
+                    <p class="mb-4">
+                        Hello, {{ username }}! Thank you for being a valued member.
+                    </p>
+                    <a class="btn btn-primary py-3 px-5 mt-2" href="/product">View Products</a>
+                    {% else %}
+                    <p class="mb-4">
+                        Please <a href="{{ url_for('loginuser') }}">login</a> to see more
+                        details and our exclusive offers.
+                    </p>
+                    <a class="btn btn-primary py-3 px-5 mt-2" href="{{ url_for('registeruser') }}">Register Now</a>
+                    {% endif %}
+                </div>
             </div>
-          </div>
-          <div class="col-lg-6 wow fadeIn" data-wow-delay="0.3s">
-            <h6 class="section-title bg-white text-start text-primary pe-3">
-              About Us
-            </h6>
-            <h1 class="mb-4">
-              Welcome to <span class="text-primary">Bobapeer</span>
-            </h1>
-            <p class="mb-4">
-              Welcome to Bobapeer, the place where you can find the best boba
-              drinks!
-            </p>
-            {% if status %}
-            <p class="mb-4">
-              Hello, {{ username }}! Thank you for being a valued member.
-            </p>
-            <a class="btn btn-primary py-3 px-5 mt-2" href="/product"
-              >View Products</a
-            >
-            {% else %}
-            <p class="mb-4">
-              Please <a href="{{ url_for('loginuser') }}">login</a> to see more
-              details and our exclusive offers.
-            </p>
-            <a
-              class="btn btn-primary py-3 px-5 mt-2"
-              href="{{ url_for('registeruser') }}"
-              >Register Now</a
-            >
-            {% endif %}
-          </div>
         </div>
-      </div>
     </div>
     <!-- About End -->
+
     <!-- Our team -->
     <div class="review-section container-xxl py-5" id="Team">
-      <div class="content-container">
-        <div
-          class="section-header text-start mb-5 wow fadeInUp"
-          data-wow-delay="0.1s"
-          style="max-width: 500px"
-        >
-          <h1 class="display-5 mb-3">Our Team</h1>
-          <p>Bobapeer.id</p>
+        <div class="content-container">
+            <div class="section-header text-start mb-2 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 500px">
+                <h1 class="display-5 mb-1">Our Team</h1>
+                <p>Bobapeer.id</p>
+            </div>
         </div>
-      </div>
     </div>
-    <div class="py-5 team4">
-      <div class="container">
-        <div class="row justify-content-center mb-4">
-          <div class="col-md-7 text-center">
-            <h3 class="mb-3">Final Project Team</h3>
-            <h6 class="subtitle">
-              Kami adalah sebuah tim yang bertanggung jawab untuk membangun situs web ini.
-            </h6>
-          </div>
+    <div class="py-3 team4">
+        <div class="container">
+            <div class="row justify-content-center mb-2">
+                <div class="col-md-7 text-center">
+                    <h3 class="mb-1">Final Project Team</h3>
+                    <h6 class="subtitle mb-3">
+                        Kami adalah sebuah tim yang bertanggung jawab untuk membangun situs web ini.
+                    </h6>
+                </div>
+            </div>
+            <div class="row">
+                <!-- column  -->
+                <div class="col-lg-3 mb-4">
+                    <!-- Row -->
+                    <div class="row">
+                        <div class="col-md-12 d-flex justify-content-center align-items-center">
+                            <div class="rounded-circle overflow-hidden" style="width: 250px; height: 250px;">
+                                <img src="{{ url_for('static', filename='img/Rizki.jpg') }}" alt="wrapkit"
+                                    class="img-fluid" />
+                            </div>
+                        </div>
+                        <div class="col-md-12 text-center">
+                            <div class="pt-2">
+                                <h5 class="mt-4 font-weight-medium mb-0">M.Rizki Yuliandri</h5>
+                                <h6 class="subtitle mb-3">Frontend Developer</h6>
+                                <p>
+                                    Orang yang bertugas untuk menentukan dan membuat tampilan menarik pada website.
+                                </p>
+                                <ul class="list-inline">
+                                    <li class="list-inline-item">
+                                        <a class="btn btn-square" href="https://www.instagram.com/mr.ylndri/"><i
+                                                class="fab fa-instagram"></i></a>
+                                    </li>
+                                    <li class="list-inline-item">
+                                        <a class="btn btn-square" href=""><i class="fab fa-twitter"></i></a>
+                                    </li>
+                                    <li class="list-inline-item">
+                                        <a class="btn btn-square" href=""><i class="fab fa-facebook-f"></i></a>
+                                    </li>
+                                    <li class="list-inline-item">
+                                        <a class="btn btn-square" href="https://github.com/MrYlndri"><i
+                                                class="fab fa-github"></i></a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Row -->
+                </div>
+                <!-- column  -->
+                <!-- column  -->
+                <div class="col-lg-3 mb-4">
+                    <!-- Row -->
+                    <div class="row">
+                        <div class="col-md-12 d-flex justify-content-center align-items-center">
+                            <div class="rounded-circle overflow-hidden" style="width: 250px; height: 250px;">
+                                <img src="https://www.wrappixel.com/demos/ui-kit/wrapkit/assets/images/team/t2.jpg"
+                                    alt="wrapkit" class="img-fluid" />
+                            </div>
+                        </div>
+                        <div class="col-md-12 text-center">
+                            <div class="pt-2">
+                                <h5 class="mt-4 font-weight-medium mb-0">Ulil Fathon</h5>
+                                <h6 class="subtitle mb-3">Backend Developer</h6>
+                                <p>
+                                    Orang yang bertugas merancang arsitektur aplikasi atau situs agar bisa berfungsi
+                                    dengan baik.
+                                </p>
+                                <ul class="list-inline">
+                                    <li class="list-inline-item">
+                                        <a class="btn btn-square" href=""><i class="fab fa-instagram"></i></a>
+                                    </li>
+                                    <li class="list-inline-item">
+                                        <a class="btn btn-square" href=""><i class="fab fa-twitter"></i></a>
+                                    </li>
+                                    <li class="list-inline-item">
+                                        <a class="btn btn-square" href=""><i class="fab fa-facebook-f"></i></a>
+                                    </li>
+                                    <li class="list-inline-item">
+                                        <a class="btn btn-square" href=""><i class="fab fa-github"></i></a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Row -->
+                </div>
+                <!-- column  -->
+                <!-- column  -->
+                <div class="col-lg-3 mb-4">
+                    <!-- Row -->
+                    <div class="row">
+                        <div class="col-md-12 d-flex justify-content-center align-items-center">
+                            <div class="rounded-circle overflow-hidden" style="width: 250px; height: 250px;">
+                                <img src="{{ url_for('static', filename='img/rama.jpg') }}" alt="wrapkit"
+                                    class="img-fluid" />
+                            </div>
+                        </div>
+                        <div class="col-md-12 text-center">
+                            <div class="pt-2">
+                                <h5 class="mt-4 font-weight-medium mb-0">Ramadhani Rizky S</h5>
+                                <h6 class="subtitle mb-3">Backend Developer</h6>
+                                <p>
+                                    Orang yang bertugas merancang arsitektur aplikasi atau situs agar bisa berfungsi
+                                    dengan baik.
+                                </p>
+                                <ul class="list-inline">
+                                    <li class="list-inline-item">
+                                        <a class="btn btn-square" href="https://www.instagram.com/r.rizky.s/"><i
+                                                class="fab fa-instagram"></i></a>
+                                    </li>
+                                    <li class="list-inline-item">
+                                        <a class="btn btn-square" href=""><i class="fab fa-twitter"></i></a>
+                                    </li>
+                                    <li class="list-inline-item">
+                                        <a class="btn btn-square" href=""><i class="fab fa-facebook-f"></i></a>
+                                    </li>
+                                    <li class="list-inline-item">
+                                        <a class="btn btn-square" href="https://github.com/Rikivos"><i
+                                                class="fab fa-github"></i></a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Row -->
+                </div>
+                <!-- column  -->
+                <!-- column  -->
+                <div class="col-lg-3 mb-4">
+                    <!-- Row -->
+                    <div class="row">
+                        <div class="col-md-12 d-flex justify-content-center align-items-center">
+                            <div class="rounded-circle overflow-hidden" style="width: 250px; height: 250px;">
+                                <img src="https://www.wrappixel.com/demos/ui-kit/wrapkit/assets/images/team/t4.jpg"
+                                    alt="wrapkit" class="img-fluid" />
+                            </div>
+                        </div>
+                        <div class="col-md-12 text-center">
+                            <div class="pt-2">
+                                <h5 class="mt-4 font-weight-medium mb-0">Romaria Lestari</h5>
+                                <h6 class="subtitle mb-3">Frontend Developer</h6>
+                                <p>
+                                    Orang yang bertugas untuk menentukan dan membuat tampilan menarik pada website.
+                                </p>
+                                <ul class="list-inline">
+                                    <li class="list-inline-item">
+                                        <a class="btn btn-square" href=""><i class="fab fa-instagram"></i></a>
+                                    </li>
+                                    <li class="list-inline-item">
+                                        <a class="btn btn-square" href=""><i class="fab fa-twitter"></i></a>
+                                    </li>
+                                    <li class="list-inline-item">
+                                        <a class="btn btn-square" href=""><i class="fab fa-facebook-f"></i></a>
+                                    </li>
+                                    <li class="list-inline-item">
+                                        <a class="btn btn-square" href=""><i class="fab fa-github"></i></a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Row -->
+                </div>
+            </div>
         </div>
-        <div class="row">
-          <!-- column  -->
-          <div class="col-lg-3 mb-4">
-            <!-- Row -->
-            <div class="row">
-              <div class="col-md-12">
-                <img
-                  src="https://www.wrappixel.com/demos/ui-kit/wrapkit/assets/images/team/t1.jpg"
-                  alt="wrapkit"
-                  class="img-fluid rounded-circle"
-                />
-              </div>
-              <div class="col-md-12 text-center">
-                <div class="pt-2">
-                  <h5 class="mt-4 font-weight-medium mb-0">Muhammad Rizki</h5>
-                  <h6 class="subtitle mb-3">Frontend Developer</h6>
-                  <p>
-                    Orang yang bertugas untuk menentukan dan membuat tampilan menarik pada website. 
-                  </p>
-                  <ul class="list-inline">
-                    <li class="list-inline-item">
-                        <a class="btn btn-square" href=""
-                        ><i class="fab fa-instagram"></i
-                      ></a>
-                    </li>
-                    <li class="list-inline-item">
-                        <a class="btn btn-square" href=""
-                        ><i class="fab fa-twitter"></i
-                      ></a>
-                    </li>
-                    <li class="list-inline-item">
-                        <a class="btn btn-square" href=""
-                        ><i class="fab fa-facebook-f"></i
-                      ></a>
-                    </li>
-                    <li class="list-inline-item">
-                        <a class="btn btn-square" href=""
-                        ><i class="fab fa-github"></i
-                      ></a>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-            <!-- Row -->
-          </div>
-          <!-- column  -->
-          <!-- column  -->
-          <div class="col-lg-3 mb-4">
-            <!-- Row -->
-            <div class="row">
-              <div class="col-md-12">
-                <img
-                  src="https://www.wrappixel.com/demos/ui-kit/wrapkit/assets/images/team/t2.jpg"
-                  alt="wrapkit"
-                  class="img-fluid rounded-circle"
-                />
-              </div>
-              <div class="col-md-12 text-center">
-                <div class="pt-2">
-                  <h5 class="mt-4 font-weight-medium mb-0">Ulil Fathon</h5>
-                  <h6 class="subtitle mb-3">Backend Developer</h6>
-                  <p>
-                    orang yang bertugas merancang arsitektur aplikasi atau situs agar bisa berfungsi dengan baik.
-                  </p>
-                  <ul class="list-inline">
-                    <li class="list-inline-item">
-                        <a class="btn btn-square" href=""
-                        ><i class="fab fa-instagram"></i
-                      ></a>
-                    </li>
-                    <li class="list-inline-item">
-                        <a class="btn btn-square" href=""
-                        ><i class="fab fa-twitter"></i
-                      ></a>
-                    </li>
-                    <li class="list-inline-item">
-                        <a class="btn btn-square" href=""
-                        ><i class="fab fa-facebook-f"></i
-                      ></a>
-                    </li>
-                    <li class="list-inline-item">
-                        <a class="btn btn-square" href=""
-                        ><i class="fab fa-github"></i
-                      ></a>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-            <!-- Row -->
-          </div>
-          <!-- column  -->
-          <!-- column  -->
-          <div class="col-lg-3 mb-4">
-            <!-- Row -->
-            <div class="row">
-              <div class="col-md-12">
-                <img
-                  src="{{ url_for('static', filename='img/rama.jpg') }}"class="img-fluid rounded-circle" 
-                />
-              </div>
-              <div class="col-md-12 text-center">
-                <div class="pt-2">
-                  <h5 class="mt-4 font-weight-medium mb-0">Ramadhani Rizky S</h5>
-                  <h6 class="subtitle mb-3">Backend Developer</h6>
-                  <p>
-                    orang yang bertugas merancang arsitektur aplikasi atau situs agar bisa berfungsi dengan baik.
-                  </p>
-                  <ul class="list-inline">
-                    <li class="list-inline-item">
-                        <a class="btn btn-square" href="https://www.instagram.com/r.rizky.s/"
-                        ><i class="fab fa-instagram"></i
-                      ></a>
-                    </li>
-                    <li class="list-inline-item">
-                        <a class="btn btn-square" href=""
-                        ><i class="fab fa-twitter"></i
-                      ></a>
-                    </li>
-                    <li class="list-inline-item">
-                        <a class="btn btn-square" href=""
-                        ><i class="fab fa-facebook-f"></i
-                      ></a>
-                    </li>
-                    <li class="list-inline-item">
-                        <a class="btn btn-square" href="https://github.com/Rikivos"
-                        ><i class="fab fa-github"></i
-                      ></a>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-            <!-- Row -->
-          </div>
-          <!-- column  -->
-          <!-- column  -->
-          <div class="col-lg-3 mb-4">
-            <!-- Row -->
-            <div class="row">
-              <div class="col-md-12">
-                <img
-                  src="https://www.wrappixel.com/demos/ui-kit/wrapkit/assets/images/team/t4.jpg"
-                  alt="wrapkit"
-                  class="img-fluid rounded-circle"
-                />
-              </div>
-              <div class="col-md-12 text-center">
-                <div class="pt-2">
-                  <h5 class="mt-4 font-weight-medium mb-0">Romaria Lestari</h5>
-                  <h6 class="subtitle mb-3">Frontend Developer</h6>
-                  <p>
-                    Orang yang bertugas untuk menentukan dan membuat tampilan menarik pada website. 
-                  </p>
-                  <ul class="list-inline">
-                    <li class="list-inline-item">
-                        <a class="btn btn-square" href=""
-                        ><i class="fab fa-instagram"></i
-                      ></a>
-                    </li>
-                    <li class="list-inline-item">
-                        <a class="btn btn-square" href=""
-                        ><i class="fab fa-twitter"></i
-                      ></a>
-                    </li>
-                    <li class="list-inline-item">
-                        <a class="btn btn-square" href=""
-                        ><i class="fab fa-facebook-f"></i
-                      ></a>
-                    </li>
-                    <li class="list-inline-item">
-                        <a class="btn btn-square" href=""
-                        ><i class="fab fa-github"></i
-                      ></a>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-            <!-- Row -->
-          </div>
-        </div>
-      </div>
     </div>
     <!-- Our team -->
 
     <!-- Footer Start -->
-    <div
-      class="container-fluid bg-dark text-light footer mt-5 pt-5 wow fadeIn"
-      data-wow-delay="0.1s"
-    >
-      <div class="container py-5">
-        <div class="row g-5">
-          <div class="col-lg-3 col-md-6">
-            <h4 class="text-white mb-3">Quick Link</h4>
-            <a class="btn btn-link" href="/">Home</a>
-            <a class="btn btn-link" href="/about">About Us</a>
-            <a class="btn btn-link" href="/">Products</a>
-            <a class="btn btn-link" href="/contact">Contact Us</a>
-          </div>
-          <div class="col-lg-3 col-md-6">
-            <h4 class="text-white mb-3">Follow Us</h4>
-            <div class="d-flex pt-2">
-              <a class="btn btn-outline-light btn-social" href="https://www.instagram.com/bobapeer/"
-                ><i class="fab fa-instagram"></i
-              ></a>
+    <div class="container-fluid bg-dark text-light footer mt-5 pt-5 wow fadeIn" data-wow-delay="0.1s">
+        <div class="container py-5">
+            <div class="row g-5">
+                <div class="col-lg-3 col-md-6">
+                    <h4 class="text-white mb-3">Quick Link</h4>
+                    <a class="btn btn-link" href="/">Home</a>
+                    <a class="btn btn-link" href="/about">About Us</a>
+                    <a class="btn btn-link" href="/">Products</a>
+                    <a class="btn btn-link" href="/contact">Contact Us</a>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <h4 class="text-white mb-3">Follow Us</h4>
+                    <div class="d-flex pt-2">
+                        <a class="btn btn-outline-light btn-social" href="https://www.instagram.com/bobapeer/"><i
+                                class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <h4 class="text-white mb-3">Contact Us</h4>
+                    <p class="mb-2">
+                        <i class="fa fa-map-marker-alt me-3"></i>Bobapeer.id
+                    </p>
+                    <p class="mb-2">
+                        <i class="fa fa-phone-alt me-3"></i>+62 812-3456-789
+                    </p>
+                    <p class="mb-2">
+                        <i class="fa fa-envelope me-3"></i>Bobapeer.id@gmail.com
+                    </p>
+                </div>
             </div>
-          </div>
-          <div class="col-lg-3 col-md-6">
-            <h4 class="text-white mb-3">Contact Us</h4>
-            <p class="mb-2">
-              <i class="fa fa-map-marker-alt me-3"></i>Bobapeer.id
-            </p>
-            <p class="mb-2">
-              <i class="fa fa-phone-alt me-3"></i>+62 812-3456-789
-            </p>
-            <p class="mb-2">
-              <i class="fa fa-envelope me-3"></i>Bobapeer.id@gmail.com
-            </p>
-          </div>
         </div>
-      </div>
-      <div class="container-fluid copyright">
-        <div class="container">
-          <div class="row">
-            <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
-              &copy; <a href="#">Bobapeer</a>, All Right Reserved.
+        <div class="container-fluid copyright">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                        &copy; <a href="#">Bobapeer</a>, All Right Reserved.
+                    </div>
+
+                </div>
             </div>
-            
-          </div>
         </div>
-      </div>
     </div>
     <!-- Footer End -->
 
     <!-- Back to Top -->
-    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"
-      ><i class="bi bi-arrow-up"></i
-    ></a>
+    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
 
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
@@ -539,5 +428,6 @@
 
     <!-- Template Javascript -->
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-  </body>
+</body>
+
 </html>
