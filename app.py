@@ -909,7 +909,8 @@ def statuspesananuser():
         username = user_doc.get("username")
         pesan = db.cartuser.count_documents({"user_id": str(user_id)})
 
-        orders = list(db.orders.find({"user_id": str(user_id)}))
+        # Fetch and sort orders by creation date in descending order
+        orders = list(db.orders.find({"user_id": str(user_id)}).sort("created_at", -1))
         for order in orders:
             order["_id"] = str(order["_id"])
         return render_template(
@@ -917,7 +918,7 @@ def statuspesananuser():
             username=username,
             user=user_doc,
             orders=orders,
-            pesan = pesan,
+            pesan=pesan,
         )
     except jwt.ExpiredSignatureError:
         return redirect(
@@ -929,6 +930,7 @@ def statuspesananuser():
         )
     except Exception as e:
         return jsonify({"result": "error", "message": str(e)}), 500
+
 
 
 @app.route("/order/<order_id>")

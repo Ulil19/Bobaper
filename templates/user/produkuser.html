@@ -143,7 +143,7 @@
             alt="{{ review.username }}'s profile picture" class="rounded-circle" width="50" height="50">
         </div>
         <div>
-          <p><strong>{{ review.username }}</strong> ({{ review.created_at }}):</p>
+          <p><strong>{{ review.username }}</strong> ({{ review.created_at }})</p>
           <div class="rating">
             {% for i in range(1, 6) %}
             {% if i <= review.rating %} <span class="fa fa-star checked"></span>
