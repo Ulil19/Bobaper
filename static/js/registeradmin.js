@@ -58,7 +58,7 @@ $(document).ready(function () {
               Swal.fire({
                 icon: "success",
                 title: "Success",
-                text: "Admin registered successfully!",
+                text: "Admin Berhasil Didaftarkan!",
               }).then(() => {
                 window.location.replace("/login/admin");
               });

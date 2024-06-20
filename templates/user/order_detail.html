@@ -8,7 +8,7 @@
             <div class="col-lg-3 col-md-6 mb-4">
                 <p class="text-muted mb-1"><strong>{{ order.created_at }}</strong></p>
                 <p class="mb-1">Order ID: {{ order._id }}</p>
-                <p class="mb-1">Total Harga: {{ order.total_harga }}</p>
+                <p class="mb-1">Total Harga: Rp. {{ '{:,}' .format(order.total_harga) }}</p>
                 <p class="mb-1">Status: {{ order.status }}</p>
             </div>
             <div class="col-lg-3 col-md-6 mb-4">
@@ -24,7 +24,7 @@
                         <div class="mt-2">
                             <p class="mb-1"><strong>{{ item.product_name }}</strong></p>
                             <p class="mb-1">Quantity: {{ item.quantity }}</p>
-                            <p class="mb-1">Harga: {{ item.product_price }}</p>
+                            <p class="mb-1">Harga: Rp. {{ '{:,}' .format(item.product_price) }}</p>
                         </div>
                     </div>
                 </div>

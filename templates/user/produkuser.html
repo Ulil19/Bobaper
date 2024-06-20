@@ -93,7 +93,7 @@
           <div class="row g-4">
             {% for produk in produk %}
             <div class="col-xl-3 col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-              <div class="product-item position-relative">
+              <div class="product-item position-relative {% if produk['stock'] == 0 %}out-of-stock{% endif %}">
                 <div class="position-relative bg-light overflow-hidden">
                   <img class="img-fluid w-100" src="{{ url_for('static', filename='imgproduct/' + produk['foto']) }}"
                     alt="" />
@@ -165,108 +165,64 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-  $(document).ready(function () {
-    $(".add-to-cart").click(function (e) {
-        e.preventDefault();
+  document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.add-to-cart').forEach(function (button) {
+      button.addEventListener('click', function (event) {
+        event.preventDefault();
 
-        // Get the product ID and stock
-        var productId = $(this).data("id");
-        var productStock = $(this).data("stock");
+        const stock = parseInt(this.dataset.stock);
+        const productId = this.dataset.id;
 
-        // Send an AJAX request to check if the product can be added to the cart
-        $.ajax({
-            url: "/addshoppingcart",
-            type: "POST",
-            data: {
-                product_id: productId
-            },
-            success: function (response) {
-                if (response.result === "error") {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: response.message
-                    });
-                } else {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success',
-                        text: 'Product added to cart!'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            window.location.reload();
-                        }
-                    });
+        if (stock <= 0) {
+          Swal.fire({
+            icon: 'warning',
+            title: 'Stok Produk Habis',
+            text: 'Produk Ini Telah Habis.'
+          });
+          return;
+        }
+
+        // Make an AJAX request to add the product to the cart
+        fetch('/addshoppingcart', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ product_id: productId })
+        })
+          .then(response => response.json())
+          .then(data => {
+            if (data.result === 'error') {
+              Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: data.message,
+              });
+            } else {
+              Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: 'Produk Ditambahkan Ke Keranjang.'
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  window.location.reload();
                 }
-            },
-            error: function (xhr, status, error) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'An error occurred: ' + error
-                });
+              });
             }
-        });
-    });
-});
-  document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('.add-to-cart').forEach(function(button) {
-        button.addEventListener('click', function(event) {
-            event.preventDefault();
-
-            const stock = parseInt(this.dataset.stock);
-            const productId = this.dataset.id;
-
-            if (stock <= 0) {
-                Swal.fire({
-                  icon: 'warning',
-                  title: 'Out of Stock',
-                  text: 'This product is out of stock.'
-                });
-                return;
-            }
-
-            // Make an AJAX request to add the product to the cart
-            fetch('/addshoppingcart', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ product_id: productId })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.result === 'error') {
-                    Swal.fire({
-                      icon: 'error',
-                      title: 'Error',
-                      text: data.message
-                    });
-                } else {
-                    Swal.fire({
-                      icon: 'success',
-                      title: 'Success',
-                      text: 'Product added to cart.'
-                    }).then((result) => {
-                      if (result.isConfirmed) {
-                        window.location.reload();
-                      }
-                    });
-                    // Optionally, update the stock displayed on the page
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                Swal.fire({
-                  icon: 'error',
-                  title: 'Error',
-                  text: 'An error occurred.'
-                });
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: 'An error occurred.'
             });
-        });
+          });
+      });
     });
-});
+  });
 </script>
+
 
 <style>
   .rating {

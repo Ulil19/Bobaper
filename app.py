@@ -39,7 +39,7 @@ TOKEN_KEY = "bobaper"
 @app.route("/", methods=["GET", "POST"])
 def home():
     produk = list(db.produk.find())
-    reviews = list(db.reviews.find().sort("created_at", -1)) # Fetch reviews
+    reviews = list(db.reviews.find().sort("created_at", -1))  # Fetch reviews
     # Fetch user data for each review to get the profile picture
     for review in reviews:
         review_user = db.users.find_one({"_id": ObjectId(review["user_id"])})
@@ -620,7 +620,6 @@ def product():
         )
 
 
-
 @app.route("/shoppingcart", methods=["GET"])
 @token_required
 def shoppingcart(user):
@@ -648,7 +647,9 @@ def shoppingcart(user):
 @token_required
 def add_shopping_cart(user):
     try:
-        product_id = request.form.get("product_id")
+        data = request.get_json()
+        product_id = data.get("product_id")
+
         product = db.produk.find_one({"_id": ObjectId(product_id)})
         if not product or product["stock"] <= 0:
             return jsonify({"result": "error", "message": "Product not available."})
@@ -661,7 +662,9 @@ def add_shopping_cart(user):
         if cart_item:
             # Check if adding one more exceeds the stock
             if cart_item["quantity"] + 1 > product["stock"]:
-                return jsonify({"result": "error", "message": "Exceeds available stock."})
+                return jsonify(
+                    {"result": "error", "message": "Exceeds available stock."}
+                )
             # If product is already in the cart, update the quantity
             db.cartuser.update_one({"_id": cart_item["_id"]}, {"$inc": {"quantity": 1}})
         else:
@@ -696,11 +699,15 @@ def update_cart():
         action = request.json.get("action")
 
         # Fetch current cart item and product
-        cart_item = db.cartuser.find_one({"user_id": str(user_id), "product_id": str(product_id)})
+        cart_item = db.cartuser.find_one(
+            {"user_id": str(user_id), "product_id": str(product_id)}
+        )
         product = db.produk.find_one({"_id": ObjectId(product_id)})
 
         if not cart_item or not product:
-            return jsonify({"result": "error", "message": "Product or cart item not found."})
+            return jsonify(
+                {"result": "error", "message": "Product or cart item not found."}
+            )
 
         current_quantity = cart_item["quantity"]
         stock = product["stock"]
@@ -708,7 +715,9 @@ def update_cart():
         # Check stock before updating
         if action == "increment":
             if current_quantity + 1 > stock:
-                return jsonify({"result": "error", "message": "Exceeds available stock."})
+                return jsonify(
+                    {"result": "error", "message": "Exceeds available stock."}
+                )
             db.cartuser.update_one(
                 {"user_id": str(user_id), "product_id": str(product_id)},
                 {"$inc": {"quantity": 1}},
@@ -726,7 +735,6 @@ def update_cart():
         return jsonify({"result": "success"}), 200
     except Exception as e:
         return jsonify({"result": "error", "message": str(e)}), 500
-
 
 
 @app.route("/deletecartitem", methods=["POST"])
@@ -899,6 +907,7 @@ def statuspesananuser():
         user_id = payload.get("user_id")
         user_doc = db.users.find_one({"_id": ObjectId(user_id)})
         username = user_doc.get("username")
+        pesan = db.cartuser.count_documents({"user_id": str(user_id)})
 
         orders = list(db.orders.find({"user_id": str(user_id)}))
         for order in orders:
@@ -908,6 +917,7 @@ def statuspesananuser():
             username=username,
             user=user_doc,
             orders=orders,
+            pesan = pesan,
         )
     except jwt.ExpiredSignatureError:
         return redirect(

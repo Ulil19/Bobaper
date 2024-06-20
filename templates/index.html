@@ -33,6 +33,37 @@
 
   <!-- SweetAlert2 -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <style>
+    .rating {
+      display: flex;
+    }
+
+    .fa-star {
+      font-size: 1.5em;
+      color: lightgray;
+    }
+
+    .fa-star.checked {
+      color: gold;
+    }
+
+    .rounded-circle {
+      object-fit: cover;
+    }
+
+    .out-of-stock-overlay {
+      background: rgba(0, 0, 0, 0.5);
+      color: white;
+      font-size: 1.5em;
+      display: none;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .product-item.out-of-stock .out-of-stock-overlay {
+      display: flex;
+    }
+  </style>
 </head>
 
 <body>
@@ -113,8 +144,7 @@
                 <div class="col-lg-7">
                   <h1 class="display-2 mb-5 animated slideInDown">SWEET and TASTY.</h1>
                   <a class="btn btn-danger rounded-pill py-sm-3 px-sm-5" href="#produk">Products</a>
-                  <a onclick="showAlert()"
-                    class="btn btn-secondary rounded-pill py-sm-3 px-sm-5 ms-3">Shop Now</a>
+                  <a onclick="showAlert()" class="btn btn-secondary rounded-pill py-sm-3 px-sm-5 ms-3">Shop Now</a>
                 </div>
               </div>
             </div>
@@ -128,8 +158,7 @@
                 <div class="col-lg-7">
                   <h1 class="display-2 mb-5 animated slideInDown">BEST DRINKS</h1>
                   <a href="#produk" class="btn btn-danger rounded-pill py-sm-3 px-sm-5">Products</a>
-                  <a onclick="showAlert()"
-                    class="btn btn-secondary rounded-pill py-sm-3 px-sm-5 ms-3">Shop Now</a>
+                  <a onclick="showAlert()" class="btn btn-secondary rounded-pill py-sm-3 px-sm-5 ms-3">Shop Now</a>
                 </div>
               </div>
             </div>
@@ -188,22 +217,22 @@
             <div class="row g-4">
               {% for prod in produk %}
               <div class="col-xl-3 col-lg-4 col-md-6">
-                <div class="product-item">
+                <div class="product-item {% if prod['stock'] == 0 %}out-of-stock{% endif %}">
                   <!-- Product details -->
                   <div class="position-relative bg-light overflow-hidden">
                     <img class="img-fluid w-100" src="{{ url_for('static', filename='imgproduct/' + prod['foto']) }}"
                       alt="{{ prod['nama'] }}" />
-                    {% if produk['stock'] == 0 %}
+                    {% if prod['stock'] == 0 %}
                     <div
-                        class="out-of-stock-overlay d-flex justify-content-center align-items-center position-absolute top-0 start-0 w-100 h-100">
-                        <span>Out of Stock</span>
+                      class="out-of-stock-overlay d-flex justify-content-center align-items-center position-absolute top-0 start-0 w-100 h-100">
+                      <span>Out of Stock</span>
                     </div>
                     {% endif %}
                   </div>
                   <div class="text-center p-4">
                     <a class="d-block h5 mb-2" href="#">{{ prod['nama'] }}</a>
                     <span class="text-primary me-1">Stock:{{ prod['stock'] }}</span><br>
-                    <span class="text-body">Rp. {{ prod['harga'] }}</span>
+                    <span class="text-body">Rp. {{ '{:,}'.format(prod['harga']) }}</span>
                   </div>
                   <div class="d-flex border-top justify-content-center">
                     <small class="w-50 text-center py-2">
@@ -309,23 +338,5 @@
   </script>
 
 </body>
-<style>
-  .rating {
-    display: flex;
-  }
-
-  .fa-star {
-    font-size: 1.5em;
-    color: lightgray;
-  }
-
-  .fa-star.checked {
-    color: gold;
-  }
-
-  .rounded-circle {
-    object-fit: cover;
-  }
-</style>
 
 </html>

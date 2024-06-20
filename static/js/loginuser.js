@@ -167,7 +167,7 @@ $(document).ready(function () {
             Swal.fire({
               icon: "success",
               title: "Success",
-              text: "Registration Berhasil!",
+              text: "User Berhasil Didaftarkan!",
             }).then(function () {
               window.location.replace("/login/user");
             });
