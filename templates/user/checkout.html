@@ -185,9 +185,17 @@
   function copyToClipboard() {
     const accountNumber = document.querySelector('.account-number').innerText.trim();
     navigator.clipboard.writeText(accountNumber).then(function () {
-      alert('Nomor rekening disalin ke clipboard!');
+      Swal.fire({
+        icon: 'success',
+        title: 'Copied!',
+        text: 'Nomor rekening disalin ke clipboard!'
+      });
     }, function () {
-      alert('Gagal menyalin nomor rekening.');
+      Swal.fire({
+        icon: 'error',
+        title: 'Failed!',
+        text: 'Gagal menyalin nomor rekening.'
+      });
     });
   }
 
@@ -200,12 +208,51 @@
 
       // Include selected payment method section data
       const paymentMethod = $('input[name="paymentMethod"]:checked').attr('id');
+      let valid = true;
+
+      // Validate file upload for bank and qris payment methods
       if (paymentMethod === 'bank') {
-        formData.append('payment_method', 'bank');
+        if (!$('#bankProof')[0].files.length) {
+          Swal.fire({
+            icon: 'warning',
+            title: 'Oops...',
+            text: 'Tolong Upload Foto Screenshot Bukti Transfer Pembayaran!.'
+          });
+          valid = false;
+        } else if (!validateFile($('#bankProof')[0].files[0])) {
+          Swal.fire({
+            icon: 'warning',
+            title: 'Oops...',
+            text: 'File tidak valid. Hanya menerima format JPG, JPEG, dan PNG.'
+          });
+          valid = false;
+        } else {
+          formData.append('payment_method', 'bank');
+        }
       } else if (paymentMethod === 'qris') {
-        formData.append('payment_method', 'qris');
+        if (!$('#qrisProof')[0].files.length) {
+          Swal.fire({
+            icon: 'warning',
+            title: 'Oops...',
+            text: 'Tolong Upload Foto Screenshot Bukti Transfer Qris.'
+          });
+          valid = false;
+        } else if (!validateFile($('#qrisProof')[0].files[0])) {
+          Swal.fire({
+            icon: 'warning',
+            title: 'Oops...',
+            text: 'File tidak valid. Hanya menerima format JPG, JPEG, dan PNG.'
+          });
+          valid = false;
+        } else {
+          formData.append('payment_method', 'qris');
+        }
       } else if (paymentMethod === 'cod') {
         formData.append('payment_method', 'cod');
+      }
+
+      if (!valid) {
+        return; // Stop form submission if validation fails
       }
 
       // Append phone number manually to formData
@@ -225,20 +272,31 @@
               text: 'Produk Telah Berhasil Dipesan!'
             }).then(function () {
               window.location.href = '/statuspesananuser';
-            })
+            });
           } else {
             Swal.fire({
               icon: 'error',
               title: 'Error',
               text: 'Failed to place order: ' + response.message
-            })
+            });
           }
         },
         error: function (xhr, status, error) {
-          alert('Error: ' + error);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Error: ' + error
+          });
         }
       });
     });
+
+    function validateFile(file) {
+      const validExtensions = ['jpg', 'jpeg', 'png'];
+      const fileExtension = file.name.split('.').pop().toLowerCase();
+      return validExtensions.includes(fileExtension);
+    }
   });
 </script>
+
 {% endblock %}

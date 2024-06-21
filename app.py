@@ -833,13 +833,22 @@ def pesan():
             # Handle file upload
             file = request.files.get("bankProof") or request.files.get("qrisProof")
             if file:
+                if file.filename.split(".")[-1].lower() not in ["jpg", "jpeg", "png"]:
+                    return (
+                        jsonify(
+                            {
+                                "error": "Invalid file format. Only accepts JPG, JPEG, and PNG."
+                            }
+                        ),
+                        400,
+                    )
                 filename = secure_filename(file.filename)
                 extension = filename.split(".")[-1]
                 buktibayar = f"{username}.{extension}"
                 filepath = f"static/buktipembayaran/{buktibayar}"
                 file.save(filepath)
             else:
-                filepath = None  # or handle error appropriately
+                filepath = None
 
             # Get cart items and calculate total_harga
             cart_items = list(db.cartuser.find({"user_id": str(user_id)}))
@@ -930,7 +939,6 @@ def statuspesananuser():
         )
     except Exception as e:
         return jsonify({"result": "error", "message": str(e)}), 500
-
 
 
 @app.route("/order/<order_id>")
