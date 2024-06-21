@@ -100,7 +100,7 @@
                   {% if produk['stock'] == 0 %}
                   <div
                     class="out-of-stock-overlay d-flex justify-content-center align-items-center position-absolute top-0 start-0 w-100 h-100">
-                    <span>Out of Stock</span>
+                    <span>Stock Habis!</span>
                   </div>
                   {% endif %}
                 </div>
@@ -113,7 +113,7 @@
                   <small class="text-center py-2">
                     <a class="text-body mx-auto add-to-cart" data-id="{{ produk['_id'] }}"
                       data-stock="{{ produk['stock'] }}">
-                      <i class="fa fa-shopping-bag text-primary me-2"></i>Add to cart
+                      <i class="fa fa-shopping-bag text-primary me-2"></i>Tambahkan Ke Keranjang
                     </a>
                   </small>
                 </div>
