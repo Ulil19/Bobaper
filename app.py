@@ -293,15 +293,16 @@ def delete_produk(_id):
 @login_required
 def konfirmasipesananadmin():
     try:
-        per_page = 5  # Number of entries per page
+        per_page = 10  # Number of entries per page
         page = int(request.args.get("page", 1))
 
         # Calculate the total number of orders
         order_count = db.orders.count_documents({"status": "sedang dikonfirmasi"})
 
-        # Fetch orders with pagination
+        # Fetch orders with pagination and sorting by the latest order date
         orders = list(
             db.orders.find({"status": "sedang dikonfirmasi"})
+            .sort("created_at", -1)  # Sort by created_at in descending order
             .skip((page - 1) * per_page)
             .limit(per_page)
         )
@@ -473,7 +474,7 @@ def delete_user(user_id):
 @app.route("/logoutadmin")
 def logoutadmin():
     response = make_response(redirect(url_for("loginAdmin")))
-    response.set_cookie(TOKEN_KEY, "", expires=0)
+    response.set_cookie(TOKEN_KEY, "", expires=0, samesite="Strict")
     return response
 
 
@@ -1135,7 +1136,12 @@ def profile(user):
 @app.route("/logoutuser", methods=["GET", "POST"])
 def logoutuser():
     response = make_response(redirect(url_for("loginuser")))
-    response.set_cookie(TOKEN_KEY, "", expires=0)
+    # Clear the 'pengiriman' cookie
+    response.set_cookie("pengiriman", "", expires=0, samesite="Strict", domain=None)
+    # Clear the 'token' cookie
+    response.set_cookie(
+        "token", "", expires=0, httponly=True, samesite="Strict", domain=None
+    )
     return response
 
 

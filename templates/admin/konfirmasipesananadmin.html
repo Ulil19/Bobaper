@@ -36,44 +36,46 @@
                 <tbody>
                     {% set index = (page - 1) * per_page + 1 %}
                     {% for order in orders %}
-                        {% for item in order.cart_items %}
-                            <tr>
-                                {% if loop.index == 1 %}
-                                    <td rowspan="{{ order.cart_items|length }}">{{ index }}.</td>
-                                    <td rowspan="{{ order.cart_items|length }}">
-                                        <a href="#">
-                                            <img src="{{ order.profile_picture }}" class="rounded-circle" width="50">
-                                            {{ order.nama }}
-                                        </a>
-                                    </td>
-                                {% endif %}
-                                <td>{{ item.product_name }}</td>
-                                <td>{{ item.quantity }}</td>
-                                <td>Rp {{ "{:,.2f}".format(item.product_price) }}</td>
-                                {% if loop.index == 1 %}
-                                    <td rowspan="{{ order.cart_items|length }}">Rp {{ "{:,.2f}".format(order.total_harga) }}</td>
-                                    <td rowspan="{{ order.cart_items|length }}">
-                                        <span class="status text-success"></span>
-                                        {{ order.payment_method | upper }}
-                                    </td>
-                                    <td rowspan="{{ order.cart_items|length }}">
-                                        {% if order.payment_proof %}
-                                        <img src="{{ order.payment_proof }}" class="square" width="40">
-                                        {% endif %}
-                                    </td>
-                                    <td rowspan="{{ order.cart_items|length }}">
-                                        {{ order.created_at }}
-                                    </td>
-                                    <td rowspan="{{ order.cart_items|length }}">
-                                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                                            <button class="btn btn-success btn-xs fa fa-check btn-accept" data-id="{{ order._id }}" title="Accept"></button>
-                                            <button class="btn btn-danger btn-xs fa fa-times btn-reject" data-id="{{ order._id }}" title="Reject"></button>
-                                        </div>
-                                    </td>
-                                {% endif %}
-                            </tr>
-                        {% endfor %}
-                        {% set index = index + 1 %}
+                    {% for item in order.cart_items %}
+                    <tr>
+                        {% if loop.index == 1 %}
+                        <td rowspan="{{ order.cart_items|length }}">{{ index }}.</td>
+                        <td rowspan="{{ order.cart_items|length }}">
+                            <a href="#">
+                                <img src="{{ order.profile_picture }}" class="rounded-circle" width="50">
+                                {{ order.nama }} ({{ order.username }})
+                            </a>
+                        </td>
+                        {% endif %}
+                        <td>{{ item.product_name }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>Rp {{ "{:,.2f}".format(item.product_price) }}</td>
+                        {% if loop.index == 1 %}
+                        <td rowspan="{{ order.cart_items|length }}">Rp {{ "{:,.2f}".format(order.total_harga) }}</td>
+                        <td rowspan="{{ order.cart_items|length }}">
+                            <span class="status text-success"></span>
+                            {{ order.payment_method | upper }}
+                        </td>
+                        <td rowspan="{{ order.cart_items|length }}">
+                            {% if order.payment_proof %}
+                            <img src="{{ order.payment_proof }}" class="square" width="40">
+                            {% endif %}
+                        </td>
+                        <td rowspan="{{ order.cart_items|length }}">
+                            {{ order.created_at }}
+                        </td>
+                        <td rowspan="{{ order.cart_items|length }}">
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <button class="btn btn-success btn-xs fa fa-check btn-accept" data-id="{{ order._id }}"
+                                    title="Accept"></button>
+                                <button class="btn btn-danger btn-xs fa fa-times btn-reject" data-id="{{ order._id }}"
+                                    title="Reject"></button>
+                            </div>
+                        </td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                    {% set index = index + 1 %}
                     {% endfor %}
                 </tbody>
             </table>
