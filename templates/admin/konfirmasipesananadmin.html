@@ -36,21 +36,22 @@
                 <tbody>
                     {% set index = (page - 1) * per_page + 1 %}
                     {% for order in orders %}
-                    {% for item in order.cart_items %}
                     <tr>
-                        {% if loop.index == 1 %}
                         <td rowspan="{{ order.cart_items|length }}">{{ index }}.</td>
                         <td rowspan="{{ order.cart_items|length }}">
                             <a href="#">
                                 <img src="{{ order.profile_picture }}" class="rounded-circle" width="50">
-                                {{ order.nama }} ({{ order.username }})
+                                {{ order.nama }}
                             </a>
                         </td>
+                        {% for item in order.cart_items %}
+                        {% if loop.index > 1 %}
+                    <tr>
                         {% endif %}
                         <td>{{ item.product_name }}</td>
                         <td>{{ item.quantity }}</td>
                         <td>Rp {{ "{:,.2f}".format(item.product_price) }}</td>
-                        {% if loop.index == 1 %}
+                        {% if loop.first %}
                         <td rowspan="{{ order.cart_items|length }}">Rp {{ "{:,.2f}".format(order.total_harga) }}</td>
                         <td rowspan="{{ order.cart_items|length }}">
                             <span class="status text-success"></span>
@@ -168,66 +169,4 @@
     });
 </script>
 
-<style>
-    .container {
-        background-color: #fff;
-        padding: 30px;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        margin-top: 50px;
-        max-width: 1200px;
-        margin: 0 auto;
-    }
-
-    .table-responsive {
-        overflow-x: auto;
-    }
-
-    .table-wrapper {
-        min-width: 1000px;
-    }
-
-    .table-custom {
-        width: 100%;
-        border-collapse: collapse;
-        margin: 0 auto;
-    }
-
-    .table-custom th,
-    .table-custom td {
-        border: 1px solid #ddd;
-        padding: 12px;
-        text-align: center;
-    }
-
-    .table-custom th {
-        background-color: #343a40;
-        color: #fff;
-    }
-
-    .table-custom td {
-        vertical-align: middle;
-    }
-
-    .product-image {
-        width: 60px;
-        height: 60px;
-        object-fit: cover;
-        border-radius: 4px;
-    }
-
-    .btn-danger,
-    .btn-success {
-        width: 100px;
-    }
-
-    .btn-danger:hover,
-    .btn-success:hover {
-        opacity: 0.8;
-    }
-
-    h1 {
-        text-align: center;
-    }
-</style>
 {% endblock %}

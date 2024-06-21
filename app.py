@@ -21,18 +21,13 @@ from werkzeug.utils import secure_filename
 from math import ceil
 
 app = Flask(__name__)
-
 SECRET_KEY = "ini_kunci_rahasia_admin"
-
 dotenv_path = join(dirname(__file__), ".env")
 load_dotenv(dotenv_path)
-
 MONGODB_URI = os.environ.get("MONGODB_URI")
 DB_NAME = os.environ.get("DB_NAME")
-
 client = MongoClient(MONGODB_URI)
 db = client[DB_NAME]
-
 TOKEN_KEY = "bobaper"
 
 
@@ -46,7 +41,6 @@ def home():
         review["profile_picture"] = review_user.get("profile_picture", "default.jpg")
         if "rating" not in review:
             review["rating"] = 0  # Default rating value if missing
-
     return render_template("index.html", produk=produk, reviews=reviews)
 
 
@@ -57,7 +51,6 @@ def about():
     username = None
     pesan = 0
     user_info = None
-
     if token:
         try:
             payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
@@ -71,7 +64,6 @@ def about():
             pass
         except jwt.InvalidTokenError:
             pass
-
     return render_template(
         "about.html",
         user_info=user_info,
@@ -89,7 +81,6 @@ def contact():
     username = None
     pesan = 0
     user_info = None
-
     if token:
         try:
             payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
@@ -103,7 +94,6 @@ def contact():
             pass
         except jwt.InvalidTokenError:
             pass
-
     return render_template(
         "contact.html",
         user_info=user_info,
@@ -115,8 +105,6 @@ def contact():
 
 
 # -------------------------------------------  START ADMIN ROUTES ------------------------------------------------------#
-
-
 @app.route("/login/admin", methods=["GET", "POST"])
 def loginAdmin():
     error_msg = ""
@@ -171,7 +159,6 @@ def registeradminsave():
     username = request.form["username"]
     password = request.form["password"]
     pass_hash = hashlib.sha256(password.encode("utf-8")).hexdigest()
-
     doc = {
         "email": email,
         "username": username,
@@ -210,7 +197,6 @@ def tambahproduk():
         harga = int(request.form["harga"])
         stock = int(request.form["stock"])
         nama_foto = request.files["foto"]
-
         if nama_foto:
             # Remove spaces and make the filename URL-safe
             sanitized_nama = nama.replace(" ", "_")
@@ -221,11 +207,9 @@ def tambahproduk():
             nama_foto.save(file_path)
         else:
             nama_file = None
-
         doc = {"nama": nama, "harga": harga, "stock": stock, "foto": nama_file}
         db.produk.insert_one(doc)
         return redirect(url_for("dashboard"))
-
     return render_template("admin/tambahproduk.html")
 
 
@@ -239,7 +223,6 @@ def editproduk(_id):
         stock = int(request.form["stock"])
         nama_foto = request.files["foto"]
         doc = {"nama": nama, "harga": harga, "stock": stock}
-
         if nama_foto:
             # Remove spaces and make the filename URL-safe
             sanitized_nama = nama.replace(" ", "_")
@@ -249,16 +232,12 @@ def editproduk(_id):
             file_path = f"static/imgproduct/{nama_file}"
             nama_foto.save(file_path)
             doc["foto"] = nama_file
-
         db.produk.update_one({"_id": ObjectId(id)}, {"$set": doc})
-
         # Update the cartuser collection with the new product details
         cart_update_doc = {"product_name": nama, "product_price": harga}
         if nama_foto:
             cart_update_doc["product_photo"] = nama_file
-
         db.cartuser.update_many({"product_id": id}, {"$set": cart_update_doc})
-
         # Update the orders collection with the new product details
         orders = db.orders.find({"cart_items.product_id": id})
         for order in orders:
@@ -272,9 +251,7 @@ def editproduk(_id):
             db.orders.update_one(
                 {"_id": order["_id"]}, {"$set": {"cart_items": updated_cart_items}}
             )
-
         return redirect(url_for("dashboard"))
-
     id = ObjectId(_id)
     data = db.produk.find_one({"_id": id})
     return render_template("admin/editproduk.html", data=data)
@@ -293,26 +270,21 @@ def delete_produk(_id):
 @login_required
 def konfirmasipesananadmin():
     try:
-        per_page = 10  # Number of entries per page
+        per_page = 5  # Number of entries per page
         page = int(request.args.get("page", 1))
-
         # Calculate the total number of orders
         order_count = db.orders.count_documents({"status": "sedang dikonfirmasi"})
-
-        # Fetch orders with pagination and sorting by the latest order date
+        # Fetch orders with pagination
         orders = list(
             db.orders.find({"status": "sedang dikonfirmasi"})
-            .sort("created_at", -1)  # Sort by created_at in descending order
             .skip((page - 1) * per_page)
             .limit(per_page)
         )
-
         # Process orders to include profile pictures
         for order in orders:
             order["_id"] = str(order["_id"])
             for item in order["cart_items"]:
                 item["_id"] = str(item["_id"])
-
             # Fetch user details
             user_id = order.get("user_id")
             user = db.users.find_one({"_id": ObjectId(user_id)})
@@ -325,7 +297,6 @@ def konfirmasipesananadmin():
                 order["profile_picture"] = url_for(
                     "static", filename="profile_pics/default.jpg"
                 )
-
         # Pass the filtered orders to the template
         return render_template(
             "admin/konfirmasipesananadmin.html",
@@ -345,7 +316,6 @@ def confirm_admin():
     data = request.json
     action = data.get("action")
     id_pesan = data.get("idPesan")
-
     if action == "accept":
         status = "Di Proses"
         pesan = f"Pesanan dengan ID {id_pesan} sedang diproses."
@@ -354,17 +324,14 @@ def confirm_admin():
         pesan = f"Pesanan dengan ID {id_pesan} telah ditolak."
     else:
         return jsonify({"message": "Aksi tidak dikenal"}), 400
-
     # Update order status in the database
     result = db.orders.update_one(
         {"_id": ObjectId(id_pesan)}, {"$set": {"status": status}}
     )
     if result.modified_count == 0:
         return jsonify({"message": "Gagal memperbarui status pesanan"}), 500
-
     # Log the notification for admin
     print(f"Pengguna diberitahu: {pesan}")
-
     return jsonify({"message": pesan})
 
 
@@ -374,12 +341,14 @@ def statuspesananadmin():
     try:
         # Ambil semua pesanan dengan status 'Proses' atau 'Dikirim' dari database
         orders = list(db.orders.find({"status": {"$in": ["Di Proses", "Di Kirim"]}}))
+        selesai = list(db.orders.find({"status": "Pesanan Selesai"}))
         for order in orders:
+            order["_id"] = str(order["_id"])
+        for order in selesai:
             order["_id"] = str(order["_id"])
         # print(orders)
         return render_template(
-            "admin/statuspesanadmin.html",
-            orders=orders,
+            "admin/statuspesanadmin.html", orders=orders, selesai=selesai
         )
     except Exception as e:
         return jsonify({"result": "error", "message": str(e)}), 500
@@ -391,20 +360,17 @@ def dikrim_admin():
     data = request.json
     action = data.get("action")
     id_pesan = data.get("idPesan")
-
     if action == "dikirim":
         status = "Di Kirim"
         pesan = f"Pesanan dengan ID {id_pesan} telah dikirim."
     else:
         return jsonify({"message": "Aksi tidak dikenal"}), 400
-
     # Update order status in the database
     result = db.orders.update_one(
         {"_id": ObjectId(id_pesan)}, {"$set": {"status": status}}
     )
     if result.modified_count == 0:
         return jsonify({"message": "Gagal memperbarui status pesanan"}), 500
-
     return jsonify({"message": pesan})
 
 
@@ -414,14 +380,11 @@ def reviewadmin():
         review_id = request.form.get("review_id")
         db.reviews.delete_one({"_id": ObjectId(review_id)})
         return redirect(url_for("reviewadmin"))
-
     reviews = list(db.reviews.find())  # Fetch reviews
-
     # Fetch user data for each review to get the profile picture
     for review in reviews:
         review_user = db.users.find_one({"_id": ObjectId(review["user_id"])})
         review["profile_picture"] = review_user.get("profile_picture", "default.jpg")
-
     return render_template("admin/reviewadmin.html", reviews=reviews)
 
 
@@ -430,15 +393,12 @@ def reviewadmin():
 def kelolauser():
     per_page = 5  # Number of entries per page
     page = int(request.args.get("page", 1))
-
     # Fetching admins with pagination
     admin_count = db.admins.count_documents({})
     admins = db.admins.find().skip((page - 1) * per_page).limit(per_page)
-
     # Fetching users with pagination
     user_count = db.users.count_documents({})
     users = db.users.find().skip((page - 1) * per_page).limit(per_page)
-
     return render_template(
         "admin/kelolauser.html",
         admins=list(admins),
@@ -479,10 +439,7 @@ def logoutadmin():
 
 
 # --------------------------------------END ADMIN ROUTES--------------------------------------------------#
-
 # --------------------------------------Bagian User ROUTES--------------------------------------------------#
-
-
 @app.route("/register/user", methods=["GET", "POST"])
 def registeruser():
     return render_template("user/registeruser.html")
@@ -494,19 +451,14 @@ def registerusersave():
     username = request.form["username"]
     password = request.form["password"]
     password2 = request.form["password2"]
-
     # Check if passwords match
     if password != password2:
         return jsonify({"result": "error", "message": "Passwords do not match"})
-
     # Check if email already exists
     if db.users.find_one({"email": email}):
         return jsonify({"result": "error", "message": "Email already registered"})
-
     pass_hash = hashlib.sha256((password).encode("utf-8")).hexdigest()
-
     now = datetime.now()
-
     doc = {
         "email": email,
         "username": username,
@@ -515,9 +467,7 @@ def registerusersave():
         "date_created": now,
         "shopping_cart": 0,
     }
-
     db.users.insert_one(doc)
-
     return jsonify({"result": "success"})
 
 
@@ -558,16 +508,13 @@ def validate_user_login():
     email = request.form["email"]
     password = request.form["password"]
     pw_hash = hashlib.sha256(password.encode("utf-8")).hexdigest()
-
     user = db.users.find_one({"email": email, "password": pw_hash})
-
     if user:
         payload = {
             "user_id": str(user["_id"]),
             "exp": datetime.now() + timedelta(days=1),
         }
         token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
-
         response = jsonify({"result": "success", "token": token})
         response.set_cookie("token", token, httponly=True)
         return response
@@ -589,10 +536,8 @@ def product():
         produk = list(db.produk.find())
         username = user.get("username")
         pesan = db.cartuser.count_documents({"user_id": str(user["_id"])})
-
         # Fetch reviews and sort by creation date descending
         reviews = list(db.reviews.find().sort("created_at", -1))
-
         # Fetch user data for each review to get the profile picture
         for review in reviews:
             review_user = db.users.find_one({"_id": ObjectId(review["user_id"])})
@@ -601,7 +546,6 @@ def product():
             )
             if "rating" not in review:
                 review["rating"] = 0  # Default rating value if missing
-
         return render_template(
             "user/produkuser.html",
             user_id=user_id,
@@ -650,16 +594,13 @@ def add_shopping_cart(user):
     try:
         data = request.get_json()
         product_id = data.get("product_id")
-
         product = db.produk.find_one({"_id": ObjectId(product_id)})
         if not product or product["stock"] <= 0:
             return jsonify({"result": "error", "message": "Product not available."})
-
         # Check if the product is already in the cart
         cart_item = db.cartuser.find_one(
             {"user_id": str(user["_id"]), "product_id": product_id}
         )
-
         if cart_item:
             # Check if adding one more exceeds the stock
             if cart_item["quantity"] + 1 > product["stock"]:
@@ -679,7 +620,6 @@ def add_shopping_cart(user):
                 "quantity": 1,
             }
             db.cartuser.insert_one(cart_item)
-
         return jsonify({"result": "success", "message": "Product added to cart."})
     except Exception as e:
         return jsonify({"result": "error", "message": str(e)})
@@ -693,26 +633,21 @@ def update_cart():
             return jsonify(
                 {"result": "error", "message": "Token missing. Please login again."}
             )
-
         payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
         user_id = payload.get("user_id")
         product_id = request.json.get("product_id")
         action = request.json.get("action")
-
         # Fetch current cart item and product
         cart_item = db.cartuser.find_one(
             {"user_id": str(user_id), "product_id": str(product_id)}
         )
         product = db.produk.find_one({"_id": ObjectId(product_id)})
-
         if not cart_item or not product:
             return jsonify(
                 {"result": "error", "message": "Product or cart item not found."}
             )
-
         current_quantity = cart_item["quantity"]
         stock = product["stock"]
-
         # Check stock before updating
         if action == "increment":
             if current_quantity + 1 > stock:
@@ -732,7 +667,6 @@ def update_cart():
                     {"user_id": str(user_id), "product_id": str(product_id)},
                     {"$set": {"quantity": new_quantity}},
                 )
-
         return jsonify({"result": "success"}), 200
     except Exception as e:
         return jsonify({"result": "error", "message": str(e)}), 500
@@ -746,14 +680,11 @@ def delete_cart_item():
             return jsonify(
                 {"result": "error", "message": "Token missing. Please login again."}
             )
-
         payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
         user_id = payload.get("user_id")
         product_id = request.json.get("product_id")
-
         # Delete the cart item
         db.cartuser.delete_one({"user_id": str(user_id), "product_id": str(product_id)})
-
         return jsonify({"result": "success"}), 200
     except Exception as e:
         return jsonify({"result": "error", "message": str(e)}), 500
@@ -764,14 +695,12 @@ def checkout():
     token = request.cookies.get("token")
     if not token:
         return redirect(url_for("loginuser"))
-
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
         user_id = payload.get("user_id")
         user_doc = db.users.find_one({"_id": ObjectId(user_id)})
         username = user_doc.get("username")
         pesan = db.cartuser.count_documents({"user_id": str(user_doc["_id"])})
-
         # Handle POST request for checkout
         if request.method == "POST":
             data = request.json
@@ -779,21 +708,17 @@ def checkout():
             total_harga = data.get("total_harga", 0.0)
             pengiriman = data.get("pengiriman")
             # print(pengiriman)
-
             # Set delivery method cookie
             response = make_response(jsonify({"result": "success"}))
             response.set_cookie("pengiriman", pengiriman)
             return response
-
         # Handle GET request for checkout page
         cart_items = list(db.cartuser.find({"user_id": str(user_id)}))
         total_harga = sum(
             item["product_price"] * item["quantity"] for item in cart_items
         )
-
         pengiriman = request.cookies.get("pengiriman")
         # print(pengiriman)
-
         return render_template(
             "user/checkout.html",
             cart_items=cart_items,
@@ -803,7 +728,6 @@ def checkout():
             pengiriman=pengiriman,
             user=user_doc,
         )
-
     except jwt.ExpiredSignatureError:
         return redirect(
             url_for("loginuser", error_msg="Token expired. Please login again.")
@@ -826,11 +750,9 @@ def pesan():
         user_id = payload.get("user_id")
         user = db.users.find_one({"_id": ObjectId(user_id)})
         username = user.get("username")
-
         if request.method == "POST":
             data = request.form.to_dict()
             payment_method = data.get("payment_method")
-
             # Handle file upload
             file = request.files.get("bankProof") or request.files.get("qrisProof")
             if file:
@@ -849,6 +771,7 @@ def pesan():
                 filepath = f"static/buktipembayaran/{buktibayar}"
                 file.save(filepath)
             else:
+                filepath = None  # or handle error appropriately
                 filepath = None
 
             # Get cart items and calculate total_harga
@@ -857,7 +780,6 @@ def pesan():
                 item["product_price"] * item["quantity"] for item in cart_items
             )
             pengiriman = request.cookies.get("pengiriman")
-
             # Prepare order data
             order_data = {
                 "user_id": user_id,
@@ -874,10 +796,8 @@ def pesan():
                 "status": "sedang dikonfirmasi",
                 "created_at": datetime.now().strftime("%Y-%m-%d %H:%M"),
             }
-
             # Save order to database
             db.orders.insert_one(order_data)
-
             # Update product stock
             for item in cart_items:
                 product_id = ObjectId(item["product_id"])
@@ -885,12 +805,10 @@ def pesan():
                 db.produk.update_one(
                     {"_id": product_id}, {"$inc": {"stock": -quantity}}
                 )
-
             # Clear user's cart
             result = db.cartuser.delete_many({"user_id": str(user_id)})
             if result.deleted_count == 0:
                 raise Exception("Cart items were not deleted")
-
             return jsonify({"result": "success"})
         else:
             return jsonify({"result": "error", "message": "Invalid request method"})
@@ -911,14 +829,12 @@ def statuspesananuser():
     token = request.cookies.get("token")
     if not token:
         return redirect(url_for("loginuser"))
-
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
         user_id = payload.get("user_id")
         user_doc = db.users.find_one({"_id": ObjectId(user_id)})
         username = user_doc.get("username")
         pesan = db.cartuser.count_documents({"user_id": str(user_id)})
-
         # Fetch and sort orders by creation date in descending order
         orders = list(db.orders.find({"user_id": str(user_id)}).sort("created_at", -1))
         for order in orders:
@@ -970,17 +886,14 @@ def update_order_status(order_id):
     token = request.cookies.get("token")
     if not token:
         return redirect(url_for("loginuser"))
-
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
         user_id = payload.get("user_id")
-
         # Update order status
         result = db.orders.update_one(
             {"_id": ObjectId(order_id), "user_id": str(user_id)},
             {"$set": {"status": "Pesanan Selesai"}},
         )
-
         if result.matched_count == 0:
             return (
                 jsonify(
@@ -991,9 +904,7 @@ def update_order_status(order_id):
                 ),
                 404,
             )
-
         return jsonify({"result": "success"})
-
     except jwt.ExpiredSignatureError:
         return redirect(
             url_for("loginuser", error_msg="Token expired. Please login again.")
@@ -1011,16 +922,13 @@ def write_review():
     token = request.cookies.get("token")
     if not token:
         return redirect(url_for("loginuser"))
-
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
         user_id = payload.get("user_id")
         user = db.users.find_one({"_id": ObjectId(user_id)})
         product_id = request.args.get("product_id")
-
         if not product_id:
             return redirect(url_for("product"))
-
         return render_template(
             "user/write_review.html", user=user, product_id=product_id
         )
@@ -1039,19 +947,16 @@ def submit_review():
     token = request.cookies.get("token")
     if not token:
         return redirect(url_for("loginuser"))
-
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
         user_id = payload.get("user_id")
         user_doc = db.users.find_one({"_id": ObjectId(user_id)})
-
         review_data = request.form
         product_id = review_data.get("product_id")
         review_text = review_data.get("review")
         rating = int(
             review_data.get("rating", 0)
         )  # Get rating from form data, default to 0 if not provided
-
         # Insert review into database
         db.reviews.insert_one(
             {
@@ -1063,7 +968,6 @@ def submit_review():
                 "created_at": datetime.now().strftime("%Y-%m-%d %H:%M"),
             }
         )
-
         return redirect(url_for("product"))
     except jwt.ExpiredSignatureError:
         return redirect(
@@ -1086,24 +990,20 @@ def profile(user):
         email = user.get("email")  # Retrieve existing email from user object
         notelp = int(request.form.get("notelp"))
         address = request.form.get("address")
-
         # Handle file upload
         profile_picture = request.files.get("profile_picture")
         profile_picture_filename = user.get(
             "profile_picture", "default.jpg"
         )  # Default to existing picture or default.jpg
-
         if profile_picture:
             # Generate a secure filename based on the user's input
             profile_filename = secure_filename(profile_picture.filename)
             extension = profile_filename.split(".")[-1]
             profile_picture_filename = f"profile_pics/{username}.{extension}"
-
             # Save the new profile picture
             profile_picture.save(
                 os.path.join(app.static_folder, profile_picture_filename)
             )
-
         # Update the user document in the database
         db.users.update_one(
             {"_id": ObjectId(user["_id"])},
@@ -1116,7 +1016,6 @@ def profile(user):
                 }
             },
         )
-
         # Update the user object to reflect the changes
         user.update(
             {
@@ -1126,7 +1025,6 @@ def profile(user):
                 "profile_picture": profile_picture_filename,
             }
         )
-
     pesan = db.cartuser.count_documents({"user_id": str(user["_id"])})
     return render_template(
         "user/profile.html", username=user.get("username"), pesan=pesan, user=user
@@ -1146,7 +1044,5 @@ def logoutuser():
 
 
 # --------------------------------------END USER ROUTES----------------------------------------------------#
-
-
 if __name__ == "__main__":
     app.run("0.0.0.0", port=5001, debug=True)
