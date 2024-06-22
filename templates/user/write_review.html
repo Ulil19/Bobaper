@@ -23,7 +23,8 @@
                         <!-- Star Rating System End -->
 
                         <div class="form-group mb-3">
-                            <textarea name="review" class="form-control" placeholder="Write your review here" required></textarea>
+                            <textarea name="review" class="form-control" placeholder="Write your review here"
+                                required></textarea>
                         </div>
 
                         <div class="form-group">
@@ -33,7 +34,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> 
 </div>
 
 <style>
@@ -42,18 +43,21 @@
         flex-direction: row-reverse;
         justify-content: center;
     }
+
     .rating input {
         display: none;
     }
+
     .rating label {
         cursor: pointer;
         font-size: 2em;
         color: lightgray;
         padding: 0 0.1em;
     }
-    .rating input:checked ~ label,
+
+    .rating input:checked~label,
     .rating label:hover,
-    .rating label:hover ~ label {
+    .rating label:hover~label {
         color: gold;
     }
 </style>
