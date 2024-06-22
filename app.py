@@ -280,7 +280,7 @@ def konfirmasipesananadmin():
             .skip((page - 1) * per_page)
             .limit(per_page)
         )
-        # Process orders to include profile pictures
+        # Process orders to include profile pictures and address
         for order in orders:
             order["_id"] = str(order["_id"])
             for item in order["cart_items"]:
@@ -293,10 +293,12 @@ def konfirmasipesananadmin():
                     "static",
                     filename=user.get("profile_picture", "profile_pics/default.jpg"),
                 )
+                order["address"] = user.get("address", "Alamat tidak tersedia")
             else:
                 order["profile_picture"] = url_for(
                     "static", filename="profile_pics/default.jpg"
                 )
+                order["address"] = "Alamat tidak tersedia"
         # Pass the filtered orders to the template
         return render_template(
             "admin/konfirmasipesananadmin.html",
@@ -333,7 +335,6 @@ def confirm_admin():
     # Log the notification for admin
     print(f"Pengguna diberitahu: {pesan}")
     return jsonify({"message": pesan})
-
 
 @app.route("/statuspesanadmin", methods=["GET"])
 @login_required
