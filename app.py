@@ -1011,8 +1011,6 @@ def submit_review():
 
     except Exception as e:
         return jsonify({"result": "error", "message": str(e)}), 500
-    
-
 
 
 @app.route("/profile", methods=["GET", "POST"])
