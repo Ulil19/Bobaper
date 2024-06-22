@@ -87,9 +87,19 @@
                     <div class="form-group">
                       <div class="mb-3">
                         <label for="notelp" class="form-label">No Telephone</label>
+<<<<<<< HEAD
                         <input type="number" class="form-control" id="notelp" name="notelp" value="{{ user.notelp }}">
                       </div>
                     </div>
+=======
+                        <input type="tel" class="form-control" id="notelp" name="notelp" value="{{ user.notelp }}"
+                          pattern="[0-9]{9,15}" maxlength="15" required>
+                        <small id="notelpHelp" class="form-text text-muted">Masukkan nomor telepon Anda, dimulai dengan
+                          +62 (hanya angka 0-9).</small>
+                      </div>
+                    </div>
+
+>>>>>>> 0e50ad38945dcf8aac56ec983c937f4b71ee17e4
                     <div class="form-group">
                       <div class="mb-3">
                         <label for="address">Alamat</label>
