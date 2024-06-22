@@ -62,11 +62,6 @@
           <div class="invalid-feedback">Please enter your shipping address.</div>
         </div>
 
-        <div class="mb-3">
-          <label for="address2">Alamat 2 <span class="text-muted">(Optional)</span></label>
-          <textarea class="form-control" id="address2" placeholder="Norumah" name="address2"></textarea>
-        </div>
-
         <hr class="mb-4" />
 
         <h4 class="mb-3">Payment</h4>
@@ -201,7 +196,18 @@
 
   $(document).ready(function () {
     $('#paymentForm').on('submit', function (event) {
-      event.preventDefault(); // Prevent the default form submission
+      event.preventDefault();
+
+      // Validate Nama Lengkap
+      const namaLengkap = $('#namalengkap').val().trim();
+      if (namaLengkap === '') {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Oops...',
+          text: 'Nama Lengkap harus diisi!'
+        });
+        return;
+      }
 
       // Collect form data
       var formData = new FormData(this);

@@ -28,13 +28,14 @@
                 <a href="{{ url_for('order_detail', order_id=order._id) }}" class="btn btn-primary mb-2 me-2">Detail</a>
                 <button class="btn btn-primary mb-2 me-4 finish-btn" data-order-id="{{ order._id }}" {% if
                     order.status=='sedang dikonfirmasi' or order.status=='Di Tolak' or order.status=='Pesanan Selesai'
-                    %}disabled{% endif %}>
+                    %} disabled {% endif %}>
                     Finish
                 </button>
+
                 <div>
                     <button class="btn btn-outline-secondary me-2 review-btn"
-                        data-product-id="{{ order.cart_items[0].product_id }}" {% if order.status !='Pesanan Selesai'
-                        %}disabled{% endif %}>
+                        data-product-id="{{ order.cart_items[0].product_id }}" {% if order.status !='Pesanan Selesai' or
+                        order.cart_items[0].review %} disabled {% endif %}>
                         Review
                     </button>
                     <button class="btn btn-outline-secondary me-4" onclick="window.location.href='/product'">Buy

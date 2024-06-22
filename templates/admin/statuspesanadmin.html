@@ -16,6 +16,8 @@
                         <th>No</th>
                         <th>ID Pesan</th>
                         <th>Nama Pemesan</th>
+                        <th>No HP</th>
+                        <th>Alamat</th>
                         <th>Produk</th>
                         <th>Nama Produk</th>
                         <th>Quantity</th>
@@ -30,6 +32,8 @@
                         <td rowspan="{{ order.cart_items|length }}">{{ loop.index }}.</td>
                         <td rowspan="{{ order.cart_items|length }}">{{ order._id }}</td>
                         <td rowspan="{{ order.cart_items|length }}">{{ order.nama }}</td>
+                        <td rowspan="{{ order.cart_items|length }}">{{ order.notelp }}</td>
+                        <td rowspan="{{ order.cart_items|length }}">{{ order.address }}</td>
                         <td><img src="{{ url_for('static', filename='imgproduct/' ~ order.cart_items[0].product_photo) }}"
                                 class="product-image" alt="Product Image"></td>
                         <td>{{ order.cart_items[0].product_name }}</td>
@@ -65,6 +69,8 @@
                         <th>No</th>
                         <th>ID Pesan</th>
                         <th>Nama Pemesan</th>
+                        <th>No HP</th>
+                        <th>Alamat</th>
                         <th>Produk</th>
                         <th>Nama Produk</th>
                         <th>Quantity</th>
@@ -78,6 +84,8 @@
                         <td rowspan="{{ order.cart_items|length }}">{{ loop.index }}.</td>
                         <td rowspan="{{ order.cart_items|length }}">{{ order._id }}</td>
                         <td rowspan="{{ order.cart_items|length }}">{{ order.nama }}</td>
+                        <td rowspan="{{ order.cart_items|length }}">{{ order.notelp }}</td>
+                        <td rowspan="{{ order.cart_items|length }}">{{ order.address }}</td>
                         <td><img src="{{ url_for('static', filename='imgproduct/' ~ order.cart_items[0].product_photo) }}"
                                 class="product-image" alt="Product Image"></td>
                         <td>{{ order.cart_items[0].product_name }}</td>

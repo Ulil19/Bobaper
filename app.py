@@ -336,6 +336,7 @@ def confirm_admin():
     print(f"Pengguna diberitahu: {pesan}")
     return jsonify({"message": pesan})
 
+
 @app.route("/statuspesanadmin", methods=["GET"])
 @login_required
 def statuspesananadmin():
@@ -746,16 +747,24 @@ def pesan():
     token = request.cookies.get("token")
     if not token:
         return redirect(url_for("loginuser"))
+
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
         user_id = payload.get("user_id")
         user = db.users.find_one({"_id": ObjectId(user_id)})
+        if not user:
+            return jsonify({"result": "error", "message": "User not found"}), 404
+
         username = user.get("username")
+
         if request.method == "POST":
             data = request.form.to_dict()
             payment_method = data.get("payment_method")
+
             # Handle file upload
             file = request.files.get("bankProof") or request.files.get("qrisProof")
+            filepath = None
+
             if file:
                 if file.filename.split(".")[-1].lower() not in ["jpg", "jpeg", "png"]:
                     return (
@@ -771,9 +780,6 @@ def pesan():
                 buktibayar = f"{username}.{extension}"
                 filepath = f"static/buktipembayaran/{buktibayar}"
                 file.save(filepath)
-            else:
-                filepath = None  # or handle error appropriately
-                filepath = None
 
             # Get cart items and calculate total_harga
             cart_items = list(db.cartuser.find({"user_id": str(user_id)}))
@@ -781,14 +787,14 @@ def pesan():
                 item["product_price"] * item["quantity"] for item in cart_items
             )
             pengiriman = request.cookies.get("pengiriman")
+
             # Prepare order data
             order_data = {
                 "user_id": user_id,
                 "nama": data.get("namalengkap"),
-                "username": user.get("username"),
+                "username": username,
                 "notelp": data.get("nohp"),
                 "address": data.get("address"),
-                "address2": data.get("address2"),
                 "payment_method": payment_method,
                 "total_harga": total_harga,
                 "pengiriman": pengiriman,
@@ -796,31 +802,43 @@ def pesan():
                 "payment_proof": filepath,
                 "status": "sedang dikonfirmasi",
                 "created_at": datetime.now().strftime("%Y-%m-%d %H:%M"),
+                "review": False,
             }
-            # Save order to database
+
+            # Simpan pesanan ke database
             db.orders.insert_one(order_data)
-            # Update product stock
+
+            # Update stok produk
             for item in cart_items:
                 product_id = ObjectId(item["product_id"])
                 quantity = item["quantity"]
                 db.produk.update_one(
                     {"_id": product_id}, {"$inc": {"stock": -quantity}}
                 )
-            # Clear user's cart
+
+            # Kosongkan keranjang belanja pengguna
             result = db.cartuser.delete_many({"user_id": str(user_id)})
             if result.deleted_count == 0:
                 raise Exception("Cart items were not deleted")
+
             return jsonify({"result": "success"})
+
         else:
-            return jsonify({"result": "error", "message": "Invalid request method"})
+            return (
+                jsonify({"result": "error", "message": "Invalid request method"}),
+                405,
+            )
+
     except jwt.ExpiredSignatureError:
         return redirect(
             url_for("loginuser", error_msg="Token expired. Please login again.")
         )
+
     except jwt.InvalidTokenError:
         return redirect(
             url_for("loginuser", error_msg="Invalid token. Please login again.")
         )
+
     except Exception as e:
         return jsonify({"result": "error", "message": str(e)}), 500
 
@@ -943,43 +961,57 @@ def write_review():
         )
 
 
+# Submit review endpoint
 @app.route("/submit_review", methods=["POST"])
 def submit_review():
     token = request.cookies.get("token")
     if not token:
         return redirect(url_for("loginuser"))
+
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
         user_id = payload.get("user_id")
         user_doc = db.users.find_one({"_id": ObjectId(user_id)})
+
         review_data = request.form
         product_id = review_data.get("product_id")
         review_text = review_data.get("review")
-        rating = int(
-            review_data.get("rating", 0)
-        )  # Get rating from form data, default to 0 if not provided
+        rating = int(review_data.get("rating", 0))
+
         # Insert review into database
         db.reviews.insert_one(
             {
                 "user_id": str(user_id),
                 "product_id": product_id,
                 "review": review_text,
-                "rating": rating,  # Save the rating
+                "rating": rating,
                 "username": user_doc.get("username"),
                 "created_at": datetime.now().strftime("%Y-%m-%d %H:%M"),
             }
         )
+
+        # Update order status to indicate review submitted
+        db.orders.update_one(
+            {"user_id": user_id, "cart_items.product_id": product_id},
+            {"$set": {"cart_items.$.review": True}},
+        )
+
         return redirect(url_for("product"))
+
     except jwt.ExpiredSignatureError:
         return redirect(
             url_for("loginuser", error_msg="Token expired. Please login again.")
         )
+
     except jwt.InvalidTokenError:
         return redirect(
             url_for("loginuser", error_msg="Invalid token. Please login again.")
         )
+
     except Exception as e:
         return jsonify({"result": "error", "message": str(e)}), 500
+    
+
 
 
 @app.route("/profile", methods=["GET", "POST"])
