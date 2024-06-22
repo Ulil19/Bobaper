@@ -377,6 +377,7 @@ def dikrim_admin():
 
 
 @app.route("/review/admin", methods=["GET", "POST"])
+@login_required
 def reviewadmin():
     if request.method == "POST":
         review_id = request.form.get("review_id")
