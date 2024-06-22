@@ -61,11 +61,13 @@
                         </td>
                         <td rowspan="{{ order.cart_items|length }}">
                             {% if order.payment_proof %}
-                            <img src="{{ order.payment_proof }}" class="square" width="40">
+                            <a href="{{ order.payment_proof }}" download>
+                                <img src="{{ order.payment_proof }}" class="square" width="40">
+                            </a>
                             {% endif %}
                         </td>
                         <td rowspan="{{ order.cart_items|length }}">
-                            {{ order.notelp }}
+                            {{ order.notelp if order.notelp else "No Phone Number" }}
                         </td>
                         <td rowspan="{{ order.cart_items|length }}">
                             {{ order.address }}

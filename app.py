@@ -294,11 +294,13 @@ def konfirmasipesananadmin():
                     filename=user.get("profile_picture", "profile_pics/default.jpg"),
                 )
                 order["address"] = user.get("address", "Alamat tidak tersedia")
+                order["notelp"] = user.get("notelp", "No Phone Number")
             else:
                 order["profile_picture"] = url_for(
                     "static", filename="profile_pics/default.jpg"
                 )
                 order["address"] = "Alamat tidak tersedia"
+                order["notelp"] = "No Phone Number"
         # Pass the filtered orders to the template
         return render_template(
             "admin/konfirmasipesananadmin.html",
@@ -310,6 +312,7 @@ def konfirmasipesananadmin():
         )
     except Exception as e:
         return jsonify({"result": "error", "message": str(e)}), 500
+
 
 
 @app.route("/confirm_admin", methods=["POST"])
@@ -344,16 +347,36 @@ def statuspesananadmin():
         # Ambil semua pesanan dengan status 'Proses' atau 'Dikirim' dari database
         orders = list(db.orders.find({"status": {"$in": ["Di Proses", "Di Kirim"]}}))
         selesai = list(db.orders.find({"status": "Pesanan Selesai"}))
+
         for order in orders:
             order["_id"] = str(order["_id"])
+            user_id = order.get("user_id")
+            user = db.users.find_one({"_id": ObjectId(user_id)})
+            if user:
+                order["notelp"] = user.get("notelp", "No Phone Number")
+                order["address"] = user.get("address", "Alamat tidak tersedia")
+            else:
+                order["notelp"] = "No Phone Number"
+                order["address"] = "Alamat tidak tersedia"
+
         for order in selesai:
             order["_id"] = str(order["_id"])
+            user_id = order.get("user_id")
+            user = db.users.find_one({"_id": ObjectId(user_id)})
+            if user:
+                order["notelp"] = user.get("notelp", "No Phone Number")
+                order["address"] = user.get("address", "Alamat tidak tersedia")
+            else:
+                order["notelp"] = "No Phone Number"
+                order["address"] = "Alamat tidak tersedia"
+
         # print(orders)
         return render_template(
             "admin/statuspesanadmin.html", orders=orders, selesai=selesai
         )
     except Exception as e:
         return jsonify({"result": "error", "message": str(e)}), 500
+
 
 
 @app.route("/dikirim_admin", methods=["POST"])
@@ -1020,22 +1043,28 @@ def profile(user):
         # Get the form data
         username = request.form.get("username")
         email = user.get("email")  # Retrieve existing email from user object
-        notelp = int(request.form.get("notelp"))
+        notelp = request.form.get("notelp")
+        
+        # Ensure the phone number starts with +62
+        if not notelp.startswith("+62"):
+            notelp = "+62" + notelp
+        
         address = request.form.get("address")
+        
         # Handle file upload
         profile_picture = request.files.get("profile_picture")
-        profile_picture_filename = user.get(
-            "profile_picture", "default.jpg"
-        )  # Default to existing picture or default.jpg
+        profile_picture_filename = user.get("profile_picture", "default.jpg")  # Default to existing picture or default.jpg
+        
         if profile_picture:
             # Generate a secure filename based on the user's input
             profile_filename = secure_filename(profile_picture.filename)
             extension = profile_filename.split(".")[-1]
             profile_picture_filename = f"profile_pics/{username}.{extension}"
+            
             # Save the new profile picture
-            profile_picture.save(
-                os.path.join(app.static_folder, profile_picture_filename)
-            )
+            profile_picture_path = os.path.join(app.static_folder, profile_picture_filename)
+            profile_picture.save(profile_picture_path)
+        
         # Update the user document in the database
         db.users.update_one(
             {"_id": ObjectId(user["_id"])},
@@ -1048,6 +1077,7 @@ def profile(user):
                 }
             },
         )
+        
         # Update the user object to reflect the changes
         user.update(
             {
@@ -1057,10 +1087,12 @@ def profile(user):
                 "profile_picture": profile_picture_filename,
             }
         )
+    
     pesan = db.cartuser.count_documents({"user_id": str(user["_id"])})
     return render_template(
         "user/profile.html", username=user.get("username"), pesan=pesan, user=user
     )
+
 
 
 @app.route("/logoutuser", methods=["GET", "POST"])

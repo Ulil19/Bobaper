@@ -50,8 +50,7 @@
 
         <div class="mb-3">
           <label for="nohp">No HP <span class="text-muted">(Wajib)</span></label>
-          <input type="number" class="form-control" id="nohp" name="nohp" placeholder="+62" required
-            value="{{ user.notelp }}" />
+          <input type="tel" class="form-control" id="notelp" name="notelp" value="{{ user.notelp }}" pattern="(\+62)[0-9]{9,15}" maxlength="15" required>
           <div class="invalid-feedback">Please enter your phone number.</div>
         </div>
 
