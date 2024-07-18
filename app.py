@@ -104,7 +104,7 @@ def contact():
     )
 
 
-# -------------------------------------------  START ADMIN ROUTES ------------------------------------------------------#
+# -------------------------------------------  MULAI ROUTES ADMIN ------------------------------------------------------#
 @app.route("/login/admin", methods=["GET", "POST"])
 def loginAdmin():
     error_msg = ""
@@ -123,7 +123,7 @@ def loginAdmin():
             response.set_cookie(TOKEN_KEY, token)
             return response
         else:
-            error_msg = "Incorrect email or password"
+            error_msg = "Email atau password salah"
     return render_template("admin/loginadmin.html", error_msg=error_msg)
 
 
@@ -137,7 +137,7 @@ def login_required(f):
         try:
             payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
             g.user_email = payload.get("id")
-            # Check if the user is the registered admin
+            # Cek apakah user adalah admin yang terdaftar
             admin_account = db.admins.find_one({"email": g.user_email})
             if not admin_account:
                 return redirect(url_for("loginAdmin"))
@@ -198,9 +198,9 @@ def tambahproduk():
         stock = int(request.form["stock"])
         nama_foto = request.files["foto"]
         if nama_foto:
-            # Remove spaces and make the filename URL-safe
+            # Menghapus spasi dan membuat nama file aman untuk URL
             sanitized_nama = nama.replace(" ", "_")
-            # Get the original file extension
+            # Mendapatkan ekstensi file asli
             ekstensi_file = nama_foto.filename.split(".")[-1]
             nama_file = f"{sanitized_nama}.{ekstensi_file}"
             file_path = f"static/imgproduct/{nama_file}"
@@ -224,21 +224,21 @@ def editproduk(_id):
         nama_foto = request.files["foto"]
         doc = {"nama": nama, "harga": harga, "stock": stock}
         if nama_foto:
-            # Remove spaces and make the filename URL-safe
+            # Menghapus spasi dan membuat nama file 
             sanitized_nama = nama.replace(" ", "_")
-            # Get the original file extension
+            # Mendapatkan ekstensi file asli
             ekstensi_file = nama_foto.filename.split(".")[-1]
             nama_file = f"{sanitized_nama}.{ekstensi_file}"
             file_path = f"static/imgproduct/{nama_file}"
             nama_foto.save(file_path)
             doc["foto"] = nama_file
         db.produk.update_one({"_id": ObjectId(id)}, {"$set": doc})
-        # Update the cartuser collection with the new product details
+        # Memperbarui koleksi cartuser dengan detail produk yang baru
         cart_update_doc = {"product_name": nama, "product_price": harga}
         if nama_foto:
             cart_update_doc["product_photo"] = nama_file
         db.cartuser.update_many({"product_id": id}, {"$set": cart_update_doc})
-        # Update the orders collection with the new product details
+        # Memperbarui koleksi orders dengan detail produk yang baru
         orders = db.orders.find({"cart_items.product_id": id})
         for order in orders:
             updated_cart_items = []
@@ -270,22 +270,22 @@ def delete_produk(_id):
 @login_required
 def konfirmasipesananadmin():
     try:
-        per_page = 5  # Number of entries per page
+        per_page = 5  # Jumlah entri per halaman
         page = int(request.args.get("page", 1))
-        # Calculate the total number of orders
+            # Menghitung total jumlah pesanan
         order_count = db.orders.count_documents({"status": "sedang dikonfirmasi"})
-        # Fetch orders with pagination
+        # Mengambil pesanan dengan paginasi
         orders = list(
             db.orders.find({"status": "sedang dikonfirmasi"})
             .skip((page - 1) * per_page)
             .limit(per_page)
         )
-        # Process orders to include profile pictures and address
+        # Memproses pesanan untuk menyertakan foto profil dan alamat
         for order in orders:
             order["_id"] = str(order["_id"])
             for item in order["cart_items"]:
                 item["_id"] = str(item["_id"])
-            # Fetch user details
+            # Mengambil detail user
             user_id = order.get("user_id")
             user = db.users.find_one({"_id": ObjectId(user_id)})
             if user:
@@ -301,7 +301,7 @@ def konfirmasipesananadmin():
                 )
                 order["address"] = "Alamat tidak tersedia"
                 order["notelp"] = "No Phone Number"
-        # Pass the filtered orders to the template
+        # Mengirim pesanan yang difilter ke template
         return render_template(
             "admin/konfirmasipesananadmin.html",
             orders=orders,
@@ -329,13 +329,13 @@ def confirm_admin():
         pesan = f"Pesanan dengan ID {id_pesan} telah ditolak."
     else:
         return jsonify({"message": "Aksi tidak dikenal"}), 400
-    # Update order status in the database
+    # Memperbarui status pesanan di database
     result = db.orders.update_one(
         {"_id": ObjectId(id_pesan)}, {"$set": {"status": status}}
     )
     if result.modified_count == 0:
         return jsonify({"message": "Gagal memperbarui status pesanan"}), 500
-    # Log the notification for admin
+    # Mencatat pemberitahuan untuk admin
     print(f"Pengguna diberitahu: {pesan}")
     return jsonify({"message": pesan})
 
@@ -344,39 +344,19 @@ def confirm_admin():
 @login_required
 def statuspesananadmin():
     try:
-        # Ambil semua pesanan dengan status 'Proses' atau 'Dikirim' dari database
-        orders = list(db.orders.find({"status": {"$in": ["Di Proses", "Di Kirim"]}}))
-        selesai = list(db.orders.find({"status": "Pesanan Selesai"}))
-
-        for order in orders:
+        orders_in_process = list(db.orders.find({"status": "Di Proses"}))
+        orders_shipped = list(db.orders.find({"status": "Di Kirim"}))
+        orders_completed = list(db.orders.find({"status": "Pesanan Selesai"}))
+        for order in orders_in_process + orders_shipped + orders_completed:
             order["_id"] = str(order["_id"])
-            user_id = order.get("user_id")
-            user = db.users.find_one({"_id": ObjectId(user_id)})
-            if user:
-                order["notelp"] = user.get("notelp", "No Phone Number")
-                order["address"] = user.get("address", "Alamat tidak tersedia")
-            else:
-                order["notelp"] = "No Phone Number"
-                order["address"] = "Alamat tidak tersedia"
-
-        for order in selesai:
-            order["_id"] = str(order["_id"])
-            user_id = order.get("user_id")
-            user = db.users.find_one({"_id": ObjectId(user_id)})
-            if user:
-                order["notelp"] = user.get("notelp", "No Phone Number")
-                order["address"] = user.get("address", "Alamat tidak tersedia")
-            else:
-                order["notelp"] = "No Phone Number"
-                order["address"] = "Alamat tidak tersedia"
-
-        # print(orders)
         return render_template(
-            "admin/statuspesanadmin.html", orders=orders, selesai=selesai
+            "admin/statuspesanadmin.html",
+            orders_in_process=orders_in_process,
+            orders_shipped=orders_shipped,
+            orders_completed=orders_completed,
         )
     except Exception as e:
         return jsonify({"result": "error", "message": str(e)}), 500
-
 
 
 @app.route("/dikirim_admin", methods=["POST"])
@@ -385,88 +365,95 @@ def dikrim_admin():
     data = request.json
     action = data.get("action")
     id_pesan = data.get("idPesan")
-    if action == "dikirim":
+    if action == "send":
         status = "Di Kirim"
-        pesan = f"Pesanan dengan ID {id_pesan} telah dikirim."
+        pesan = f"Pesanan dengan ID {id_pesan} sedang dikirim."
     else:
         return jsonify({"message": "Aksi tidak dikenal"}), 400
-    # Update order status in the database
+    # Memperbarui status pesanan di database
     result = db.orders.update_one(
         {"_id": ObjectId(id_pesan)}, {"$set": {"status": status}}
     )
     if result.modified_count == 0:
         return jsonify({"message": "Gagal memperbarui status pesanan"}), 500
+    # Mencatat pemberitahuan untuk admin
+    print(f"Pengguna diberitahu: {pesan}")
     return jsonify({"message": pesan})
 
 
 @app.route("/review/admin", methods=["GET", "POST"])
 @login_required
 def reviewadmin():
-    if request.method == "POST":
-        review_id = request.form.get("review_id")
-        db.reviews.delete_one({"_id": ObjectId(review_id)})
-        return redirect(url_for("reviewadmin"))
-    reviews = list(db.reviews.find())  # Fetch reviews
-    # Fetch user data for each review to get the profile picture
-    for review in reviews:
-        review_user = db.users.find_one({"_id": ObjectId(review["user_id"])})
-        review["profile_picture"] = review_user.get("profile_picture", "default.jpg")
-    return render_template("admin/reviewadmin.html", reviews=reviews)
+    try:
+        if request.method == "POST":
+            review_id = request.form["review_id"]
+            db.reviews.delete_one({"_id": ObjectId(review_id)})
+        reviews = list(db.reviews.find())
+        for review in reviews:
+            review["_id"] = str(review["_id"])
+        return render_template("admin/reviewadmin.html", reviews=reviews)
+    except Exception as e:
+        return jsonify({"result": "error", "message": str(e)}), 500
 
 
 @app.route("/kelolauser/admin", methods=["GET", "POST"])
 @login_required
 def kelolauser():
-    per_page = 5  # Number of entries per page
-    page = int(request.args.get("page", 1))
-    # Fetching admins with pagination
-    admin_count = db.admins.count_documents({})
-    admins = db.admins.find().skip((page - 1) * per_page).limit(per_page)
-    # Fetching users with pagination
-    user_count = db.users.count_documents({})
-    users = db.users.find().skip((page - 1) * per_page).limit(per_page)
-    return render_template(
-        "admin/kelolauser.html",
-        admins=list(admins),
-        users=list(users),
-        admin_count=admin_count,
-        user_count=user_count,
-        page=page,
-        per_page=per_page,
-        ceil=ceil,  # Pass the ceil function to the template
-    )
+    try:
+        per_page = 5  # Jumlah entri per halaman
+        page = int(request.args.get("page", 1))
+        # Menghitung total jumlah admin dan user
+        admin_count = db.admins.count_documents({})
+        user_count = db.users.count_documents({})
+        # Mengambil admin dan user dengan paginasi
+        admins = list(
+            db.admins.find({}).skip((page - 1) * per_page).limit(per_page)
+        )
+        users = list(
+            db.users.find({}).skip((page - 1) * per_page).limit(per_page)
+        )
+        for admin in admins:
+            admin["_id"] = str(admin["_id"])
+        for user in users:
+            user["_id"] = str(user["_id"])
+        return render_template(
+            "admin/kelolauser.html",
+            admins=admins,
+            users=users,
+            admin_count=admin_count,
+            user_count=user_count,
+            page=page,
+            per_page=per_page,
+            ceil=ceil,
+        )
+    except Exception as e:
+        return jsonify({"result": "error", "message": str(e)}), 500
 
 
 @app.route("/kelolauser/delete_admin/<admin_id>", methods=["DELETE"])
 @login_required
 def delete_admin(admin_id):
-    result = db.admins.delete_one({"_id": ObjectId(admin_id)})
-    if result.deleted_count:
-        return jsonify({"success": True}), 200
-    else:
-        return jsonify({"success": False}), 404
+    db.admins.delete_one({"_id": ObjectId(admin_id)})
+    return jsonify({"result": "success"})
 
 
 @app.route("/kelolauser/delete_user/<user_id>", methods=["DELETE"])
 @login_required
 def delete_user(user_id):
-    result = db.users.delete_one({"_id": ObjectId(user_id)})
-    if result.deleted_count:
-        return jsonify({"success": True}), 200
-    else:
-        return jsonify({"success": False}), 404
+    db.users.delete_one({"_id": ObjectId(user_id)})
+    return jsonify({"result": "success"})
 
 
 @app.route("/logoutadmin")
 def logoutadmin():
     response = make_response(redirect(url_for("loginAdmin")))
-    response.set_cookie(TOKEN_KEY, "", expires=0, samesite="Strict")
+    response.delete_cookie(TOKEN_KEY)
     return response
 
+# -------------------------------------------  AKHIR ROUTES ADMIN ------------------------------------------------------#
 
-# --------------------------------------END ADMIN ROUTES--------------------------------------------------#
 # --------------------------------------Bagian User ROUTES--------------------------------------------------#
-@app.route("/register/user", methods=["GET", "POST"])
+@app.route("/register/user", methods=["POST"])
 def registeruser():
     return render_template("user/registeruser.html")
 
@@ -631,7 +618,7 @@ def add_shopping_cart(user):
             # Check if adding one more exceeds the stock
             if cart_item["quantity"] + 1 > product["stock"]:
                 return jsonify(
-                    {"result": "error", "message": "Exceeds available stock."}
+                    {"result": "error", "message": "Melebihi stok yang tersedia."}
                 )
             # If product is already in the cart, update the quantity
             db.cartuser.update_one({"_id": cart_item["_id"]}, {"$inc": {"quantity": 1}})

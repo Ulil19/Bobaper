@@ -59,15 +59,14 @@
             <select class="form-control" id="pengiriman" name="pengiriman" required>
                 <option class="text-muted" disabled selected>------ Pilih Pengiriman ------</option>
                 <option class="text-muted" value="Ambil di Tempat">Ambil di Tempat</option>
-                <option class="text-muted" value="Dikirim Sesuai Alamat">Dikirim sesuai alamat (Biaya Ongkir ditanggung
-                    pembeli)</option>
+                <option class="text-muted" value="Dikirim Sesuai Alamat">Dikirim sesuai alamat </option>
             </select>
         </form>
         <div class="row mt-3" style="border-top: 1px solid rgba(0,0,0,.1); padding-top: 2vh;">
             <div class="col">TOTAL HARGA</div>
             <div class="col text-right">Rp {{ '{:,}'.format(total_harga) }}</div>
         </div>
-        <a href="/checkout" class="btn btn-primary btn-block mt-3" id="btn-checkout">CHECKOUT</a>
+        <a href="/checkout" class="btn btn-primary btn-block mt-3" id="btn-checkout">Pesan</a>
     </div>
 </div>
 </div>

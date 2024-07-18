@@ -1,388 +1,556 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="utf-8">
+  <head>
+    <meta charset="utf-8" />
     <title>Bobapeer</title>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="" name="keywords">
-    <meta content="" name="description">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta content="" name="keywords" />
+    <meta content="" name="description" />
 
     <!-- Favicon -->
-    <link href="static/img/favicon.ico" rel="icon">
+    <link href="static/img/favicon.ico" rel="icon" />
 
     <!-- Google Web Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500&family=Lora:wght@600;700&display=swap"
-        rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500&family=Lora:wght@600;700&display=swap"
+      rel="stylesheet"
+    />
 
     <!-- Icon Font Stylesheet -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
 
     <!-- Libraries Stylesheet -->
-    <link href="static/lib/animate/animate.min.css" rel="stylesheet">
-    <link href="static/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+    <link href="static/lib/animate/animate.min.css" rel="stylesheet" />
+    <link
+      href="static/lib/owlcarousel/assets/owl.carousel.min.css"
+      rel="stylesheet"
+    />
 
     <!-- Customized Bootstrap Stylesheet -->
-    <link href="static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="static/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- SweetAlert2 CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css"
+    />
 
     <!-- Template Stylesheet -->
-    <link href="static/css/style.css" rel="stylesheet">
-</head>
-<style>
+    <link href="static/css/style.css" rel="stylesheet" />
+  </head>
+  <style>
     .navbar-collapse {
-        display: flex;
-        justify-content: space-between;
+      display: flex;
+      justify-content: space-between;
     }
 
     .nav-buttons {
-        display: flex;
-        align-items: center;
+      display: flex;
+      align-items: center;
     }
 
     .nav-item.nav-link.active {
-        color: #000;
+      color: #000;
     }
 
     .nav-item.nav-link:hover {
-        color: #f00;
+      color: #f00;
     }
 
     @media (max-width: 991.98px) {
-        .navbar-collapse {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-        }
+      .navbar-collapse {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+      }
 
-        .navbar-nav {
-            width: 100%;
-        }
+      .navbar-nav {
+        width: 100%;
+      }
 
-        .nav-item {
-            width: 100%;
-        }
+      .nav-item {
+        width: 100%;
+      }
 
-        .nav-buttons {
-            margin-top: 10px;
-            margin-left: auto;
-            align-self: flex-end;
-        }
+      .nav-buttons {
+        margin-top: 10px;
+        margin-left: auto;
+        align-self: flex-end;
+      }
     }
-</style>
-<body>
+  </style>
+  <body>
     <!-- Spinner Start -->
-    <div id="spinner"
-        class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
-        <div class="spinner-border text-primary" role="status"></div>
+    <div
+      id="spinner"
+      class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center"
+    >
+      <div class="spinner-border text-primary" role="status"></div>
     </div>
     <!-- Spinner End -->
 
-
     <!-- Navbar Start -->
-    <div class="container-fluid fixed-top px-0 wow fadeIn" data-wow-delay="0.1s">
-        <div class="top-bar row gx-0 align-items-center d-none d-lg-flex">
-            <div class="col-lg-6 px-5 text-start">
-                <small><i class="fa fa-map-marker-alt me-2"></i>Bobapeer.id</small>
-            </div>
-            <div class="col-lg-6 px-5 text-end">
-                <small>Follow us:</small>
-                <a class="text-body ms-3" href="https://www.instagram.com/bobapeer/"><i class="fab fa-instagram"></i></a>
-            </div>
+    <div
+      class="container-fluid fixed-top px-0 wow fadeIn"
+      data-wow-delay="0.1s"
+    >
+      <div class="top-bar row gx-0 align-items-center d-none d-lg-flex">
+        <div class="col-lg-6 px-5 text-start">
+          <small><i class="fa fa-map-marker-alt me-2"></i>Bobapeer.id</small>
         </div>
+        <div class="col-lg-6 px-5 text-end">
+          <small>Follow us:</small>
+          <a class="text-body ms-3" href="https://www.instagram.com/bobapeer/"
+            ><i class="fab fa-instagram"></i
+          ></a>
+        </div>
+      </div>
 
-        <nav class="navbar navbar-expand-lg navbar-light py-lg-0 px-lg-5 wow fadeIn" data-wow-delay="0.1s">
-            <a href="/" class="navbar-brand ms-4 ms-lg-0">
-                <h1 class="fw-bold text-danger m-0">Bo<span class="text-secondary">ba</span>peer</h1>
-            </a>
-            <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarCollapse">
-            {% if status %}
-                <ul class="navbar-nav ms-auto p-4 p-lg-0 px-lg-3">
-                    <!-- Move Username and Shopping Cart to the top in Navbar Collapse for Small Screens -->
-                    <li class="nav-item d-flex d-lg-none align-items-center mb-3">
-                        <div class="dropdown w-100">
-                            <a class="btn-sm-square rounded-circle text-body dropdown-toggle d-flex align-items-center w-100"
-                                href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown"
-                                aria-expanded="false">
-                                <img src="{{ url_for('static', filename=user.profile_picture) }}" class="rounded-circle"
-                                    width="30" height="30">
-                                <span class="ms-1">{{ username }}</span>
-                            </a>
-                            <ul class="dropdown-menu w-100" aria-labelledby="dropdownMenuLink">
-                                <li><a class="dropdown-item" href="/profile">Profile</a></li>
-                                <li><a class="dropdown-item" href="/statuspesananuser">Status Pesan</a></li>
-                                <li><a class="dropdown-item" href="/logoutuser">Logout</a></li>
-                            </ul>
-                        </div>
-                        <a class="btn-sm-square rounded-circle position-relative ms-3" href="/shoppingcart">
-                            <small class="fa fa-shopping-bag text-body"></small>
-                            <span class="badge badge-pill badge-danger position-absolute top-0 end-0"
-                                style="font-size: 0.7rem; color: black; padding: 2px 4px;">{{ pesan | default(0, true)
-                                }}</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="/product" class="nav-link active">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="/about" class="nav-link">About Us</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="/product" class="nav-link">Products</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="/contact" class="nav-link">Contact Us</a>
-                    </li>
+      <nav
+        class="navbar navbar-expand-lg navbar-light py-lg-0 px-lg-5 wow fadeIn"
+        data-wow-delay="0.1s"
+      >
+        <a href="/" class="navbar-brand ms-4 ms-lg-0">
+          <h1 class="fw-bold text-danger m-0">
+            Bo<span class="text-secondary">ba</span>peer
+          </h1>
+        </a>
+        <button
+          type="button"
+          class="navbar-toggler me-4"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarCollapse"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+          {% if status %}
+          <ul class="navbar-nav ms-auto p-4 p-lg-0 px-lg-3">
+            <!-- Move Username and Shopping Cart to the top in Navbar Collapse for Small Screens -->
+            <li class="nav-item d-flex d-lg-none align-items-center mb-3">
+              <div class="dropdown w-100">
+                <a
+                  class="btn-sm-square rounded-circle text-body dropdown-toggle d-flex align-items-center w-100"
+                  href="#"
+                  role="button"
+                  id="dropdownMenuLink"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  <img
+                    src="{{ url_for('static', filename=user.profile_picture) }}"
+                    class="rounded-circle"
+                    width="30"
+                    height="30"
+                  />
+                  <span class="ms-1">{{ username }}</span>
+                </a>
+                <ul
+                  class="dropdown-menu w-100"
+                  aria-labelledby="dropdownMenuLink"
+                >
+                  <li><a class="dropdown-item" href="/profile">Profile</a></li>
+                  <li>
+                    <a class="dropdown-item" href="/statuspesananuser"
+                      >Status Pesan</a
+                    >
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="/logoutuser">Logout</a>
+                  </li>
                 </ul>
-                <!-- Keep Username and Shopping Cart in Navbar for Large Screens -->
-                <div class="d-none d-lg-flex ms-2 px-2">
-                    <div class="dropdown me-3 position-relative d-flex px-2">
-                        <a class="btn-sm-square rounded-circle text-body dropdown-toggle d-flex align-items-center" href="#"
-                            role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
-                            <img src="{{ url_for('static', filename=user.profile_picture) }}" class="rounded-circle"
-                                width="30" height="30">
-                            <span class=" ms-1">{{ username }}</span>
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                            <li><a class="dropdown-item" href="/profile">Profile</a></li>
-                            <li><a class="dropdown-item" href="/statuspesananuser">Status Pesan</a></li>
-                            <li><a class="dropdown-item" href="/logoutuser">Logout</a></li>
-                        </ul>
-                    </div>
-                    <a class="btn-sm-square rounded-circle ms-3 position-relative" href="/shoppingcart">
-                        <small class="fa fa-shopping-bag text-body"></small>
-                        <span class="badge badge-pill badge-danger position-absolute top-0 end-0"
-                            style="font-size: 0.7rem; color: black; padding: 2px 4px;">{{ pesan | default(0, true) }}</span>
-                    </a>
-                </div>
-                {% else %}
-                <ul class="navbar-nav ms-auto p-4 p-lg-0 px-lg-3">
-                    <!-- Move Username and Shopping Cart to the top in Navbar Collapse for Small Screens -->
-                    <li class="nav-item d-flex d-lg-none align-items-center mb-3">
-                        <div class="dropdown w-100">
-                            <a class="btn-sm-square rounded-circle text-body dropdown-toggle d-flex align-items-center w-100"
-                            href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown"
-                            aria-expanded="false">
-                            <small class="fa fa-user"></small>
-                            </a>
-                            <ul class="dropdown-menu w-100" aria-labelledby="dropdownMenuLink">
-                                <li><a class="dropdown-item" href="{{ url_for('loginuser') }}">Login</a></li>
-                            </ul>
-                        </div>
-                        <a class="btn-sm-square rounded-circle position-relative ms-3" href="/shoppingcart">
-                            <small class="fa fa-shopping-bag text-body"></small>
-                            <span class="badge badge-pill badge-danger position-absolute top-0 end-0"
-                                style="font-size: 0.7rem; color: black; padding: 2px 4px;">{{ pesan | default(0, true)
-                                }}</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="/" class="nav-link active">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="/about" class="nav-link">About Us</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="/" class="nav-link">Products</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="/contact" class="nav-link">Contact Us</a>
-                    </li>
-                </ul>
-                <!-- Keep Username and Shopping Cart in Navbar for Large Screens -->
-                <div class="d-none d-lg-flex ms-2 px-2">
-                    <div class="dropdown me-3 position-relative d-flex px-2">
-                        <a class="btn-sm-square rounded-circle text-body dropdown-toggle d-flex align-items-center w-100"
-                        href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown"
-                        aria-expanded="false">
-                            <small class="fa fa-user"></small>
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                            <li><a class="dropdown-item" href="{{ url_for('loginuser') }}">Login</a></li>
-                        </ul>
-                    </div>
-                    <a class="btn-sm-square rounded-circle ms-3 position-relative" href="/shoppingcart">
-                        <small class="fa fa-shopping-bag text-body"></small>
-                        <span class="badge badge-pill badge-danger position-absolute top-0 end-0"
-                            style="font-size: 0.7rem; color: black; padding: 2px 4px;">{{ pesan | default(0, true) }}</span>
-                    </a>
-                </div>
+              </div>
+              <a
+                class="btn-sm-square rounded-circle position-relative ms-3"
+                href="/shoppingcart"
+              >
+                <small class="fa fa-shopping-bag text-body"></small>
+                <span
+                  class="badge badge-pill badge-danger position-absolute top-0 end-0"
+                  style="font-size: 0.7rem; color: black; padding: 2px 4px"
+                  >{{ pesan | default(0, true) }}</span
+                >
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="/product" class="nav-link active">Home</a>
+            </li>
+            <li class="nav-item">
+              <a href="/about" class="nav-link">About Us</a>
+            </li>
+            <li class="nav-item">
+              <a href="/contact" class="nav-link">Contact Us</a>
+            </li>
+          </ul>
+          <!-- Keep Username and Shopping Cart in Navbar for Large Screens -->
+          <div class="d-none d-lg-flex ms-2 px-2">
+            <div class="dropdown me-3 position-relative d-flex px-2">
+              <a
+                class="btn-sm-square rounded-circle text-body dropdown-toggle d-flex align-items-center"
+                href="#"
+                role="button"
+                id="dropdownMenuLink"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                <img
+                  src="{{ url_for('static', filename=user.profile_picture) }}"
+                  class="rounded-circle"
+                  width="30"
+                  height="30"
+                />
+                <span class="ms-1">{{ username }}</span>
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                <li><a class="dropdown-item" href="/profile">Profile</a></li>
+                <li>
+                  <a class="dropdown-item" href="/statuspesananuser"
+                    >Status Pesan</a
+                  >
+                </li>
+                <li><a class="dropdown-item" href="/logoutuser">Logout</a></li>
+              </ul>
             </div>
-            {% endif %}
-        </nav>
+            <a
+              class="btn-sm-square rounded-circle ms-3 position-relative"
+              href="/shoppingcart"
+            >
+              <small class="fa fa-shopping-bag text-body"></small>
+              <span
+                class="badge badge-pill badge-danger position-absolute top-0 end-0"
+                style="font-size: 0.7rem; color: black; padding: 2px 4px"
+                >{{ pesan | default(0, true) }}</span
+              >
+            </a>
+          </div>
+          {% else %}
+          <ul class="navbar-nav ms-auto p-4 p-lg-0 px-lg-3">
+            <!-- Move Username and Shopping Cart to the top in Navbar Collapse for Small Screens -->
+            <li class="nav-item d-flex d-lg-none align-items-center mb-3">
+              <div class="dropdown w-100">
+                <a
+                  class="btn-sm-square rounded-circle text-body dropdown-toggle d-flex align-items-center w-100"
+                  href="#"
+                  role="button"
+                  id="dropdownMenuLink"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  <small class="fa fa-user"></small>
+                </a>
+                <ul
+                  class="dropdown-menu w-100"
+                  aria-labelledby="dropdownMenuLink"
+                >
+                  <li>
+                    <a class="dropdown-item" href="{{ url_for('loginuser') }}"
+                      >Login</a
+                    >
+                  </li>
+                </ul>
+              </div>
+              <a
+                class="btn-sm-square rounded-circle position-relative ms-3"
+                href="/shoppingcart"
+              >
+                <small class="fa fa-shopping-bag text-body"></small>
+                <span
+                  class="badge badge-pill badge-danger position-absolute top-0 end-0"
+                  style="font-size: 0.7rem; color: black; padding: 2px 4px"
+                  >{{ pesan | default(0, true) }}</span
+                >
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="/" class="nav-link active">Home</a>
+            </li>
+            <li class="nav-item">
+              <a href="/about" class="nav-link">About Us</a>
+            </li>
+            <li class="nav-item">
+              <a href="/contact" class="nav-link">Contact Us</a>
+            </li>
+          </ul>
+          <!-- Keep Username and Shopping Cart in Navbar for Large Screens -->
+          <div class="d-none d-lg-flex ms-2 px-2">
+            <div class="dropdown me-3 position-relative d-flex px-2">
+              <a
+                class="btn-sm-square rounded-circle text-body dropdown-toggle d-flex align-items-center w-100"
+                href="#"
+                role="button"
+                id="dropdownMenuLink"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                <small class="fa fa-user"></small>
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                <li>
+                  <a class="dropdown-item" href="{{ url_for('loginuser') }}"
+                    >Login</a
+                  >
+                </li>
+              </ul>
+            </div>
+            <a
+              class="btn-sm-square rounded-circle ms-3 position-relative"
+              href="/shoppingcart"
+            >
+              <small class="fa fa-shopping-bag text-body"></small>
+              <span
+                class="badge badge-pill badge-danger position-absolute top-0 end-0"
+                style="font-size: 0.7rem; color: black; padding: 2px 4px"
+                >{{ pesan | default(0, true) }}</span
+              >
+            </a>
+          </div>
+        </div>
+        {% endif %}
+      </nav>
     </div>
     <!-- Navbar End -->
 
-
     <!-- Page Header Start -->
     <div class="container-fluid page-header wow fadeIn" data-wow-delay="0.1s">
-        <div class="container">
-            <h1 class="display-3 mb-3 animated slideInDown">Contact Us</h1>
-            <nav aria-label="breadcrumb animated slideInDown">
-                <ol class="breadcrumb mb-0">
-                    <li class="breadcrumb-item"><a class="text-body" href="#">Home</a></li>
-                    <li class="breadcrumb-item"><a class="text-body" href="#">Pages</a></li>
-                    <li class="breadcrumb-item text-dark active" aria-current="page">Contact Us</li>
-                </ol>
-            </nav>
-        </div>
+      <div class="container">
+        <h1 class="display-3 mb-3 animated slideInDown">Contact Us</h1>
+        <nav aria-label="breadcrumb animated slideInDown">
+          <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item">
+              <a class="text-body" href="#">Home</a>
+            </li>
+            <li class="breadcrumb-item">
+              <a class="text-body" href="#">Pages</a>
+            </li>
+            <li class="breadcrumb-item text-dark active" aria-current="page">
+              Contact Us
+            </li>
+          </ol>
+        </nav>
+      </div>
     </div>
     <!-- Page Header End -->
 
     <!-- Contact Start -->
     <div class="container-xxl py-6">
-        <div class="container">
-            <div class="section-header text-center mx-auto mb-5 wow fadeInUp" data-wow-delay="0.1s"
-                style="max-width: 500px;">
-                <h1 class="display-5 mb-3">Contact Us</h1>
-                <p>Melayani Segenap Hati.</p>
-            </div>
-            <div class="row g-5 justify-content-center">
-                <div class="col-lg-5 col-md-12 wow fadeInUp" data-wow-delay="0.1s">
-                    <div class="text-white d-flex flex-column justify-content-center h-100 p-5"
-                        style="background-color: pink;">
-                        <h5 class="text-white">Call Us</h5>
-                        <p class="mb-5"><i class="fa fa-phone-alt me-3"></i>081267341935</p>
-                        <h5 class="text-white">Email Us</h5>
-                        <p class="mb-5"><i class="fa fa-envelope me-3"></i>Bobapeer.id@gmail.com</p>
-                        <h5 class="text-white">Office Address</h5>
-                        <p class="mb-5"><i class="fa fa-map-marker-alt me-3"></i>Depan Masjid Al-Munawwaroh, Blang Pulo.
-                        </p>
-                        <h5 class="text-white">Follow Us</h5>
-                        <div class="d-flex pt-2">
-                            <a class="btn btn-square btn-outline-light rounded-circle me-1" href="https://www.instagram.com/bobapeer/"><i
-                                    class="fab fa-instagram"></i></a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-lg-7 col-md-12 wow fadeInUp" data-wow-delay="0.5s">
-                    <p class="mb-4">Hubungi Kami.</p>
-                    <form>
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <div class="form-floating">
-                                    <input type="text" class="form-control" id="name" placeholder="Your Name">
-                                    <label for="name">Your Name</label>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-floating">
-                                    <input type="email" class="form-control" id="email" placeholder="Your Email">
-                                    <label for="email">Your Email</label>
-                                </div>
-                            </div>
-                            <div class="col-12">
-                                <div class="form-floating">
-                                    <input type="text" class="form-control" id="subject" placeholder="Subject">
-                                    <label for="subject">Subject</label>
-                                </div>
-                            </div>
-                            <div class="col-12">
-                                <div class="form-floating">
-                                    <textarea class="form-control" placeholder="Leave a message here" id="message"
-                                        style="height: 200px"></textarea>
-                                    <label for="message">Message</label>
-                                </div>
-                            </div>
-                            <div class="col-12">
-                                <button class="btn rounded-pill py-3 px-5" type="submit"
-                                    style="background-color: pink; border-color: pink;">Send Message</button>
-
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
+      <div class="container">
+        <div
+          class="section-header text-center mx-auto mb-5 wow fadeInUp"
+          data-wow-delay="0.1s"
+          style="max-width: 500px"
+        >
+          <h1 class="display-5 mb-3">Contact Us</h1>
+          <p>Melayani Segenap Hati.</p>
         </div>
+        <div class="row g-5 justify-content-center">
+          <div class="col-lg-5 col-md-12 wow fadeInUp" data-wow-delay="0.1s">
+            <div
+              class="text-white d-flex flex-column justify-content-center h-100 p-5"
+              style="background-color: pink"
+            >
+              <h5 class="text-white">Call Us</h5>
+              <p class="mb-5">
+                <i class="fa fa-phone-alt me-3"></i>081267341935
+              </p>
+              <h5 class="text-white">Email Us</h5>
+              <p class="mb-5">
+                <i class="fa fa-envelope me-3"></i>Bobapeer.id@gmail.com
+              </p>
+              <h5 class="text-white">Office Address</h5>
+              <p class="mb-5">
+                <i class="fa fa-map-marker-alt me-3"></i>Depan Masjid
+                Al-Munawwaroh, Blang Pulo.
+              </p>
+              <h5 class="text-white">Follow Us</h5>
+              <div class="d-flex pt-2">
+                <a
+                  class="btn btn-square btn-outline-light rounded-circle me-1"
+                  href="https://www.instagram.com/bobapeer/"
+                  ><i class="fab fa-instagram"></i
+                ></a>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-7 col-md-12 wow fadeInUp" data-wow-delay="0.5s">
+            <p class="mb-4">Hubungi Kami.</p>
+            <form
+              id="my-form"
+              action="https://formspree.io/f/mgvwvyoy"
+              method="POST"
+            >
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <div class="form-floating">
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="name"
+                      name="name"
+                      placeholder="Your Name"
+                      required
+                    />
+                    <label for="name">Your Name</label>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-floating">
+                    <input
+                      type="email"
+                      class="form-control"
+                      id="email"
+                      name="email"
+                      placeholder="Your Email"
+                      required
+                    />
+                    <label for="email">Your Email</label>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <div class="form-floating">
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="subject"
+                      name="subject"
+                      placeholder="Subject"
+                      required
+                    />
+                    <label for="subject">Subject</label>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <div class="form-floating">
+                    <textarea
+                      class="form-control"
+                      placeholder="Leave a message here"
+                      id="message"
+                      name="message"
+                      style="height: 200px"
+                      required
+                    ></textarea>
+                    <label for="message">Message</label>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <button
+                    id="my-form-button"
+                    class="btn rounded-pill py-3 px-5"
+                    type="submit"
+                    style="background-color: pink; border-color: pink"
+                  >
+                    Send Message
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
     </div>
     <!-- Contact End -->
 
-
     <!-- Google Map Start -->
-    <div class="container-xxl px-0 wow fadeIn" data-wow-delay="0.1s" style="margin-bottom: -6px;">
-        <iframe class="w-100" style="height: 450px;"
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3181.733030369987!2d97.0915156252776!3d5.185619930381437!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x303e15c50a7343a1%3A0x2bbf1d521bf70!2sJl.%20Medan%20B.%20Aceh%2C%20Blang%20Pulo%2C%20Kec.%20Muara%20Satu%2C%20Kota%20Lhokseumawe%2C%20Aceh!5e0!3m2!1sid!2sid!4v1654355648213!5m2!1sid!2sid"
-            frameborder="0" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe>
+    <div
+      class="container-xxl px-0 wow fadeIn"
+      data-wow-delay="0.1s"
+      style="margin-bottom: -6px"
+    >
+      <iframe
+        class="w-100"
+        style="height: 450px"
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3181.733030369987!2d97.0915156252776!3d5.185619930381437!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x303e15c50a7343a1%3A0x2bbf1d521bf70!2sJl.%20Medan%20B.%20Aceh%2C%20Blang%20Pulo%2C%20Kec.%20Muara%20Satu%2C%20Kota%20Lhokseumawe%2C%20Aceh!5e0!3m2!1sid!2sid!4v1654355648213!5m2!1sid!2sid"
+        frameborder="0"
+        allowfullscreen=""
+        aria-hidden="false"
+        tabindex="0"
+      ></iframe>
     </div>
 
     <!-- Google Map End -->
 
-
     <!-- Footer Start -->
-    <div class="container-fluid bg-dark text-light footer mt-5 pt-5 wow fadeIn" data-wow-delay="0.1s">
-        <div class="container py-5">
-            <div class="row g-5">
-                <div class="col-lg-3 col-md-6">
-                {% if status %}
-                <h4 class="text-white mb-3">Quick Link</h4>
-                <a class="btn btn-link" href="/product">Home</a>
-                <a class="btn btn-link" href="/about">About Us</a>
-                <a class="btn btn-link" href="/product">Products</a>
-                <a class="btn btn-link" href="/contact">Contact Us</a>
-                
-                {% else %}
-                <h4 class="text-white mb-3">Quick Link</h4>
-                <a class="btn btn-link" href="/">Home</a>
-                <a class="btn btn-link" href="/about">About Us</a>
-                <a class="btn btn-link" href="/">Products</a>
-                <a class="btn btn-link" href="/contact">Contact Us</a>
-                {% endif %}
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <h4 class="text-white mb-3">Follow Us</h4>
-                    <div class="d-flex pt-2">
-                        <a class="btn btn-outline-light btn-social" href="https://www.instagram.com/bobapeer/"><i
-                                class="fab fa-instagram"></i></a>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <h4 class="text-white mb-3">Contact Us</h4>
-                    <p class="mb-2">
-                        <i class="fa fa-map-marker-alt me-3"></i>Bobapeer.id
-                    </p>
-                    <p class="mb-2">
-                        <i class="fa fa-phone-alt me-3"></i>+62 812-3456-789
-                    </p>
-                    <p class="mb-2">
-                        <i class="fa fa-envelope me-3"></i>Bobapeer.id@gmail.com
-                    </p>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <h4 class="text-white mb-3">Our Team Project</h4>
-                    <ul class="list-unstyled mb-0">
-                        <ul class="list-unstyled mb-0">
-                            <li class="mb-2">Ulil Fathon</li>
-                            <li class="mb-2">Ramadhani Rizky Syahputra</li>
-                            <li class="mb-2">M. Rizki Yuliandri</li>
-                            <li class="mb-2">Romaria Lastria</li>
-                        </ul>
-                    </ul>
-                </div>
+    <div
+      class="container-fluid bg-dark text-light footer mt-5 pt-5 wow fadeIn"
+      data-wow-delay="0.1s"
+    >
+      <div class="container py-5">
+        <div class="row g-5">
+          <div class="col-lg-3 col-md-6">
+            {% if status %}
+            <h4 class="text-white mb-3">Quick Link</h4>
+            <a class="btn btn-link" href="/product">Home</a>
+            <a class="btn btn-link" href="/about">About Us</a>
+            <a class="btn btn-link" href="/contact">Contact Us</a>
+
+            {% else %}
+            <h4 class="text-white mb-3">Quick Link</h4>
+            <a class="btn btn-link" href="/">Home</a>
+            <a class="btn btn-link" href="/about">About Us</a>
+            <a class="btn btn-link" href="/contact">Contact Us</a>
+            {% endif %}
+          </div>
+          <div class="col-lg-3 col-md-6">
+            <h4 class="text-white mb-3">Follow Us</h4>
+            <div class="d-flex pt-2">
+              <a
+                class="btn btn-outline-light btn-social"
+                href="https://www.instagram.com/bobapeer/"
+                ><i class="fab fa-instagram"></i
+              ></a>
             </div>
+          </div>
+          <div class="col-lg-3 col-md-6">
+            <h4 class="text-white mb-3">Contact Us</h4>
+            <p class="mb-2">
+              <i class="fa fa-map-marker-alt me-3"></i>Bobapeer.id
+            </p>
+            <p class="mb-2">
+              <i class="fa fa-phone-alt me-3"></i>+62 812-3456-789
+            </p>
+            <p class="mb-2">
+              <i class="fa fa-envelope me-3"></i>Bobapeer.id@gmail.com
+            </p>
+          </div>
+          <div class="col-lg-3 col-md-6">
+            <h4 class="text-white mb-3">Our Team Project</h4>
+            <ul class="list-unstyled mb-0">
+              <ul class="list-unstyled mb-0">
+                <li class="mb-2">Ulil Fathon</li>
+                <li class="mb-2">Ramadhani Rizky Syahputra</li>
+                <li class="mb-2">M. Rizki Yuliandri</li>
+                <li class="mb-2">Romaria Lastria</li>
+              </ul>
+            </ul>
+          </div>
         </div>
-        <div class="container-fluid copyright">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
-                        &copy; <a href="#">Bobapeer</a>, All Right Reserved.
-                    </div>
-                </div>
+      </div>
+      <div class="container-fluid copyright">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+              &copy; <a href="#">Bobapeer</a>, All Right Reserved.
             </div>
+          </div>
         </div>
+      </div>
     </div>
     <!-- Footer End -->
 
-
     <!-- Back to Top -->
-    <a href="#" class="btn btn-lg btn-primary btn-lg-square rounded-circle back-to-top"><i
-            class="bi bi-arrow-up"></i></a>
-
+    <a
+      href="#"
+      class="btn btn-lg btn-primary btn-lg-square rounded-circle back-to-top"
+      ><i class="bi bi-arrow-up"></i
+    ></a>
 
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
@@ -391,9 +559,65 @@
     <script src="static/lib/easing/easing.min.js"></script>
     <script src="static/lib/waypoints/waypoints.min.js"></script>
     <script src="static/lib/owlcarousel/owl.carousel.min.js"></script>
+    <!-- SweetAlert2 JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Your existing scripts -->
+    <script src="path/to/your/script.js"></script>
 
     <!-- Template Javascript -->
     <script src="static/js/main.js"></script>
-</body>
+    <script>
+      var form = document.getElementById("my-form");
 
+      async function handleSubmit(event) {
+        event.preventDefault();
+
+        // Check if all fields are filled
+        if (!form.checkValidity()) {
+          Swal.fire({
+            icon: "warning",
+            title: "Semua field harus diisi.",
+            text: "Silakan isi semua field sebelum mengirim pesan.",
+          });
+          return;
+        }
+
+        var data = new FormData(event.target);
+        try {
+          let response = await fetch(event.target.action, {
+            method: form.method,
+            body: data,
+            headers: {
+              Accept: "application/json",
+            },
+          });
+          if (response.ok) {
+            Swal.fire({
+              icon: "success",
+              title: "Pesan berhasil dikirim!",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          } else {
+            Swal.fire({
+              icon: "error",
+              title: "Terjadi kesalahan saat mengirim pesan.",
+              text: "Silakan coba lagi nanti.",
+            });
+          }
+        } catch (error) {
+          Swal.fire({
+            icon: "error",
+            title: "Terjadi kesalahan saat mengirim pesan.",
+            text: "Silakan coba lagi nanti.",
+          });
+        }
+        setTimeout(() => {
+          location.reload();
+        }, 2000); // Delay untuk memberikan waktu SweetAlert tampil
+      }
+
+      form.addEventListener("submit", handleSubmit);
+    </script>
+  </body>
 </html>
